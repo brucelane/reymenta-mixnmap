@@ -1,0 +1,6 @@
+#include "../include/Resources.h"
+
+1	ICON	"..\\resources\\cinder_app_icon.ico"
+PASSTHROUGH2_VERT
+PASSTHROUGH_FRAG
+IMG
