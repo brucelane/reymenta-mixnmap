@@ -331,7 +331,7 @@ void MixnMapApp::keyUp(KeyEvent event)
 
 void MixnMapApp::updateWindowTitle()
 {
-	if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps");
+	if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
 
 	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
 }

@@ -55,9 +55,7 @@ namespace Reymenta {
 
 		// Textures
 		bool						mOriginUpperLeft;
-
 		int							currentSelectedIndex;
-
 
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;
@@ -92,8 +90,8 @@ namespace Reymenta {
 		Anim<float>					iAnim;
 		float						mTransitionDuration;
 		// spout
-		bool mMemoryMode;			// tells us if texture share compatible
-		bool mUseDX9;				// use DirectX 9 mode
+		bool						mMemoryMode;			// tells us if texture share compatible
+		bool						mUseDX9;				// use DirectX 9 mode
 	private:
 		const string settingsFileName = "MixnMapSettings.xml";
 	};

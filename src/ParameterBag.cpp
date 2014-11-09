@@ -40,9 +40,17 @@ bool ParameterBag::save()
 
 	XmlTree settings("settings", "");
 
-	XmlTree DirectRender("ShowConsole", "");
-	DirectRender.setAttribute("value", toString(mShowConsole));
-	settings.push_back(DirectRender);
+	XmlTree ShowConsole("ShowConsole", "");
+	ShowConsole.setAttribute("value", toString(mShowConsole));
+	settings.push_back(ShowConsole);
+
+	XmlTree UseDX9("UseDX9", "");
+	UseDX9.setAttribute("value", toString(mUseDX9));
+	settings.push_back(UseDX9);
+
+	XmlTree ShowUI("ShowUI", "");
+	ShowUI.setAttribute("value", toString(mShowUI));
+	settings.push_back(ShowUI);
 
 	// TODO: test for successful writing of XML
 	settings.write(writeFile(path));
@@ -65,8 +73,16 @@ bool ParameterBag::restore()
 			const XmlTree settings = xml.getChild("settings");
 
 			if (settings.hasChild("ShowConsole")) {
-				XmlTree DirectRender = settings.getChild("ShowConsole");
-				mShowConsole = DirectRender.getAttributeValue<bool>("value");
+				XmlTree ShowConsole = settings.getChild("ShowConsole");
+				mShowConsole = ShowConsole.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("UseDX9")) {
+				XmlTree UseDX9 = settings.getChild("UseDX9");
+				mUseDX9 = UseDX9.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("ShowUI")) {
+				XmlTree ShowUI = settings.getChild("ShowUI");
+				mShowUI = ShowUI.getAttributeValue<bool>("value");
 			}
 
 			return true;
