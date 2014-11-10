@@ -15,7 +15,7 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	for (int i = 0; i < 8; i++)
 	{
 		sTextures.push_back(img);
-		setTexture(i, "help.jpg");
+		setTextureFromFile(i, "help.jpg");
 	}
 	mixTextures.push_back(img);
 	mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
@@ -28,7 +28,12 @@ void Textures::setTextureSize(int index, int width, int height)
 	sTextures[index] = gl::Texture::create(width, height);
 }
 
-void Textures::setTexture(int index, string fileName)
+//void Textures::setTexture(int index)
+//{
+//	sTextures[index] = 
+//}
+
+void Textures::setTextureFromFile(int index, string fileName)
 {
 	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
 	if (index > 0)
@@ -106,7 +111,8 @@ void Textures::draw()
 	// draw using the mix shader
 	mFbos[0]->bindFramebuffer();
 
-	//gl::setViewport(mFbos[0]->getBounds());
+	// setup the viewport to match the dimensions of the FBO
+	gl::ScopedViewport scpVp(ivec2(0), mFbos[0]->getSize());
 
 	// clear the FBO
 	gl::clear();

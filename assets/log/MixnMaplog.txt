@@ -1,9 +1,11 @@
-[10:27:36] start
-[10:27:36] getWindowsResolution
-[10:27:36] Window 1: 1600x900
-[10:27:36] Window 2: 1440x900
-[10:27:36]  mRenderWidth1440mRenderHeight900
-[10:27:37] setup
-[10:27:37] Loading MixnMapWarps.xml
-[10:27:37] Warps count 1
-[10:27:37] setup done
+[14:38:48] start
+[14:38:48] getWindowsResolution
+[14:38:48] Window 1: 1600x900
+[14:38:48] Window 2: 1440x900
+[14:38:48]  mRenderWidth1440mRenderHeight900
+[14:38:48] setup
+[14:38:50] Loading MixnMapWarps.xml
+[14:38:50] Warps count 2
+[14:38:50] setup done
+[14:39:45] Saving MixnMapWarps.xml
+[14:39:46] quit

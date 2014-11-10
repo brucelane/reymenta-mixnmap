@@ -36,7 +36,8 @@ namespace Reymenta
 		{
 			return shared_ptr<Textures>(new Textures(aParameterBag, aShadersRef));
 		}
-		void						setTexture( int index, string fileName );
+		void						setTextureFromFile(int index, string fileName);
+		//void						setTexture(int index);
 		ci::gl::TextureRef			getTexture(int index);
 		ci::gl::TextureRef			getMixTexture(int index);
 

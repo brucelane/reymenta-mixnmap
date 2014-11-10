@@ -77,7 +77,11 @@ void MixnMapApp::setup()
 	Warp::setSize(mWarps, mTextures->getTexture(0)->getSize());
 	log->logTimedString("Warps count " + toString(mWarps.size()));
 
+#ifdef _DEBUG
+	// debug mode
+#else
 	hideCursor();
+#endif  // _DEBUG	
 	log->logTimedString("setup done");
 }
 
@@ -124,12 +128,12 @@ void MixnMapApp::draw()
 	// iterate over the warps and draw their content
 	for (WarpConstIter itr = mWarps.begin(); itr != mWarps.end(); ++itr)
 	{
-		//log->logTimedString("warp" + toString(i) + " channel:" + toString(mParameterBag->iChannels[i]));
 		// create a readable reference to our warp, to prevent code like this: (*itr)->begin();
 		WarpRef warp(*itr);
 
 		//warp->draw(mTextures->getMixTexture(mParameterBag->iChannels[i]), mTextures->getMixTexture(mParameterBag->iChannels[i]).getBounds());
-		warp->draw(mTextures->getMixTexture(0), mTextures->getMixTexture(0)->getBounds());
+		//for now warp->draw(mTextures->getMixTexture(0), mTextures->getMixTexture(0)->getBounds());
+		warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
 
 		i++;
 	};
@@ -203,6 +207,10 @@ void MixnMapApp::keyDown(KeyEvent event)
 			// toggle warp edit mode
 			Warp::enableEditMode(!Warp::isEditModeEnabled());
 			break;
+		case KeyEvent::KEY_n:
+			// create a warp
+			mWarps.push_back(WarpPerspectiveBilinear::create());
+			break;
 		case KeyEvent::KEY_m:
 			// toggle memoryMode
 			mParameterBag->mMemoryMode = !mParameterBag->mMemoryMode;
@@ -240,9 +248,7 @@ void MixnMapApp::keyDown(KeyEvent event)
 			// save warp settings
 			Warp::writeSettings(mWarps, writeFile(getAssetPath("") / warpsFileName));
 			break;
-		case KeyEvent::KEY_n:
-			mWarps.push_back(WarpPerspectiveBilinear::create());
-			break;
+
 		}
 	}
 }

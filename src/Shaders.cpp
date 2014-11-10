@@ -12,7 +12,7 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 	//load mix shader
 	try
 	{
-		fs::path mixFragFile = getAssetPath("") / "shaders" / "templates" / "mix.frag";
+		fs::path mixFragFile = getAssetPath("") / "shaders" / "mix.frag";
 		if (fs::exists(mixFragFile))
 		{
 			mMixShader = gl::GlslProg::create(loadResource(PASSTHROUGH2_VERT), loadFile(mixFragFile));
