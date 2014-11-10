@@ -40,10 +40,10 @@ namespace Reymenta {
 		// render windows
 		int							mRenderWidth;
 		int							mRenderHeight;
-		Vec2f						mRenderXY, mLeftRenderXY, mRightRenderXY, mPreviewRenderXY;
-		Vec2f						mRenderPosXY;
-		Vec2f						mRenderResoXY;
-		Vec2i						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
+		vec2						mRenderXY, mLeftRenderXY, mRightRenderXY, mPreviewRenderXY;
+		vec2						mRenderPosXY;
+		vec2						mRenderResoXY;
+		ivec2						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
 
 		// windows and params
 		bool						mShowUI;
@@ -73,9 +73,9 @@ namespace Reymenta {
 		// shader uniforms
 		float						iGlobalTime;        // shader playback time (in seconds)
 		float						iChannelTime[4];
-		Vec3f						iResolution;        // viewport resolution (in pixels)
-		Vec3f						iChannelResolution[4];	// channel resolution (in pixels)
-		Vec4f						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
+		vec3						iResolution;        // viewport resolution (in pixels)
+		vec3						iChannelResolution[4];	// channel resolution (in pixels)
+		vec4						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
 		bool						iFade;
 		bool						iRepeat;
 		bool						iLight;

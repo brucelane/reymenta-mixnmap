@@ -37,8 +37,8 @@ namespace Reymenta
 			return shared_ptr<Textures>(new Textures(aParameterBag, aShadersRef));
 		}
 		void						setTexture( int index, string fileName );
-		ci::gl::Texture				getTexture(int index);
-		ci::gl::Texture				getMixTexture(int index);
+		ci::gl::TextureRef			getTexture(int index);
+		ci::gl::TextureRef			getMixTexture(int index);
 
 		int							getTextureCount() { return sTextures.size(); };
 
@@ -55,13 +55,13 @@ namespace Reymenta
 		// Logger
 		LoggerRef					log;	
 
-		vector<ci::gl::Texture>		sTextures;
-		vector<ci::gl::Texture>		mixTextures;
+		vector<ci::gl::TextureRef>	sTextures;
+		vector<ci::gl::TextureRef>	mixTextures;
 
 		// parameters
 		ParameterBagRef				mParameterBag;
 		// fbo
-		vector<gl::Fbo>				mFbos;
+		vector<gl::FboRef>			mFbos;
 		// Shaders
 		ShadersRef					mShaders;
 		// shaders

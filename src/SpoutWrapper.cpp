@@ -134,7 +134,7 @@ void SpoutWrapper::draw()
 		for (int i = 0; i < nReceivers; i++)
 		{
 			//if (mSpoutReceivers[i].ReceiveTexture(mSenderNames[i], width, height, sTextures[i].getId(), sTextures[i].getTarget()))
-			if (mSpoutReceivers[i].ReceiveTexture(senders[i].SenderName, width, height, mTextures->getTexture(i).getId(), mTextures->getTexture(i).getTarget()))
+			if (mSpoutReceivers[i].ReceiveTexture(senders[i].SenderName, width, height, mTextures->getTexture(i)->getId(), mTextures->getTexture(i)->getTarget()))
 			{
 				mTextures->setTextureSize(i, width, height);
 				senders[i].width = width;

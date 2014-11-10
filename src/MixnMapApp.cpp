@@ -11,8 +11,8 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	getWindowsResolution();
 #ifdef _DEBUG
 	// debug mode
-	settings->setWindowSize(mParameterBag->mRenderWidth/2, mParameterBag->mRenderHeight/2);
-	settings->setWindowPos(Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY + 50));
+	settings->setWindowSize(mParameterBag->mRenderWidth / 2, mParameterBag->mRenderHeight / 2);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	settings->setWindowPos(Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY));
@@ -41,7 +41,7 @@ void MixnMapApp::getWindowsResolution()
 	mLogMsg = " mRenderWidth" + toString(mParameterBag->mRenderWidth) + " mRenderHeight" + toString(mParameterBag->mRenderHeight + "\n");
 	newLogMsg = true;
 	log->logTimedString(" mRenderWidth" + toString(mParameterBag->mRenderWidth) + "mRenderHeight" + toString(mParameterBag->mRenderHeight));
-	mParameterBag->mRenderResoXY = Vec2f(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 
 	// in case only one screen , render from x = 0
 	if (mParameterBag->mDisplayCount == 1) mParameterBag->mRenderX = 0;
@@ -59,9 +59,6 @@ void MixnMapApp::setup()
 	// instanciate the OSC class
 	mOSC = OSC::create(mParameterBag);
 
-	// set ui window and io events callbacks
-	ImGui::setWindow(getWindow());
-
 	// initialize warps
 	log->logTimedString("Loading MixnMapWarps.xml");
 	fs::path settings = getAssetPath("") / warpsFileName;
@@ -77,7 +74,7 @@ void MixnMapApp::setup()
 	}
 
 	// adjust the content size of the warps
-	Warp::setSize(mWarps, mTextures->getTexture(0).getSize());
+	Warp::setSize(mWarps, mTextures->getTexture(0)->getSize());
 	log->logTimedString("Warps count " + toString(mWarps.size()));
 
 	hideCursor();
@@ -91,10 +88,8 @@ void MixnMapApp::shutdown()
 	fs::path settings = getAssetPath("") / warpsFileName;
 	Warp::writeSettings(mWarps, writeFile(settings));
 	// close ui and save settings
-	ImGui::Shutdown();
 	mSpout->shutdown();
 	mTextures->shutdown();
-
 }
 
 void MixnMapApp::update()
@@ -124,7 +119,7 @@ void MixnMapApp::draw()
 	gl::clear();
 	mSpout->draw();
 	gl::setMatricesWindow(getWindowSize());
-	gl::setViewport(getWindowBounds());
+	//TODO gl::setViewport(getWindowBounds());
 	int i = 0;
 	// iterate over the warps and draw their content
 	for (WarpConstIter itr = mWarps.begin(); itr != mWarps.end(); ++itr)
@@ -134,79 +129,11 @@ void MixnMapApp::draw()
 		WarpRef warp(*itr);
 
 		//warp->draw(mTextures->getMixTexture(mParameterBag->iChannels[i]), mTextures->getMixTexture(mParameterBag->iChannels[i]).getBounds());
-		warp->draw(mTextures->getMixTexture(0), mTextures->getMixTexture(0).getBounds());
+		warp->draw(mTextures->getMixTexture(0), mTextures->getMixTexture(0)->getBounds());
 
 		i++;
-	}
-	//imgui
-	static float f = 0.0f;
+	};
 
-	if (mParameterBag->mShowUI)
-	{
-
-		ImGui::NewFrame();
-
-		// start a new window
-		ImGui::Begin("mix-n-map parameters", NULL, ImVec2(200, 100));
-		{
-			// our theme variables
-			static float WindowPadding[2] = { 25, 10 };
-			static float WindowMinSize[2] = { 160, 80 };
-			static float FramePadding[2] = { 4, 4 };
-			static float ItemSpacing[2] = { 10, 5 };
-			static float ItemInnerSpacing[2] = { 5, 5 };
-
-			static float WindowFillAlphaDefault = 0.7;
-			static float WindowRounding = 4;
-			static float TreeNodeSpacing = 22;
-			static float ColumnsMinSpacing = 50;
-			static float ScrollBarWidth = 12;
-
-			if (ImGui::CollapsingHeader("Senders", "0", true, true))
-			{
-				ImGui::Columns(3, "data", true);
-				ImGui::Text("Name"); ImGui::NextColumn();
-				ImGui::Text("Width"); ImGui::NextColumn();
-				ImGui::Text("Height"); ImGui::NextColumn();
-				ImGui::Separator();
-
-				static int w = mSpout->getSenderWidth(0);
-				static int h = mSpout->getSenderHeight(0);
-
-				for (int i = 0; i < mSpout->getSenderCount(); i++)
-				{
-					ImGui::Text(mSpout->getSenderName(i)); ImGui::NextColumn();
-					ImGui::SliderInt("w", &w, 0, 1024); ImGui::NextColumn();
-					ImGui::SliderInt("h", &h, 0, 1024); ImGui::NextColumn();
-				}
-				ImGui::Columns(1);
-				ImGui::Text("%d senders", mSpout->getSenderCount());
-
-			}
-			if (ImGui::CollapsingHeader("Channels", "1", true, true))
-			{
-				ImGui::Columns(3, "cdata", true);
-				ImGui::Text("ActiveSender"); ImGui::NextColumn();
-				ImGui::Text("Channel"); ImGui::NextColumn();
-				ImGui::Text("Sender"); ImGui::NextColumn();
-				ImGui::Separator();
-
-				for (int j = 0; j < mSpout->getSenderCount(); j++)
-				{
-					ImGui::Text("%d", &j); ImGui::NextColumn();
-					ImGui::Text("%d", &mParameterBag->iChannels[j]); ImGui::NextColumn();
-					ImGui::Text(mSpout->getSenderName(j)); ImGui::NextColumn();
-				}
-				ImGui::Columns(1);
-			}
-
-			// add a slider to control the background brightness
-			ImGui::SliderFloat("Crossfade", &mParameterBag->controlValues[15], 0.0, 1.0);
-		}
-		ImGui::End();
-
-		ImGui::Render();
-	}
 }
 
 void MixnMapApp::resize()
@@ -331,9 +258,9 @@ void MixnMapApp::keyUp(KeyEvent event)
 
 void MixnMapApp::updateWindowTitle()
 {
-	if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
+	//if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
 
 	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
 }
 
-CINDER_APP_BASIC(MixnMapApp, RendererGl)
+CINDER_APP_NATIVE(MixnMapApp, RendererGl)

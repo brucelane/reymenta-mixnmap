@@ -115,20 +115,20 @@ void ParameterBag::reset()
 
 	// shader uniforms
 	iGlobalTime = 1.0f;
-	iResolution = Vec3f(mRenderWidth, mRenderHeight, 1.0);
+	iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
 	for (int i = 0; i < 4; i++)
 	{
 		iChannelTime[i] = i;
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		iChannelResolution[i] = Vec3f(mRenderWidth, mRenderHeight, 1.0);
+		iChannelResolution[i] = vec3(mRenderWidth, mRenderHeight, 1.0);
 	}
 	iCrossfade = iPreviewCrossfade = 0.5;
 	iDebug = iFade = iLight = iLightAuto = iRepeat = false;
 	iFps = 60.0;
 	iShowFps = true;
-	iMouse = Vec4f(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
+	iMouse = vec4(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
 	iGreyScale = false;
 
 	// transition
@@ -144,10 +144,10 @@ void ParameterBag::reset()
 	OSCMsg = "OSC listening on port 9000";
 	mRenderWidth = 1024;
 	mRenderHeight = 768;
-	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = Vec2f::zero();
-	mRenderPosXY = Vec2f(0.0, 320.0);
-	mRenderResoXY = Vec2f(mRenderWidth, mRenderHeight);
-	mRenderResolution = Vec2i(mRenderWidth, mRenderHeight);
+	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = vec2(0.0);
+	mRenderPosXY = vec2(0.0, 320.0);
+	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
+	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
 
 	currentSelectedIndex = 0;
 

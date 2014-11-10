@@ -20,7 +20,8 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cinder/ImageIo.h"
 #include "cinder/Rand.h"
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/AppNative.h"
+#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 
@@ -29,7 +30,7 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "WarpPerspectiveBilinear.h"
 
 // UserInterface
-#include "imGuiCinder.h"
+//#include "imGuiCinder.h"
 // parameters
 #include "ParameterBag.h"
 // textures

@@ -11,21 +11,21 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	log->logTimedString("Textures constructor");
 
 	// init texture
-	gl::Texture img(loadImage(loadResource(IMG)));
+	gl::TextureRef img = gl::Texture::create(loadImage(loadResource(IMG)));
 	for (int i = 0; i < 8; i++)
 	{
 		sTextures.push_back(img);
 		setTexture(i, "help.jpg");
 	}
 	mixTextures.push_back(img);
-	mFbos.push_back(gl::Fbo(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
+	mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
 	//mFbos[0].getTexture(0).setFlipped(true);
 
 	log->logTimedString("Textures constructor end");
 }
 void Textures::setTextureSize(int index, int width, int height)
 {
-	sTextures[index] = gl::Texture(width, height);
+	sTextures[index] = gl::Texture::create(width, height);
 }
 
 void Textures::setTexture(int index, string fileName)
@@ -46,11 +46,11 @@ void Textures::setTexture(int index, string fileName)
 				log->logTimedString("asset found file: " + fileName);
 				if (index < sTextures.size())
 				{
-					sTextures[index] = gl::Texture(loadImage(loadAsset(fileName)));
+					sTextures[index] = gl::Texture::create(loadImage(loadAsset(fileName)));
 				}
 				else
 				{
-					sTextures.push_back(gl::Texture(loadImage(loadAsset(fileName))));
+					sTextures.push_back(gl::Texture::create(loadImage(loadAsset(fileName))));
 				}
 				log->logTimedString("asset loaded: " + fileName);
 			}
@@ -62,12 +62,12 @@ void Textures::setTexture(int index, string fileName)
 	}
 }
 
-ci::gl::Texture Textures::getTexture(int index)
+ci::gl::TextureRef Textures::getTexture(int index)
 {
 	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
 	return sTextures[index];
 }
-ci::gl::Texture Textures::getMixTexture(int index)
+ci::gl::TextureRef Textures::getMixTexture(int index)
 {
 	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
 	return mixTextures[index];
@@ -78,7 +78,7 @@ void Textures::loadImageFile(int index, string aFile)
 	try
 	{
 		// try loading image file
-		if (index > 0) sTextures[index] = gl::Texture(loadImage(aFile));
+		if (index > 0) sTextures[index] = gl::Texture::create(loadImage(aFile));
 	}
 	catch (...)
 	{
@@ -104,9 +104,9 @@ void Textures::draw()
 	*/
 
 	// draw using the mix shader
-	mFbos[0].bindFramebuffer();
+	mFbos[0]->bindFramebuffer();
 
-	gl::setViewport(mFbos[0].getBounds());
+	//gl::setViewport(mFbos[0]->getBounds());
 
 	// clear the FBO
 	gl::clear();
@@ -115,10 +115,10 @@ void Textures::draw()
 	aShader = mShaders->getMixShader();
 	aShader->bind();
 	aShader->uniform("iGlobalTime", mParameterBag->iGlobalTime);
-	//20140703 aShader->uniform("iResolution", Vec3f(mParameterBag->mRenderResoXY.x, mParameterBag->mRenderResoXY.y, 1.0));
-	aShader->uniform("iResolution", Vec3f(mParameterBag->mFboWidth, mParameterBag->mFboHeight, 1.0));
+	//20140703 aShader->uniform("iResolution", vec3(mParameterBag->mRenderResoXY.x, mParameterBag->mRenderResoXY.y, 1.0));
+	aShader->uniform("iResolution", vec3(mParameterBag->mFboWidth, mParameterBag->mFboHeight, 1.0));
 	aShader->uniform("iChannelResolution", mParameterBag->iChannelResolution, 4);
-	aShader->uniform("iMouse", Vec4f(mParameterBag->mRenderPosXY.x, mParameterBag->mRenderPosXY.y, mParameterBag->iMouse.z, mParameterBag->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+	aShader->uniform("iMouse", vec4(mParameterBag->mRenderPosXY.x, mParameterBag->mRenderPosXY.y, mParameterBag->iMouse.z, mParameterBag->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
 	aShader->uniform("iChannel0", 0);
 	aShader->uniform("iChannel1", 1);
 	aShader->uniform("iChannel2", 2);
@@ -129,8 +129,8 @@ void Textures::draw()
 	aShader->uniform("iChannel7", 7);
 	aShader->uniform("iAudio0", 0);
 	aShader->uniform("iChannelTime", mParameterBag->iChannelTime, 4);
-	aShader->uniform("iColor", Vec3f(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));// mParameterBag->iColor);
-	aShader->uniform("iBackgroundColor", Vec3f(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));// mParameterBag->iBackgroundColor);
+	aShader->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));// mParameterBag->iColor);
+	aShader->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));// mParameterBag->iBackgroundColor);
 	aShader->uniform("iSteps", (int)mParameterBag->controlValues[16]);
 	aShader->uniform("iRatio", mParameterBag->controlValues[11]);//check if needed: +1;//mParameterBag->iRatio); 
 	aShader->uniform("width", 1);
@@ -161,18 +161,18 @@ void Textures::draw()
 	aShader->uniform("iTempoTime", mParameterBag->iTempoTime);
 	aShader->uniform("iGlitch", (int)mParameterBag->controlValues[45]);
 
-	sTextures[mParameterBag->iChannels[0]].bind(0);
-	sTextures[mParameterBag->iChannels[1]].bind(1);
+	sTextures[mParameterBag->iChannels[0]]->bind(0);
+	sTextures[mParameterBag->iChannels[1]]->bind(1);
 	gl::drawSolidRect(Rectf(0, 0, mParameterBag->mFboWidth, mParameterBag->mFboHeight));
 	// stop drawing into the FBO
-	mFbos[0].unbindFramebuffer();
+	mFbos[0]->unbindFramebuffer();
 
-	sTextures[mParameterBag->iChannels[0]].unbind();
-	sTextures[mParameterBag->iChannels[1]].unbind();
+	sTextures[mParameterBag->iChannels[0]]->unbind();
+	sTextures[mParameterBag->iChannels[1]]->unbind();
 
-	aShader->unbind();
-	sTextures[2] = mFbos[0].getTexture();
-	mixTextures[0] = mFbos[0].getTexture();
+	//aShader->unbind();
+	sTextures[2] = mFbos[0]->getColorTexture();
+	mixTextures[0] = mFbos[0]->getColorTexture();
 }
 
 void Textures::shutdown()
