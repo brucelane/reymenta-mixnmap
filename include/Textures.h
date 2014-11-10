@@ -40,7 +40,7 @@ namespace Reymenta
 		//void						setTexture(int index);
 		ci::gl::TextureRef			getTexture(int index);
 		ci::gl::TextureRef			getMixTexture(int index);
-
+		ci::gl::TextureRef			getFboTexture(int index);
 		int							getTextureCount() { return sTextures.size(); };
 
 		// image
@@ -68,6 +68,6 @@ namespace Reymenta
 		// shaders
 		gl::GlslProgRef				aShader;
 
-		
+
 	};
 }

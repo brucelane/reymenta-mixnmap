@@ -115,6 +115,7 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\LibraryPanel.h" />
     <ClInclude Include="..\include\Logger.h" />
     <ClInclude Include="..\include\MixnMapApp.h" />
     <ClInclude Include="..\include\OSCWrapper.h" />
@@ -151,10 +152,15 @@
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.h" />
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
     <ClInclude Include="..\include\Shaders.h" />
+    <ClInclude Include="..\include\SlidersPanel.h" />
     <ClInclude Include="..\include\SpoutWrapper.h" />
     <ClInclude Include="..\include\Textures.h" />
+    <ClInclude Include="..\include\UI.h" />
+    <ClInclude Include="..\include\WarpPanel.h" />
+    <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\LibraryPanel.cpp" />
     <ClCompile Include="..\src\Logger.cpp" />
     <ClCompile Include="..\src\MixnMapApp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\Button.cpp" />
@@ -182,8 +188,11 @@
     <ClCompile Include="..\src\OSCWrapper.cpp" />
     <ClCompile Include="..\src\ParameterBag.cpp" />
     <ClCompile Include="..\src\Shaders.cpp" />
+    <ClCompile Include="..\src\SlidersPanel.cpp" />
     <ClCompile Include="..\src\SpoutWrapper.cpp" />
     <ClCompile Include="..\src\Textures.cpp" />
+    <ClCompile Include="..\src\UI.cpp" />
+    <ClCompile Include="..\src\WarpPanel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

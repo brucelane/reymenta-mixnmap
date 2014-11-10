@@ -30,7 +30,7 @@ namespace Reymenta
 			return shared_ptr<Shaders>( new Shaders( aParameterBag ) );
 		}
 
-		//string getFragError();
+		string getFragError();
 		gl::GlslProgRef getMixShader() { return mMixShader; };
 
 		/*void loadFragmentShader(boost::filesystem::path aFilePath);

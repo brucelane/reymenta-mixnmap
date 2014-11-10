@@ -1,6 +1,10 @@
 #include "../include/Resources.h"
 
 1	ICON	"..\\resources\\cinder_app_icon.ico"
+RES_HELVETICA
+RES_GARAMOND
+RES_GARAMOND_ITALIC
+RES_HELVETICA_NEUE_REGULAR
 PASSTHROUGH2_VERT
 PASSTHROUGH_FRAG
 IMG

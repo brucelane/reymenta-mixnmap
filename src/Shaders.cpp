@@ -40,6 +40,10 @@ Shaders::~Shaders()
 {
 	log->logTimedString("Shaders destructor");
 }
+string Shaders::getFragError()
+{
+	return mError;
+}
 /*string Shaders::getFragStringFromFile(string fileName)
 {
 	string rtn = "";
@@ -56,10 +60,6 @@ Shaders::~Shaders()
 
 
 
-string Shaders::getFragError()
-{
-	return mError;
-}
 string Shaders::getFileName(string aFilePath)
 {
 	string fName;

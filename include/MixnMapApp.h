@@ -29,8 +29,10 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "WarpPerspective.h"
 #include "WarpPerspectiveBilinear.h"
 
+// window manager
+#include "WindowMngr.h"
 // UserInterface
-//#include "imGuiCinder.h"
+#include "UI.h"
 // parameters
 #include "ParameterBag.h"
 // textures
@@ -48,14 +50,12 @@ using namespace ph::warping;
 using namespace std;
 using namespace Reymenta;
 
-class MixnMapApp : public AppBasic {
+class MixnMapApp : public AppNative {
 public:
 	void prepareSettings(Settings *settings);
 	void setup();
 	void shutdown();
 	void update();
-	void draw();
-
 	void resize();
 
 	void mouseMove(MouseEvent event);
@@ -67,8 +67,25 @@ public:
 	void keyUp(KeyEvent event);
 
 	void updateWindowTitle();
-	void getWindowsResolution();
 private:
+	// windows
+	WindowRef					mMainWindow;
+	void						windowManagement();
+	void						getWindowsResolution();
+	void						drawMain();
+	WindowRef					mCodeEditorWindow;
+	bool						mCursorVisible;
+	bool						mIsShutDown;
+	// render
+	void						createRenderWindow();
+	void						deleteRenderWindows();
+	vector<WindowMngr>			allRenderWindows;
+	void						drawRender();
+	void						showCodeCallback();
+	void						createUIWindow();
+
+	// minimalUI
+	UIRef						mUI;
 	// parameters
 	ParameterBagRef				mParameterBag;
 	// Logger

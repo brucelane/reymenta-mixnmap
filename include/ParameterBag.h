@@ -30,13 +30,16 @@ namespace Reymenta {
 		bool save();
 		bool restore();
 		void reset();
+		// fonts
+		ci::Font mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
 
 		// params
 		std::string					mOSCDestinationHost;
 		int							mOSCDestinationPort;
 		int							mOSCReceiverPort;
 		std::string					OSCMsg;
-
+		int							mPreviewWidth, mPreviewHeight, mPreviewFboWidth, mPreviewFboHeight;
+		std::string					InfoMsg;
 		// render windows
 		int							mRenderWidth;
 		int							mRenderHeight;
@@ -44,6 +47,7 @@ namespace Reymenta {
 		vec2						mRenderPosXY;
 		vec2						mRenderResoXY;
 		ivec2						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
+		vec2						mPreviewFragXY;
 
 		// windows and params
 		bool						mShowUI;
@@ -52,6 +56,19 @@ namespace Reymenta {
 		int							mRenderX;
 		int							mRenderY;
 		int							mDisplayCount;
+		int							mWindowToCreate;
+		bool						mDirectRender, mOptimizeUI;
+		int							mUIRefresh;
+		ColorA						FPSColor;
+		ColorA						ColorGreen;
+		ColorA						ColorRed;
+
+		// audio
+		float						*mData;
+		float						maxVolume;
+		bool						mUseLineIn;
+		float						mAudioMultFactor;
+		float						iFreqs[4];
 
 		// Textures
 		bool						mOriginUpperLeft;
@@ -61,9 +78,17 @@ namespace Reymenta {
 		map<int, float>				controlValues;
 		// indexes for textures
 		map<int, int>				iChannels;
+		// fbo indexes for warping
+		map<int, int>				iWarpFboChannels;
 		// fbos
 		int							mFboWidth, mFboHeight;
 		bool						mFlipFbo;
+		int							mWarpCount;
+		int							mCurrentPreviewFboIndex;
+		int							mWarpFboIndex, mMixFboIndex;
+		int							mLeftFboIndex, mRightFboIndex;
+		int							mLeftFragIndex, mRightFragIndex, mPreviewFragIndex;
+		float						iZoomLeft, iZoomRight;
 		// tap tempo
 		float						mTempo;
 		float						iDeltaTime;
@@ -85,6 +110,9 @@ namespace Reymenta {
 		bool						iDebug;
 		float						iFps;
 		bool						iGreyScale;
+		// colors
+		bool						tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
+		bool						mLockFR, mLockFG, mLockFB, mLockFA, mLockBR, mLockBG, mLockBB, mLockBA;
 		// transition
 		int							iTransition;
 		Anim<float>					iAnim;

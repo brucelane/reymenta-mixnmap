@@ -28,11 +28,6 @@ void Textures::setTextureSize(int index, int width, int height)
 	sTextures[index] = gl::Texture::create(width, height);
 }
 
-//void Textures::setTexture(int index)
-//{
-//	sTextures[index] = 
-//}
-
 void Textures::setTextureFromFile(int index, string fileName)
 {
 	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
@@ -77,7 +72,11 @@ ci::gl::TextureRef Textures::getMixTexture(int index)
 	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
 	return mixTextures[index];
 }
-
+ci::gl::TextureRef Textures::getFboTexture(int index)
+{
+	if (index > mFbos.size() - 1) index = mFbos.size() - 1;
+	return mFbos[index]->getColorTexture();
+}
 void Textures::loadImageFile(int index, string aFile)
 {
 	try

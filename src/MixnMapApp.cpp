@@ -50,6 +50,8 @@ void MixnMapApp::getWindowsResolution()
 void MixnMapApp::setup()
 {
 	log->logTimedString("setup");
+	// in multi-window mode prevent shutdown to be executed twice
+	mIsShutDown = false;
 	// instanciate the Shaders class, must not be in prepareSettings
 	mShaders = Shaders::create(mParameterBag);
 	// instanciate the textures class
@@ -58,7 +60,10 @@ void MixnMapApp::setup()
 	mSpout = SpoutWrapper::create(mParameterBag, mTextures);
 	// instanciate the OSC class
 	mOSC = OSC::create(mParameterBag);
-
+	windowManagement();
+	// Setup the MinimalUI user interface
+	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow);
+	mUI->setup();
 	// initialize warps
 	log->logTimedString("Loading MixnMapWarps.xml");
 	fs::path settings = getAssetPath("") / warpsFileName;
@@ -84,16 +89,32 @@ void MixnMapApp::setup()
 #endif  // _DEBUG	
 	log->logTimedString("setup done");
 }
-
+void MixnMapApp::windowManagement()
+{
+	log->logTimedString("windowManagement");
+	getWindowsResolution();
+	// setup the main window and associated draw function
+	mMainWindow = getWindow();
+	mMainWindow->setTitle("Reymenta mix-n-map");
+	mMainWindow->connectDraw(&MixnMapApp::drawMain, this);
+	mMainWindow->connectClose(&MixnMapApp::shutdown, this);
+}
 void MixnMapApp::shutdown()
 {
-	// save warp settings
-	log->logTimedString("Saving MixnMapWarps.xml");
-	fs::path settings = getAssetPath("") / warpsFileName;
-	Warp::writeSettings(mWarps, writeFile(settings));
-	// close ui and save settings
-	mSpout->shutdown();
-	mTextures->shutdown();
+	if (!mIsShutDown)
+	{
+		mIsShutDown = true;
+		log->logTimedString("shutdown");
+		deleteRenderWindows();
+		// save warp settings
+		log->logTimedString("Saving MixnMapWarps.xml");
+		fs::path settings = getAssetPath("") / warpsFileName;
+		Warp::writeSettings(mWarps, writeFile(settings));
+		// close ui and save settings
+		mSpout->shutdown();
+		mTextures->shutdown();
+		mUI->shutdown();
+	}
 }
 
 void MixnMapApp::update()
@@ -113,11 +134,26 @@ void MixnMapApp::update()
 	}
 	mSpout->update();
 	mOSC->update();
+	mUI->update();
 	updateWindowTitle();
-
+	if (mParameterBag->mWindowToCreate > 0)
+	{
+		// try to create the window only once
+		int windowToCreate = mParameterBag->mWindowToCreate;
+		mParameterBag->mWindowToCreate = 0;
+		switch (windowToCreate)
+		{
+		case 1:
+			createRenderWindow();
+			break;
+		case 2:
+			deleteRenderWindows();
+			break;
+		}
+	}
 }
 
-void MixnMapApp::draw()
+void MixnMapApp::drawRender()
 {
 	// clear the window and set the drawing color to white
 	gl::clear();
@@ -137,9 +173,44 @@ void MixnMapApp::draw()
 
 		i++;
 	};
+}
+void MixnMapApp::drawMain()
+{
+	mUI->draw();
+	gl::disableAlphaBlending();
+}
+void MixnMapApp::createRenderWindow()
+{
+	deleteRenderWindows();
+	getWindowsResolution();
+
+	mParameterBag->iResolution.x = mParameterBag->mRenderWidth;
+	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
+	mParameterBag->mRenderResolution = ivec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+
+	log->logTimedString("createRenderWindow, resolution:" + toString(mParameterBag->iResolution.x) + "x" + toString(mParameterBag->iResolution.y));
+
+	string windowName = "render";
+
+	WindowRef	mRenderWindow;
+	mRenderWindow = createWindow(Window::Format().size(mParameterBag->iResolution.x, mParameterBag->iResolution.y));
+
+	// create instance of the window and store in vector
+	WindowMngr rWin = WindowMngr(windowName, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight, mRenderWindow);
+	allRenderWindows.push_back(rWin);
+
+	mRenderWindow->setBorderless();
+	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mRenderWindow->connectDraw(&MixnMapApp::drawRender, this);
+	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, 0);
+	mRenderWindow->setPos(mParameterBag->mRenderX, 0);
 
 }
-
+void MixnMapApp::deleteRenderWindows()
+{
+	for (auto wRef : allRenderWindows) DestroyWindow((HWND)wRef.mWRef->getNative());
+	allRenderWindows.clear();
+}
 void MixnMapApp::resize()
 {
 	// tell the warps our window has been resized, so they properly scale up or down
@@ -264,9 +335,11 @@ void MixnMapApp::keyUp(KeyEvent event)
 
 void MixnMapApp::updateWindowTitle()
 {
-	//if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
-
-	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
+	if (!mIsShutDown)
+	{	
+		//if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
+		getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
+	}
 }
 
 CINDER_APP_NATIVE(MixnMapApp, RendererGl)
