@@ -15,8 +15,10 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	for (int i = 0; i < 8; i++)
 	{
 		sTextures.push_back(img);
+		// TODO: replace with 0.jpg to 7.jpg if exists or load from settings file
 		setTextureFromFile(i, "help.jpg");
 	}
+	// init 
 	mixTextures.push_back(img);
 	mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
 	//mFbos[0].getTexture(0).setFlipped(true);

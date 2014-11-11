@@ -55,8 +55,10 @@ namespace Reymenta
 	private:
 		// Logger
 		LoggerRef					log;	
-
+		// vectors of textures
+		// sTextures: Spout received textures
 		vector<ci::gl::TextureRef>	sTextures;
+		// mixTextures: mix of 2 textures from sTextures or shaders
 		vector<ci::gl::TextureRef>	mixTextures;
 
 		// parameters

@@ -12,13 +12,13 @@ void MixnMapApp::prepareSettings(Settings *settings)
 #ifdef _DEBUG
 	// debug mode
 	settings->setWindowSize(mParameterBag->mRenderWidth / 2, mParameterBag->mRenderHeight / 2);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY + 50));
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX -mParameterBag->mRenderWidth / 2, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	settings->setWindowPos(Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY));
+	settings->setWindowPos(Vec2i(mParameterBag->mRenderX - mParameterBag->mRenderWidth, mParameterBag->mRenderY));
 #endif  // _DEBUG
 	settings->setResizable(true); // allowed for a receiver
-	settings->setFrameRate(60.0f);
+	settings->setFrameRate(10060.0f);
 	if (mParameterBag->mShowConsole) settings->enableConsoleWindow();
 
 }
@@ -119,7 +119,7 @@ void MixnMapApp::shutdown()
 
 void MixnMapApp::update()
 {
-	mParameterBag->iChannelTime[0] = getElapsedSeconds();
+	/*mParameterBag->iChannelTime[0] = getElapsedSeconds();
 	mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
 	mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
 	mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
@@ -132,10 +132,8 @@ void MixnMapApp::update()
 	{
 		mParameterBag->iGlobalTime = getElapsedSeconds();
 	}
-	mSpout->update();
-	mOSC->update();
+	mOSC->update();*/
 	mUI->update();
-	updateWindowTitle();
 	if (mParameterBag->mWindowToCreate > 0)
 	{
 		// try to create the window only once
@@ -151,6 +149,8 @@ void MixnMapApp::update()
 			break;
 		}
 	}
+	mSpout->update();
+	updateWindowTitle();
 }
 
 void MixnMapApp::drawRender()
@@ -199,11 +199,16 @@ void MixnMapApp::createRenderWindow()
 	WindowMngr rWin = WindowMngr(windowName, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight, mRenderWindow);
 	allRenderWindows.push_back(rWin);
 
+#ifdef _DEBUG
+	// debug mode
+	mRenderWindow->setPos(mParameterBag->mRenderX, 20);	
+#else
 	mRenderWindow->setBorderless();
+	mRenderWindow->setPos(mParameterBag->mRenderX, 0);
+#endif  // _DEBUG	
 	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	mRenderWindow->connectDraw(&MixnMapApp::drawRender, this);
 	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, 0);
-	mRenderWindow->setPos(mParameterBag->mRenderX, 0);
 
 }
 void MixnMapApp::deleteRenderWindows()
@@ -272,7 +277,7 @@ void MixnMapApp::keyDown(KeyEvent event)
 			break;
 		case KeyEvent::KEY_f:
 			// toggle full screen
-			setFullScreen(!isFullScreen());
+			// crashes setFullScreen(!isFullScreen());
 			break;
 		case KeyEvent::KEY_w:
 			// toggle warp edit mode

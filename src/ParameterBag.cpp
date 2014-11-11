@@ -150,7 +150,7 @@ void ParameterBag::reset()
 	iTransition = 0;
 	iAnim = 0.0;
 	mTransitionDuration = 1.0f;
-	mWindowToCreate = 0;
+	mWindowToCreate = 1;
 
 	// fbo
 	mFlipFbo = false;

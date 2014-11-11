@@ -58,7 +58,7 @@ void UI::setup()
 }
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
-	mMiniControl = UIController::create("{ \"depth\":100, \"width\":15, \"fboNumSamples\":0, \"panelColor\":\"0x4428FF28\", \"height\":17 }");
+	mMiniControl = UIController::create("{ \"depth\":100, \"width\":1052, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\", \"height\":174 }");
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mMiniControl->setFont("icon", mParameterBag->mIconFont);
@@ -105,7 +105,7 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("Rst", std::bind(&UI::resetSettings, this, std::placeholders::_1), "{ \"clear\":false }");
 
 	// windows
-	mMiniControl->addButton("Debug", std::bind(&UI::debug, this, std::placeholders::_1), "{ \"clear\":false, \"width\":56, \"stateless\":false, \"pressed\":false}");
+	mMiniControl->addButton("Debug", std::bind(&UI::debug, this, std::placeholders::_1), "{ \"width\":56, \"stateless\":false, \"pressed\":false}");
 
 	// Color Sliders
 	mMiniControl->addLabel("Draw color", "{ \"clear\":false }");
