@@ -15,7 +15,7 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX -mParameterBag->mRenderWidth / 2, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	settings->setWindowPos(Vec2i(mParameterBag->mRenderX - mParameterBag->mRenderWidth, mParameterBag->mRenderY));
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mRenderWidth, mParameterBag->mRenderY));
 #endif  // _DEBUG
 	settings->setResizable(true); // allowed for a receiver
 	settings->setFrameRate(10060.0f);

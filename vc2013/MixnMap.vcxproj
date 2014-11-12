@@ -50,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Spout\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Cinder-Spout\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -64,7 +64,7 @@
       <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249d.lib;..\..\..\blocks\Spout\lib\Spout.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249d.lib;..\..\..\blocks\Cinder-Spout\lib\Spout.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -74,13 +74,13 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "..\..\..\blocks\Spout\lib\Spout.dll" "$(OutDir)"
-xcopy /y "..\..\..\blocks\Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Spout\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Cinder-Spout\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -95,7 +95,7 @@
       <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249.lib;..\..\..\blocks\Spout\lib\Spout.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249.lib;..\..\..\blocks\Cinder-Spout\lib\Spout.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -107,8 +107,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "..\..\..\blocks\Spout\lib\Spout.dll" "$(OutDir)"
-xcopy /y "..\..\..\blocks\Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

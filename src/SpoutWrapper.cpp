@@ -25,7 +25,7 @@ SpoutWrapper::SpoutWrapper(ParameterBagRef aParameterBag, TexturesRef aTextures)
 
 void SpoutWrapper::update()
 {
-	unsigned int width, height;
+	//unsigned int width, height;
 	bool found = false;
 	nSenders = mSpoutReceivers[0].GetSenderCount();
 
@@ -71,7 +71,7 @@ void SpoutWrapper::update()
 void SpoutWrapper::draw()
 {
 	unsigned int width, height;
-	char txt[256];
+	//char txt[256];
 	int actualReceivers = 0;
 	gl::setMatricesWindow(getWindowSize());
 
