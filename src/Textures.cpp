@@ -1,3 +1,13 @@
+/**
+* \file Textures.cpp
+* \brief Texture manager.
+* \author Bruce LANE
+* \version 0.1
+* \date 13 november 2014
+*
+* Manages the textures.
+*
+*/
 #include "Textures.h"
 
 using namespace Reymenta;

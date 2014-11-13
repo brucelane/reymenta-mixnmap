@@ -1,3 +1,13 @@
+/**
+* \file Textures.h
+* \brief Texture manager.
+* \author Bruce LANE
+* \version 0.1
+* \date 13 november 2014
+*
+* Manages the textures.
+*
+*/
 #pragma once
 
 #include <string>
@@ -37,7 +47,7 @@ namespace Reymenta
 			return shared_ptr<Textures>(new Textures(aParameterBag, aShadersRef));
 		}
 		void						setTextureFromFile(int index, string fileName);
-		//void						setTexture(int index);
+		//! Returns Texture at index
 		ci::gl::TextureRef			getTexture(int index);
 		ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
