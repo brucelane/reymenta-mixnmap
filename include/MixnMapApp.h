@@ -43,6 +43,8 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "SpoutWrapper.h"
 // OSC
 #include "OSCWrapper.h"
+// warps
+#include "WarpWrapper.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -98,9 +100,8 @@ private:
 	SpoutWrapperRef				mSpout;
 	// osc
 	OSCRef						mOSC;
-
-	WarpList					mWarps;
-	const string warpsFileName = "MixnMapWarps.xml";
+	// warps
+	WarpWrapperRef				mWarpings;
 
 	bool						newLogMsg;
 	string						mLogMsg;

@@ -38,6 +38,11 @@ namespace Reymenta
 {
 	// stores the pointer to the Textures instance
 	typedef std::shared_ptr<class Textures> TexturesRef;
+	typedef struct cmonudcb {
+		char name[256];
+		unsigned int width, height;
+		bool active;
+	};
 
 	class Textures {
 	public:		
@@ -53,33 +58,34 @@ namespace Reymenta
 		ci::gl::TextureRef			getFboTexture(int index);
 		int							getTextureCount() { return sTextures.size(); };
 
-		// image
-		void						loadImageFile( int index, string aFile );
+		//! load image file as texture at index
+		void						loadImageFile(int index, string aFile);
 
-		void						update();
+		//! main draw for fbos and textures
 		void						draw();
 		void						shutdown();
 		void						setTextureSize( int index, int width, int height );
 		void						flipMixFbo(bool flip);
 
 	private:
-		// Logger
+		//! Logger
 		LoggerRef					log;	
 		// vectors of textures
-		// sTextures: Spout received textures
+		//! sTextures: Spout received textures
 		vector<ci::gl::TextureRef>	sTextures;
-		// mixTextures: mix of 2 textures from sTextures or shaders
+		//! mixTextures: mix of 2 textures from sTextures or shaders
 		vector<ci::gl::TextureRef>	mixTextures;
-
-		// parameters
+		//! check if valid index
+		int checkedIndex(int index);
+		//! parameters
 		ParameterBagRef				mParameterBag;
-		// fbo
+		//! fbo
 		vector<gl::FboRef>			mFbos;
-		// Shaders
+		//! Shaders
 		ShadersRef					mShaders;
-		// shaders
+		//! shader
 		gl::GlslProgRef				aShader;
 
-
+		vector<cmonudcb>			inputTextures;
 	};
 }

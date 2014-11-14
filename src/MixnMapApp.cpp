@@ -18,7 +18,7 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mRenderWidth, mParameterBag->mRenderY));
 #endif  // _DEBUG
 	settings->setResizable(true); // allowed for a receiver
-	settings->setFrameRate(10060.0f);
+	settings->setFrameRate(1000.0f);
 	if (mParameterBag->mShowConsole) settings->enableConsoleWindow();
 
 }
@@ -64,23 +64,9 @@ void MixnMapApp::setup()
 	// Setup the MinimalUI user interface
 	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow);
 	mUI->setup();
-	// initialize warps
-	log->logTimedString("Loading MixnMapWarps.xml");
-	fs::path settings = getAssetPath("") / warpsFileName;
-	if (fs::exists(settings))
-	{
-		// load warp settings from file if one exists
-		mWarps = Warp::readSettings(loadFile(settings));
-	}
-	else
-	{
-		// otherwise create a warp from scratch
-		mWarps.push_back(WarpPerspectiveBilinear::create());
-	}
+	// instanciate the warp wrapper class
+	mWarpings = WarpWrapper::create(mParameterBag, mTextures, mShaders);
 
-	// adjust the content size of the warps
-	Warp::setSize(mWarps, mTextures->getTexture(0)->getSize());
-	log->logTimedString("Warps count " + toString(mWarps.size()));
 
 #ifdef _DEBUG
 	// debug mode
@@ -107,9 +93,8 @@ void MixnMapApp::shutdown()
 		log->logTimedString("shutdown");
 		deleteRenderWindows();
 		// save warp settings
-		log->logTimedString("Saving MixnMapWarps.xml");
-		fs::path settings = getAssetPath("") / warpsFileName;
-		Warp::writeSettings(mWarps, writeFile(settings));
+		mWarpings->save();
+
 		// close ui and save settings
 		mSpout->shutdown();
 		mTextures->shutdown();
@@ -126,11 +111,11 @@ void MixnMapApp::update()
 	//
 	if (mParameterBag->mUseTimeWithTempo)
 	{
-		mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
+	mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
 	}
 	else
 	{
-		mParameterBag->iGlobalTime = getElapsedSeconds();
+	mParameterBag->iGlobalTime = getElapsedSeconds();
 	}
 	mOSC->update();*/
 	mUI->update();
@@ -155,24 +140,13 @@ void MixnMapApp::update()
 
 void MixnMapApp::drawRender()
 {
-	// clear the window and set the drawing color to white
+	//! clear the window and set the drawing color to white
 	gl::clear();
+	//! draw Spout received textures
 	mSpout->draw();
-	gl::setMatricesWindow(getWindowSize());
-	//TODO gl::setViewport(getWindowBounds());
-	int i = 0;
-	// iterate over the warps and draw their content
-	for (WarpConstIter itr = mWarps.begin(); itr != mWarps.end(); ++itr)
-	{
-		// create a readable reference to our warp, to prevent code like this: (*itr)->begin();
-		WarpRef warp(*itr);
-
-		//warp->draw(mTextures->getMixTexture(mParameterBag->iChannels[i]), mTextures->getMixTexture(mParameterBag->iChannels[i]).getBounds());
-		//for now warp->draw(mTextures->getMixTexture(0), mTextures->getMixTexture(0)->getBounds());
-		warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
-
-		i++;
-	};
+	//TODO? gl::setMatricesWindow(getWindowSize());
+	//TODO? gl::setViewport(getWindowBounds());
+	mWarpings->draw();
 }
 void MixnMapApp::drawMain()
 {
@@ -218,130 +192,94 @@ void MixnMapApp::deleteRenderWindows()
 }
 void MixnMapApp::resize()
 {
-	// tell the warps our window has been resized, so they properly scale up or down
-	Warp::handleResize(mWarps);
+	mWarpings->resize();
+
 }
 
 void MixnMapApp::mouseMove(MouseEvent event)
 {
-	// pass this mouse event to the warp editor first
-	if (!Warp::handleMouseMove(mWarps, event))
-	{
-		// let your application perform its mouseMove handling here
-	}
+	mWarpings->mouseMove(event);
 }
 
 void MixnMapApp::mouseDown(MouseEvent event)
 {
-	// pass this mouse event to the warp editor first
-	if (!Warp::handleMouseDown(mWarps, event))
-	{
-		// let your application perform its mouseDown handling here
-		if (event.isRightDown())
-		{ // Select a sender
-			//mspoutreceiver.SelectSenderPanel(); // SpoutPanel.exe must be in the executable path
+	mWarpings->mouseDown(event);
 
-		}
-	}
 }
 
 void MixnMapApp::mouseDrag(MouseEvent event)
 {
-	// pass this mouse event to the warp editor first
-	if (!Warp::handleMouseDrag(mWarps, event))
-	{
-		// let your application perform its mouseDrag handling here
-	}
+	mWarpings->mouseDrag(event);
+
 }
 
 void MixnMapApp::mouseUp(MouseEvent event)
 {
-	// pass this mouse event to the warp editor first
-	if (!Warp::handleMouseUp(mWarps, event))
-	{
-
-	}
+	mWarpings->mouseUp(event);
 }
 
 void MixnMapApp::keyDown(KeyEvent event)
 {
-	// pass this key event to the warp editor first
-	if (!Warp::handleKeyDown(mWarps, event))
-	{
-		// warp editor did not handle the key, so handle it here
-		switch (event.getCode())
-		{
-		case KeyEvent::KEY_ESCAPE:
-			// quit the application
-			quit();
-			break;
-		case KeyEvent::KEY_f:
-			// toggle full screen
-			// crashes setFullScreen(!isFullScreen());
-			break;
-		case KeyEvent::KEY_w:
-			// toggle warp edit mode
-			Warp::enableEditMode(!Warp::isEditModeEnabled());
-			break;
-		case KeyEvent::KEY_n:
-			// create a warp
-			mWarps.push_back(WarpPerspectiveBilinear::create());
-			break;
-		case KeyEvent::KEY_m:
-			// toggle memoryMode
-			mParameterBag->mMemoryMode = !mParameterBag->mMemoryMode;
-			break;
-		case KeyEvent::KEY_9:
-			// toggle dx9
-			mParameterBag->mUseDX9 = !mParameterBag->mUseDX9;
-			break;
-		case KeyEvent::KEY_c:
-			// crossfade center
-			mParameterBag->controlValues[15] = 0.5;
-			break;
-		case KeyEvent::KEY_l:
-			// crossfade left
-			mParameterBag->controlValues[15] = 0.0;
-			break;
-		case KeyEvent::KEY_r:
-			// crossfade right
-			mParameterBag->controlValues[15] = 1.0;
-			break;
-		case KeyEvent::KEY_h:
-			hideCursor();
-			mParameterBag->mShowUI = false;
-			break;
-		case KeyEvent::KEY_s:
-			showCursor();
-			mParameterBag->mShowUI = true;
-			break;
-		case KeyEvent::KEY_p:
-			// flip fbo
-			mParameterBag->mFlipFbo = !mParameterBag->mFlipFbo;
-			mTextures->flipMixFbo(mParameterBag->mFlipFbo);
-			break;
-		case KeyEvent::KEY_SPACE:
-			// save warp settings
-			Warp::writeSettings(mWarps, writeFile(getAssetPath("") / warpsFileName));
-			break;
+	mWarpings->keyDown(event);
 
-		}
+	// warp editor did not handle the key, so handle it here
+	switch (event.getCode())
+	{
+	case KeyEvent::KEY_ESCAPE:
+		// quit the application
+		quit();
+		break;
+
+	case KeyEvent::KEY_m:
+		// toggle memoryMode
+		mParameterBag->mMemoryMode = !mParameterBag->mMemoryMode;
+		break;
+	case KeyEvent::KEY_9:
+		// toggle dx9
+		mParameterBag->mUseDX9 = !mParameterBag->mUseDX9;
+		break;
+	case KeyEvent::KEY_c:
+		// crossfade center
+		mParameterBag->controlValues[15] = 0.5;
+		break;
+	case KeyEvent::KEY_l:
+		// crossfade left
+		mParameterBag->controlValues[15] = 0.0;
+		break;
+	case KeyEvent::KEY_r:
+		// crossfade right
+		mParameterBag->controlValues[15] = 1.0;
+		break;
+	case KeyEvent::KEY_h:
+		hideCursor();
+		mParameterBag->mShowUI = false;
+		break;
+	case KeyEvent::KEY_s:
+		showCursor();
+		mParameterBag->mShowUI = true;
+		break;
+	case KeyEvent::KEY_p:
+		// flip fbo
+		mParameterBag->mFlipFbo = !mParameterBag->mFlipFbo;
+		mTextures->flipMixFbo(mParameterBag->mFlipFbo);
+		break;
+	case KeyEvent::KEY_SPACE:
+		// save warp settings
+		mWarpings->save();
+		break;
 	}
 }
 
 void MixnMapApp::keyUp(KeyEvent event)
 {
-	// pass this key event to the warp editor first
-	if (!Warp::handleKeyUp(mWarps, event))
-	{
-		// let your application perform its keyUp handling here
-	}
+	mWarpings->keyUp(event);
+
 }
 
 void MixnMapApp::updateWindowTitle()
 {
 	if (!mIsShutDown)
-	{	
+	{
 		//if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
 		getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
 	}

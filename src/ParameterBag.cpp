@@ -96,6 +96,14 @@ bool ParameterBag::restore()
 
 void ParameterBag::reset()
 {
+	mRenderWidth = 1024;
+	mRenderHeight = 768;
+	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = vec2(0.0);
+	mRenderPosXY = vec2(0.0, 320.0);
+	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
+	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
+	mPreviewFragXY = vec2(0.0, 0.0);
+
 	// spout
 	mMemoryMode = false;
 	mUseDX9 = false;
@@ -150,7 +158,7 @@ void ParameterBag::reset()
 	iTransition = 0;
 	iAnim = 0.0;
 	mTransitionDuration = 1.0f;
-	mWindowToCreate = 1;
+	mWindowToCreate = 0;
 
 	// fbo
 	mFlipFbo = false;
@@ -180,14 +188,6 @@ void ParameterBag::reset()
 	// colors
 	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
 	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
-
-	mRenderWidth = 1024;
-	mRenderHeight = 768;
-	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = vec2(0.0);
-	mRenderPosXY = vec2(0.0, 320.0);
-	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
-	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
-	mPreviewFragXY = vec2(0.0, 0.0);
 
 	currentSelectedIndex = 0;
 

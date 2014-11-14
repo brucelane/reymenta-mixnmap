@@ -39,6 +39,11 @@ void Textures::setTextureSize(int index, int width, int height)
 {
 	sTextures[index] = gl::Texture::create(width, height);
 }
+int Textures::checkedIndex(int index)
+{
+	int i = min(index, (int) sTextures.size() - 1);
+	return max(i, 0);
+}
 
 void Textures::setTextureFromFile(int index, string fileName)
 {
@@ -76,8 +81,7 @@ void Textures::setTextureFromFile(int index, string fileName)
 
 ci::gl::TextureRef Textures::getTexture(int index)
 {
-	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
-	return sTextures[index];
+	return sTextures[checkedIndex(index)];
 }
 ci::gl::TextureRef Textures::getMixTexture(int index)
 {
@@ -94,7 +98,7 @@ void Textures::loadImageFile(int index, string aFile)
 	try
 	{
 		// try loading image file
-		if (index > 0) sTextures[index] = gl::Texture::create(loadImage(aFile));
+		sTextures[checkedIndex(index)] = gl::Texture::create(loadImage(aFile));
 	}
 	catch (...)
 	{
@@ -107,18 +111,15 @@ void Textures::flipMixFbo(bool flip)
 	//mixTextures[0].setFlipped(flip);
 	mParameterBag->mOriginUpperLeft = flip;
 }
-void Textures::update()
-{
-
-}
 
 void Textures::draw()
 {
+	//! draw with mix.frag if 2 textures to mix
+	//! loop if several active fbos to draw
 
 	/***********************************************
 	* mix 2 textures in FBOs with mix shader 
 	*/
-
 	// draw using the mix shader
 	mFbos[0]->bindFramebuffer();
 
@@ -132,32 +133,20 @@ void Textures::draw()
 	aShader = mShaders->getMixShader();
 	aShader->bind();
 	aShader->uniform("iGlobalTime", mParameterBag->iGlobalTime);
-	//20140703 aShader->uniform("iResolution", vec3(mParameterBag->mRenderResoXY.x, mParameterBag->mRenderResoXY.y, 1.0));
 	aShader->uniform("iResolution", vec3(mParameterBag->mFboWidth, mParameterBag->mFboHeight, 1.0));
-	aShader->uniform("iChannelResolution", mParameterBag->iChannelResolution, 4);
 	aShader->uniform("iMouse", vec4(mParameterBag->mRenderPosXY.x, mParameterBag->mRenderPosXY.y, mParameterBag->iMouse.z, mParameterBag->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
 	aShader->uniform("iChannel0", 0);
 	aShader->uniform("iChannel1", 1);
-	aShader->uniform("iChannel2", 2);
-	aShader->uniform("iChannel3", 3);
-	aShader->uniform("iChannel4", 4);
-	aShader->uniform("iChannel5", 5);
-	aShader->uniform("iChannel6", 6);
-	aShader->uniform("iChannel7", 7);
-	aShader->uniform("iAudio0", 0);
-	aShader->uniform("iChannelTime", mParameterBag->iChannelTime, 4);
-	aShader->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));// mParameterBag->iColor);
-	aShader->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));// mParameterBag->iBackgroundColor);
+	aShader->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
+	aShader->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
 	aShader->uniform("iSteps", (int)mParameterBag->controlValues[16]);
-	aShader->uniform("iRatio", mParameterBag->controlValues[11]);//check if needed: +1;//mParameterBag->iRatio); 
+	aShader->uniform("iRatio", mParameterBag->controlValues[11]);
 	aShader->uniform("width", 1);
 	aShader->uniform("height", 1);
 	aShader->uniform("iRenderXY", mParameterBag->mRenderXY);
 	aShader->uniform("iZoom", mParameterBag->controlValues[13]);
 	aShader->uniform("iAlpha", mParameterBag->controlValues[4]);
-	//aShader->uniform("iBlendmode", (int)mParameterBag->controlValues[15]);
 	aShader->uniform("iRotationSpeed", mParameterBag->controlValues[19]);
-	//aShader->uniform("iCrossfade", mParameterBag->iCrossfade);
 	aShader->uniform("iCrossfade", mParameterBag->controlValues[15]);
 	aShader->uniform("iPixelate", mParameterBag->controlValues[18]);
 	aShader->uniform("iExposure", mParameterBag->controlValues[14]);
