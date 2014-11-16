@@ -117,7 +117,7 @@ namespace Reymenta
 		void keyDown( ci::app::KeyEvent &event );
 
 		// windows mgmt
-		MinimalUI::UIControllerRef mMiniControl, gParams, mSliders;
+		MinimalUI::UIControllerRef mMiniControl, gParams;
 		// panels
 		SlidersPanelRef				mSlidersPanel;
 		WarpPanelRef				mWarpPanel;

@@ -194,15 +194,8 @@ void ParameterBag::reset()
 	for (int a = 0; a < 8; a++)
 	{
 		iChannels[a] = 0;// a;
+		iWarpFboChannels[a] = a;
 	}
-	iWarpFboChannels[0] = 1;
-	iWarpFboChannels[1] = 1;
-	iWarpFboChannels[2] = 1;
-	iWarpFboChannels[3] = 3;
-	iWarpFboChannels[4] = 4;
-	iWarpFboChannels[5] = 5;
-	iWarpFboChannels[6] = 6;
-	iWarpFboChannels[7] = 7;
 
 	// midi and OSC
 	for (int c = 0; c < 128; c++)

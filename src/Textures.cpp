@@ -33,11 +33,25 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
 	//mFbos[0].getTexture(0).setFlipped(true);
 
+	// init
+	mNewSenderName[0] = NULL;
+	for (int i = 0; i < MAX; i++)
+	{		
+		memcpy(&inputTextures[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
+		inputTextures[i].width = 320;
+		inputTextures[i].height = 240;
+	}
 	log->logTimedString("Textures constructor end");
 }
-void Textures::setTextureSize(int index, int width, int height)
+ci::gl::TextureRef Textures::getSenderTexture(int index)
 {
-	sTextures[index] = gl::Texture::create(width, height);
+	return inputTextures[index].texture;
+}
+void Textures::setSenderTextureSize(int index, int width, int height)
+{
+	inputTextures[index].width = width;
+	inputTextures[index].height = height;
+	inputTextures[index].texture = gl::Texture::create(width, height);
 }
 int Textures::checkedIndex(int index)
 {

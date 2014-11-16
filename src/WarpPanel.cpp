@@ -26,6 +26,7 @@ WarpPanelRef WarpPanel::create(ParameterBagRef aParameterBag, TexturesRef aTextu
 void WarpPanel::setupParams()
 {
 	mParams = UIController::create("{ \"visible\":true, \"x\":730, \"y\":176, \"width\":140, \"height\":530, \"depth\":203, \"panelColor\":\"0x44282828\" }");
+	mParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	// set custom fonts for a UIController
 	mParams->setFont("label", mParameterBag->mLabelFont);
 	mParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);

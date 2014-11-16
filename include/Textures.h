@@ -38,12 +38,14 @@ namespace Reymenta
 {
 	// stores the pointer to the Textures instance
 	typedef std::shared_ptr<class Textures> TexturesRef;
-	typedef struct cmonudcb {
-		char name[256];
+
+	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures
+	typedef struct Sender {
+		char SenderName[256];
 		unsigned int width, height;
+		ci::gl::TextureRef texture;
 		bool active;
 	};
-
 	class Textures {
 	public:		
 		Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef);
@@ -57,6 +59,7 @@ namespace Reymenta
 		ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
 		int							getTextureCount() { return sTextures.size(); };
+		ci::gl::TextureRef			getSenderTexture(int index);
 
 		//! load image file as texture at index
 		void						loadImageFile(int index, string aFile);
@@ -64,9 +67,9 @@ namespace Reymenta
 		//! main draw for fbos and textures
 		void						draw();
 		void						shutdown();
-		void						setTextureSize( int index, int width, int height );
+		void						setSenderTextureSize(int index, int width, int height);
 		void						flipMixFbo(bool flip);
-
+		char*						getSenderName(int index) { return &inputTextures[index].SenderName[0]; };
 	private:
 		//! Logger
 		LoggerRef					log;	
@@ -86,6 +89,8 @@ namespace Reymenta
 		//! shader
 		gl::GlslProgRef				aShader;
 
-		vector<cmonudcb>			inputTextures;
+		static const int			MAX = 8;
+		char						mNewSenderName[256];						// new sender name 
+		Sender						inputTextures[MAX];
 	};
 }

@@ -37,7 +37,7 @@ UIRef UI::create(ParameterBagRef aParameterBag, ShadersRef aShadersRef, Textures
 
 void UI::setup()
 {
-	// load custom fonts (I do this once, in my UserInterface class)
+	// load custom fonts (I do this once, in my UI class)
 	// UI fonts
 	mParameterBag->mLabelFont = Font(loadResource(RES_HELVETICA_NEUE_REGULAR), 14 * 2);
 	mParameterBag->mSmallLabelFont = Font(loadResource(RES_HELVETICA_NEUE_REGULAR), 12 * 2);
@@ -59,6 +59,7 @@ void UI::setup()
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
 	mMiniControl = UIController::create("{ \"depth\":100, \"width\":1052, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\", \"height\":174 }");
+	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mMiniControl->setFont("icon", mParameterBag->mIconFont);
@@ -170,6 +171,7 @@ void UI::setupMiniControl()
 void UI::setupGlobal()
 {
 	gParams = UIController::create("{ \"x\":874, \"y\":456, \"depth\":300, \"width\":400, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	gParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	gParams->setFont("icon", mParameterBag->mIconFont);

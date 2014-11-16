@@ -33,9 +33,9 @@ namespace Reymenta
 		void						update();
 		void						draw();
 		void						shutdown();
-		char *						getSenderName(int index) { return senders[index].SenderName; };
-		unsigned int				getSenderWidth(int index) { return senders[index].width; };
-		unsigned int				getSenderHeight(int index) { return senders[index].height; };
+		//char *						getSenderName(int index) { return senders[index].SenderName; };
+		//unsigned int				getSenderWidth(int index) { return senders[index].width; };
+		//unsigned int				getSenderHeight(int index) { return senders[index].height; };
 		int							getSenderCount() { return nReceivers; };
 	private:
 		// Logger
@@ -56,10 +56,5 @@ namespace Reymenta
 		int MaxSize = 256;
 		int nSenders;
 		int nReceivers;
-
-		struct SENDER {
-			char SenderName[256];
-			unsigned int width, height;
-		} senders[MAX];
 	};
 }

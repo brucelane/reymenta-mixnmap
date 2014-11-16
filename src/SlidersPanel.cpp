@@ -46,6 +46,7 @@ SlidersPanelRef SlidersPanel::create(ParameterBagRef aParameterBag, ShadersRef a
 void SlidersPanel::setupParams()
 {
 	mParams = UIController::create("{ \"visible\":true, \"x\":1060, \"y\":0, \"height\":454, \"depth\":250, \"panelColor\":\"0x44282828\" }");
+	mParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	// set custom fonts for a UIController
 	mParams->setFont("label", mParameterBag->mLabelFont);
 	mParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);

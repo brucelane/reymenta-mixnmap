@@ -12,24 +12,16 @@ SpoutWrapper::SpoutWrapper(ParameterBagRef aParameterBag, TexturesRef aTextures)
 
 	bInitialized = false;
 	nReceivers = 0;
-	mNewSenderName[0] = NULL;
-	for (int i = 0; i < MAX; i++)
-	{
-		memcpy(&senders[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
-		senders[i].width = 320;
-		senders[i].height = 240;
-	}
+
 	log->logTimedString("SpoutWrapper constructor end");
 
 }
 
 void SpoutWrapper::update()
 {
-	//unsigned int width, height;
 	bool found = false;
 	nSenders = mSpoutReceivers[0].GetSenderCount();
 
-	//if (nSenders > nReceivers)
 	if (nSenders != nReceivers && nSenders > 0)
 	{
 		mNewSenderName[0] = NULL;// the name will be filled when the receiver connects to a sender
@@ -40,26 +32,18 @@ void SpoutWrapper::update()
 		for (int i = 0; i < nSenders; i++)
 		{
 			mSpoutReceivers[0].GetSenderName(i, &mNewSenderName[0], MaxSize);
-			memcpy(&senders[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
-			//fix 
+			memcpy(mTextures->getSenderName(i), mNewSenderName, strlen(mNewSenderName) + 1);
+			// fix for old beta of Spout, should not be put to true
 			mSpoutReceivers[i].SetDX9(mParameterBag->mUseDX9);
 			log->logTimedString("DX9:" + toString(mParameterBag->mUseDX9));
 
-			if (mSpoutReceivers[i].CreateReceiver(&senders[i].SenderName[0], mNewWidth, mNewHeight))//, true)) // true to find the active sender
+			if (mSpoutReceivers[i].CreateReceiver(mTextures->getSenderName(i), mNewWidth, mNewHeight))//, true)) // true to find the active sender
 			{
 				bInitialized = true;
+				mTextures->setSenderTextureSize(i, mNewWidth, mNewHeight);
 
-				// test for texture share compatibility
-				// bMemoryMode informs us whether Spout initialized for texture share or memory share
-				mParameterBag->mMemoryMode = mSpoutReceivers[i].GetMemoryShareMode();
-				log->logTimedString("GetMemoryShareMode:" + toString(mParameterBag->mMemoryMode));
-				mSpoutReceivers[i].SetMemoryShareMode(mParameterBag->mMemoryMode);
-
-				senders[i].width = mNewWidth;
-				senders[i].height = mNewHeight;
-				//mSenderNames.push_back(&senders[index].SenderName[0]);
 				log->logTimedString("create receiver name:");
-				log->logTimedString(&senders[i].SenderName[0]);
+				log->logTimedString(mTextures->getSenderName(i));
 				nReceivers++;
 				log->logTimedString("new receiver count:");
 				log->logTimedString(toString(nReceivers));
@@ -71,7 +55,6 @@ void SpoutWrapper::update()
 void SpoutWrapper::draw()
 {
 	unsigned int width, height;
-	//char txt[256];
 	int actualReceivers = 0;
 	gl::setMatricesWindow(getWindowSize());
 
@@ -84,11 +67,11 @@ void SpoutWrapper::draw()
 	{
 		for (int i = 0; i < nReceivers; i++)
 		{
-			if (mSpoutReceivers[i].ReceiveTexture(senders[i].SenderName, width, height, mTextures->getTexture(i)->getId(), mTextures->getTexture(i)->getTarget()))
+			if (mSpoutReceivers[i].ReceiveTexture(mTextures->getSenderName(i), width, height, mTextures->getSenderTexture(i)->getId(), mTextures->getSenderTexture(i)->getTarget()))
 			{
-				mTextures->setTextureSize(i, width, height);
-				senders[i].width = width;
-				senders[i].height = height;
+				mTextures->setSenderTextureSize(i, width, height);
+				//senders[i].width = width;
+				//senders[i].height = height;
 				actualReceivers++;
 			}
 			else
