@@ -42,6 +42,7 @@ namespace Reymenta
 		void show();
 		void hide();
 		//void addShader(std::string fullPath);
+		void setUpdateFrequency() { mParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh; };
 	private:
 		void setupParams();
 		void flipLibraryCurrentFbo(const bool &pressed);

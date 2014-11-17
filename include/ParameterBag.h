@@ -53,6 +53,7 @@ namespace Reymenta {
 		bool						mShowUI;
 		bool						mShowConsole;
 		int							mMainDisplayWidth;
+		int							mMainDisplayHeight;
 		int							mRenderX;
 		int							mRenderY;
 		int							mDisplayCount;
@@ -85,7 +86,7 @@ namespace Reymenta {
 		bool						mFlipFbo;
 		int							mWarpCount;
 		int							mCurrentPreviewFboIndex;
-		int							mWarpFboIndex, mMixFboIndex;
+		int							mMixFboIndex;
 		int							mLeftFboIndex, mRightFboIndex;
 		int							mLeftFragIndex, mRightFragIndex, mPreviewFragIndex;
 		float						iZoomLeft, iZoomRight;

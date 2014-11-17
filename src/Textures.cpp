@@ -29,8 +29,8 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	{	
 		// create inputTextures and init with static image
 		memcpy(&inputTextures[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
-		inputTextures[i].width = 320;
-		inputTextures[i].height = 240;
+		inputTextures[i].width = mParameterBag->mFboWidth;
+		inputTextures[i].height = mParameterBag->mFboHeight;
 		// TODO: replace with 0.jpg to 7.jpg if exists or load from settings file
 		inputTextures[i].texture = img;
 		// init mixTextures
@@ -118,7 +118,41 @@ void Textures::flipMixFbo(bool flip)
 	//mixTextures[0].setFlipped(flip);
 	mParameterBag->mOriginUpperLeft = flip;
 }
+// Render the color cube into the FBO
+void Textures::renderToFbo()
+{
+	// this will restore the old framebuffer binding when we leave this function
+	// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
+	// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
+	gl::ScopedFramebuffer fbScp(mFbos[3]);
+	// clear out the FBO with blue
+	gl::clear(Color(0.25, 0.5f, 1.0f));
 
+	// setup the viewport to match the dimensions of the FBO
+	gl::ScopedViewport scpVp(ivec2(0), mFbos[3]->getSize());
+
+	// setup our camera to render the torus scene
+	CameraPersp cam(mFbos[3]->getWidth(), mFbos[3]->getHeight(), 60.0f);
+	cam.setPerspective(60, mFbos[3]->getAspectRatio(), 1, 1000);
+	cam.lookAt(vec3(2.8f, 1.8f, -2.8f), vec3(0));
+	gl::setMatrices(cam);
+
+	// set the modelview matrix to reflect our current rotation
+	gl::setModelMatrix(mRotation);
+
+	// render the color cube
+	gl::ScopedGlslProg shaderScp(gl::getStockShader(gl::ShaderDef().color()));
+	gl::color(Color(1.0f, 0.5f, 0.25f));
+	gl::drawColorCube(vec3(0), vec3(2.2f));
+	gl::color(Color::white());
+}
+void Textures::update()
+{
+	// Rotate the torus by .06 radians around an arbitrary axis
+	mRotation *= rotate(0.06f, normalize(vec3(0.16666f, 0.333333f, 0.666666f)));
+	// render into our FBO
+	renderToFbo();
+}
 void Textures::draw()
 {
 	/**********************************************
@@ -127,11 +161,14 @@ void Textures::draw()
 	// start of mLibraryFbos[mParameterBag->mLeftFboIndex]
 	mFbos[mParameterBag->mLeftFboIndex]->bindFramebuffer();
 	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp0(ivec2(0), mFbos[mParameterBag->mLeftFboIndex]->getSize());
+	//gl::ScopedViewport scpVp0(ivec2(0), mFbos[mParameterBag->mLeftFboIndex]->getSize());
+	gl::pushMatrices();
+	gl::pushViewport(0, 0, mParameterBag->mFboWidth, mParameterBag->mFboHeight);
 
 	// clear the FBO
 	gl::clear(Color(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
-	gl::setMatricesWindow(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight, mParameterBag->mOriginUpperLeft);
+	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight);
+	//gl::setMatricesWindow(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight, mParameterBag->mOriginUpperLeft);
 
 	aShader = mShaders->getShader(mParameterBag->mLeftFragIndex);
 	aShader->bind();
@@ -197,19 +234,23 @@ void Textures::draw()
 	{
 		getTexture(m)->unbind();
 	}
-
+	gl::popViewport();
+	gl::popMatrices();
 	//aShader->unbind();
-	inputTextures[mParameterBag->iChannels[6]].texture = mFbos[mParameterBag->mLeftFboIndex]->getColorTexture();
+	inputTextures[mParameterBag->iChannels[0]].texture = mFbos[mParameterBag->mLeftFboIndex]->getColorTexture();
 	// end of mLibraryFbos[mParameterBag->mLeftFboIndex]
 
 	// start of mLibraryFbos[mParameterBag->mRightFboIndex]
 	mFbos[mParameterBag->mRightFboIndex]->bindFramebuffer();
 	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp1(ivec2(0), mFbos[mParameterBag->mRightFboIndex]->getSize());
+	//gl::ScopedViewport scpVp1(ivec2(0), mFbos[mParameterBag->mRightFboIndex]->getSize());
+	gl::pushMatrices();
+	gl::pushViewport(0, 0, mParameterBag->mFboWidth, mParameterBag->mFboHeight);
 
 	// clear the FBO
 	gl::clear(Color(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
-	gl::setMatricesWindow(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight, mParameterBag->mOriginUpperLeft);
+	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight);
+	//gl::setMatricesWindow(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight, mParameterBag->mOriginUpperLeft);
 
 	aShader = mShaders->getShader(mParameterBag->mRightFragIndex);
 	aShader->bind();
@@ -275,9 +316,11 @@ void Textures::draw()
 	{
 		getTexture(m)->unbind();
 	}
+	gl::popViewport();
+	gl::popMatrices();
 
 	//aShader->unbind();
-	inputTextures[mParameterBag->iChannels[7]].texture = mFbos[mParameterBag->mRightFboIndex]->getColorTexture();
+	inputTextures[mParameterBag->iChannels[1]].texture = mFbos[mParameterBag->mRightFboIndex]->getColorTexture();
 
 	// end of mLibraryFbos[mParameterBag->mRightFboLibraryIndex]
 
@@ -292,11 +335,14 @@ void Textures::draw()
 	mFbos[0]->bindFramebuffer();
 
 	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp2(ivec2(0), mFbos[0]->getSize());
+	//gl::ScopedViewport scpVp2(ivec2(0), mFbos[0]->getSize());
+	gl::pushMatrices();
+	gl::pushViewport(0, 0, mParameterBag->mFboWidth, mParameterBag->mFboHeight);
 
 	// clear the FBO
 	gl::clear();
-	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight, mParameterBag->mOriginUpperLeft);
+	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight);
+	//gl::setMatricesWindow(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight, mParameterBag->mOriginUpperLeft);
 
 	aShader = mShaders->getMixShader();
 	aShader->bind();
@@ -343,9 +389,36 @@ void Textures::draw()
 
 	inputTextures[mParameterBag->iChannels[0]].texture->unbind();
 	inputTextures[mParameterBag->iChannels[1]].texture->unbind();
+	gl::popViewport();
+	gl::popMatrices();
 
 	//sTextures[2] = mFbos[0]->getColorTexture();
 	mixTextures[0] = mFbos[0]->getColorTexture();
+
+	// from FBOBasic sample
+	// clear the window to gray
+	gl::clear(Color(0.35f, 0.35f, 0.35f));
+
+	// setup our camera to render the cube
+	CameraPersp cam(getWindowWidth(), getWindowHeight(), 60.0f);
+	cam.setPerspective(60, getWindowAspectRatio(), 1, 1000);
+	cam.lookAt(vec3(2.6f, 1.6f, -2.6f), vec3(0));
+	gl::setMatrices(cam);
+
+	// use the scene we rendered into the FBO as a texture
+	mFbos[3]->bindTexture();
+
+	// draw a cube textured with the FBO
+	{
+		gl::ScopedGlslProg shaderScp(gl::getStockShader(gl::ShaderDef().texture()));
+		gl::drawCube(vec3(0), vec3(2.2f));
+	}
+
+	// show the FBO color texture in the upper left corner
+	gl::setMatricesWindow(toPixels(getWindowSize()));
+	gl::draw(mFbos[3]->getColorTexture(), Rectf(0, 0, 128, 128));
+	// and draw the depth texture adjacent
+	//gl::draw(mFbos[3]->getDepthTexture(), Rectf(128, 0, 256, 128));
 }
 
 void Textures::shutdown()

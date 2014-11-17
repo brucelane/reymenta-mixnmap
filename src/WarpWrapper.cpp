@@ -130,11 +130,12 @@ void WarpWrapper::draw()
 		// create a readable reference to our warp, to prevent code like this: (*itr)->begin();
 		WarpRef warp(*itr);
 
-		if (i < mParameterBag->mWarpCount)
-		{
+		//if (i < mParameterBag->mWarpCount)
+		//{
 			warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
+			//warp->draw(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 			//warp->draw(mTextures->getTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getSenderTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
-		}
+		//}
 
 		i++;
 	}

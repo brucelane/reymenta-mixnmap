@@ -79,7 +79,6 @@ void SpoutWrapper::draw()
 				mSpoutReceivers[i].ReleaseReceiver();
 			}
 		}
-		mTextures->draw();
 	}
 	nReceivers = actualReceivers;
 }

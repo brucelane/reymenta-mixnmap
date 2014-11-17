@@ -11,13 +11,15 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	getWindowsResolution();
 #ifdef _DEBUG
 	// debug mode
-	settings->setWindowSize(mParameterBag->mRenderWidth / 2, mParameterBag->mRenderHeight / 2);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX -mParameterBag->mRenderWidth / 2, mParameterBag->mRenderY + 50));
+	settings->setWindowSize(mParameterBag->mMainDisplayWidth/2, mParameterBag->mMainDisplayHeight - 200);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth/1.9, mParameterBag->mRenderY + 50));
 #else
-	settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mRenderWidth, mParameterBag->mRenderY));
+	settings->setWindowSize(mParameterBag->mMainDisplayWidth, mParameterBag->mMainDisplayHeight);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY));
+	setBorderless();
 #endif  // _DEBUG
 	settings->setResizable(true); // allowed for a receiver
+	// set a high frame rate to disable limitation
 	settings->setFrameRate(1000.0f);
 	if (mParameterBag->mShowConsole) settings->enableConsoleWindow();
 
@@ -29,6 +31,7 @@ void MixnMapApp::getWindowsResolution()
 	mParameterBag->mDisplayCount = 0;
 	// Display sizes
 	mParameterBag->mMainDisplayWidth = Display::getMainDisplay()->getWidth();
+	mParameterBag->mMainDisplayHeight = Display::getMainDisplay()->getHeight();
 	mParameterBag->mRenderX = mParameterBag->mMainDisplayWidth;
 	mParameterBag->mRenderY = 0;
 	for (auto display : Display::getDisplays())
@@ -69,6 +72,8 @@ void MixnMapApp::setup()
 	// instanciate the warp wrapper class
 	mWarpings = WarpWrapper::create(mParameterBag, mTextures, mShaders);
 
+	mTimer = 0.0f;
+	mUI->tapTempo(true);
 
 #ifdef _DEBUG
 	// debug mode
@@ -102,6 +107,7 @@ void MixnMapApp::shutdown()
 		mTextures->shutdown();
 		mUI->shutdown();
 	}
+
 }
 void MixnMapApp::fileDrop(FileDropEvent event)
 {
@@ -153,21 +159,28 @@ void MixnMapApp::saveThumb()
 }
 void MixnMapApp::update()
 {
-	/*mParameterBag->iChannelTime[0] = getElapsedSeconds();
+	if (mParameterBag->iGreyScale)
+	{
+		mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
+		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
+	}
+	mParameterBag->iChannelTime[0] = getElapsedSeconds();
 	mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
 	mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
 	mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
 	//
 	if (mParameterBag->mUseTimeWithTempo)
 	{
-	mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
+		mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
 	}
 	else
 	{
-	mParameterBag->iGlobalTime = getElapsedSeconds();
+		mParameterBag->iGlobalTime = getElapsedSeconds();
 	}
-	mOSC->update();*/
-	mUI->update();
+	mOSC->update();
+	mAudio->update();
+	mTextures->update();
+	if (mParameterBag->mShowUI) mUI->update();
 	if (mParameterBag->mWindowToCreate > 0)
 	{
 		// try to create the window only once
@@ -189,18 +202,32 @@ void MixnMapApp::update()
 
 void MixnMapApp::drawRender()
 {
-	//! clear the window and set the drawing color to white
+	//! clear the window
 	gl::clear();
-	//! draw Spout received textures
-	mSpout->draw();
-	//TODO? gl::setMatricesWindow(getWindowSize());
-	//TODO? gl::setViewport(getWindowBounds());
+	gl::pushMatrices();
+	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	gl::pushViewport(0, 0, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	gl::enableAlphaBlending();
 	mWarpings->draw();
+	gl::disableAlphaBlending();
+	gl::popViewport();
+	gl::popMatrices();
 }
 void MixnMapApp::drawMain()
 {
-	mUI->draw();
+	//! clear the window
+	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
+	gl::pushMatrices();
+	gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
+	gl::pushViewport(0, 0, getWindowWidth(), getWindowHeight());
+	//! draw Spout received textures
+	mSpout->draw();
+	mTextures->draw();
+	gl::draw(mTextures->getFboTexture(mParameterBag->mMixFboIndex));
+	if (mParameterBag->mShowUI) mUI->draw();
 	gl::disableAlphaBlending();
+	gl::popViewport();
+	gl::popMatrices();
 }
 void MixnMapApp::createRenderWindow()
 {
@@ -242,7 +269,6 @@ void MixnMapApp::deleteRenderWindows()
 void MixnMapApp::resize()
 {
 	mWarpings->resize();
-
 }
 
 void MixnMapApp::mouseMove(MouseEvent event)
@@ -253,13 +279,11 @@ void MixnMapApp::mouseMove(MouseEvent event)
 void MixnMapApp::mouseDown(MouseEvent event)
 {
 	mWarpings->mouseDown(event);
-
 }
 
 void MixnMapApp::mouseDrag(MouseEvent event)
 {
 	mWarpings->mouseDrag(event);
-
 }
 
 void MixnMapApp::mouseUp(MouseEvent event)

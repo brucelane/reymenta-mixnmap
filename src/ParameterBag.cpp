@@ -103,6 +103,7 @@ void ParameterBag::reset()
 	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
 	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
 	mPreviewFragXY = vec2(0.0, 0.0);
+	mWindowToCreate = 0;
 
 	// spout
 	mMemoryMode = false;
@@ -159,22 +160,21 @@ void ParameterBag::reset()
 	iTransition = 0;
 	iAnim = 0.0;
 	mTransitionDuration = 1.0f;
-	mWindowToCreate = 0;
+
 
 	// fbo
 	mFlipFbo = false;
 	mFboWidth = 640;
 	mFboHeight = 360;
-	mPreviewFboWidth = mFboWidth / 4;
-	mPreviewFboHeight = mFboHeight / 4;
+	mPreviewFboWidth = mFboWidth / 2;// 4;
+	mPreviewFboHeight = mFboHeight / 2;//4;
 	mPreviewWidth = 156;
 	mPreviewHeight = 88;
 	mOriginUpperLeft = true;
 	mCurrentPreviewFboIndex = 0;
 	mMixFboIndex = 1;
-	mWarpFboIndex = 3;
-	mLeftFboIndex = 6;
-	mRightFboIndex = 7;
+	mLeftFboIndex = 2;
+	mRightFboIndex = 3;
 
 	mPreviewFragIndex = 0;
 	mLeftFragIndex = 0;
@@ -194,7 +194,7 @@ void ParameterBag::reset()
 
 	for (int a = 0; a < 8; a++)
 	{
-		iChannels[a] = 0;// a;
+		iChannels[a] = a;
 		iWarpFboChannels[a] = a;
 	}
 

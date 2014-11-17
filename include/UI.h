@@ -100,7 +100,10 @@ namespace Reymenta
 
 		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer, labelInfo;
 		MinimalUI::UIElementRef				buttonChannels;
-		MinimalUI::UIElementRef				buttonLayer[8];
+		MinimalUI::UIElementRef				buttonTextures[8];
+		MinimalUI::UIElementRef				buttonFbo[8];
+		MinimalUI::UIElementRef				buttonMix[8];
+		MinimalUI::UIElementRef				labelTextures[8];
 		MinimalUI::UIElementRef				fpsMvg, volMvg, tempoMvg;
 		MinimalUI::UIElementRef				sliderAudioMul;
 		void toggleVisibility() { mVisible ? hide() : show(); }
@@ -112,12 +115,13 @@ namespace Reymenta
 		void setupGlobal();
 		void setupMiniControl();
 		void setupSliders();
+		void setupTextures();
 
 		void mouseDown( ci::app::MouseEvent &event );
 		void keyDown( ci::app::KeyEvent &event );
 
 		// windows mgmt
-		MinimalUI::UIControllerRef mMiniControl, gParams;
+		MinimalUI::UIControllerRef mMiniControl, gParams, tParams;
 		// panels
 		SlidersPanelRef				mSlidersPanel;
 		WarpPanelRef				mWarpPanel;

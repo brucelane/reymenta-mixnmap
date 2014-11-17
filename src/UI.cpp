@@ -49,6 +49,7 @@ void UI::setup()
 	setupGlobal();
 	setupMiniControl();
 	setupSliders();
+	setupTextures();
 
 	// panels
 	mWarpPanel = WarpPanel::create(mParameterBag, mTextures, mShaders);
@@ -58,7 +59,7 @@ void UI::setup()
 }
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
-	mMiniControl = UIController::create("{ \"depth\":100, \"width\":1052, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\", \"height\":174 }");
+	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":1052, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\", \"height\":174 }");
 	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -93,12 +94,6 @@ void UI::setupMiniControl()
 	// Audio
 	volMvg = mMiniControl->addMovingGraphButton("audio in", &mParameterBag->maxVolume, std::bind(&UI::useLineIn, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"width\":48.0, \"min\":0.0, \"max\":500.0 }");
 	sliderAudioMul = mMiniControl->addSlider("mul", &mParameterBag->mAudioMultFactor, "{ \"min\":0.01, \"max\":10.0, \"handleVisible\":false, \"width\":76, \"clear\":false }");//\"vertical\":true,
-	// Textures select/layers
-	// Button Group
-	for (int i = 0; i < mTextures->getTextureCount(); i++)
-	{
-		buttonLayer[i] = mMiniControl->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
-	}
 
 	//labelLayer = mMiniControl->addLabel("iChan0", "{ \"clear\":false,\"width\":48 }");// TODO height not implemented OK\"clear\":false, \"backgroundImage\":\"0.jpg\"
 	mMiniControl->addButton("Sav", std::bind(&UI::saveSettings, this, std::placeholders::_1), "{ \"clear\":false }");
@@ -192,6 +187,28 @@ void UI::setupGlobal()
 
 	labelError = gParams->addLabel("no error", "{ \"clear\":false, \"width\":370, \"nameColor\":\"0xFFAA0000\" }");
 }
+void UI::setupTextures()
+{
+	tParams = UIController::create("{ \"x\":0, \"y\":156, \"depth\":300, \"width\":200, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
+	tParams->setFont("label", mParameterBag->mLabelFont);
+	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
+	tParams->setFont("icon", mParameterBag->mIconFont);
+	tParams->setFont("header", mParameterBag->mHeaderFont);
+	tParams->setFont("body", mParameterBag->mBodyFont);
+	tParams->setFont("footer", mParameterBag->mFooterFont);
+	mPanels.push_back(tParams);
+	// Textures select
+	// Button Group
+	for (int i = 0; i < mTextures->getTextureCount(); i++)
+	{
+		buttonTextures[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
+		buttonFbo[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
+		buttonMix[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
+		labelTextures[i] = tParams->addLabel(toString(i), "{ \"width\":176 }");
+	}
+
+}
 void UI::setupSliders()
 {
 	mSlidersPanel = SlidersPanel::create(mParameterBag, mShaders, mTextures, mWindow);
@@ -200,6 +217,10 @@ void UI::setupSliders()
 void UI::setUIRefresh(const int &aFrames, const bool &pressed)
 {
 	mParameterBag->mUIRefresh = aFrames;
+	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
+	gParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
+	tParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
+	mLibraryPanel->setUpdateFrequency();
 }
 
 void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
@@ -479,7 +500,10 @@ void UI::update()
 
 			for (int i = 0; i < mTextures->getTextureCount(); i++)
 			{
-				buttonLayer[i]->setBackgroundTexture(mTextures->getTexture(i));
+				buttonTextures[i]->setBackgroundTexture(mTextures->getTexture(i));
+				buttonFbo[i]->setBackgroundTexture(mTextures->getFboTexture(i));
+				buttonMix[i]->setBackgroundTexture(mTextures->getMixTexture(i));
+				labelTextures[i]->setName(mTextures->getSenderName(i));
 			}
 		}
 	}

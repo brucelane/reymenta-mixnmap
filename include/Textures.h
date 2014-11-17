@@ -18,17 +18,19 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/Rand.h"
-#include "Logger.h"
 #include "cinder/Utilities.h"
 #include "cinder/Filesystem.h"
 #include "cinder/Capture.h"
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/Camera.h"
+#include "cinder/gl/Shader.h"
 // parameters
 #include "ParameterBag.h"
 // shaders
 #include "Shaders.h"
+// log to file
+#include "Logger.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -67,10 +69,13 @@ namespace Reymenta
 
 		//! main draw for fbos and textures
 		void						draw();
+		void						update();
 		void						shutdown();
 		void						setSenderTextureSize(int index, int width, int height);
 		void						flipMixFbo(bool flip);
 		char*						getSenderName(int index) { return &inputTextures[index].SenderName[0]; };
+		void						renderToFbo();
+
 	private:
 		//! Logger
 		LoggerRef					log;	
@@ -96,6 +101,7 @@ namespace Reymenta
 		unsigned char				dTexture[1024];
 		//! inputTextures: array of Spout received textures or images or audio 
 		Sender						inputTextures[MAX];
+		mat4				mRotation;
 
 	};
 }
