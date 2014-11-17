@@ -60,6 +60,8 @@ void MixnMapApp::setup()
 	mSpout = SpoutWrapper::create(mParameterBag, mTextures);
 	// instanciate the OSC class
 	mOSC = OSC::create(mParameterBag);
+	// instanciate the audio class
+	mAudio = AudioWrapper::create(mParameterBag, mTextures);
 	windowManagement();
 	// Setup the MinimalUI user interface
 	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow);
@@ -101,7 +103,54 @@ void MixnMapApp::shutdown()
 		mUI->shutdown();
 	}
 }
+void MixnMapApp::fileDrop(FileDropEvent event)
+{
+	bool loaded = false;
+	string ext = "";
+	// use the last of the dropped files
+	boost::filesystem::path mPath = event.getFile(event.getNumFiles() - 1);
+	string mFile = mPath.string();
+	if (mFile.find_last_of(".") != std::string::npos) ext = mFile.substr(mFile.find_last_of(".") + 1);
+	//mParameterBag->currentSelectedIndex = (int)(event.getX() / 80);//76+margin mParameterBag->mPreviewWidth);
+	log->logTimedString(mFile + " dropped, currentSelectedIndex:" + toString(mParameterBag->currentSelectedIndex) + " x: " + toString(event.getX()) + " mPreviewWidth: " + toString(mParameterBag->mPreviewWidth));
 
+	if (ext == "wav" || ext == "mp3")
+	{
+		mAudio->loadWaveFile(mFile);
+	}
+	else if (ext == "png" || ext == "jpg")
+	{
+		//mTextures->loadImageFile(mParameterBag->currentSelectedIndex, mFile);
+		mTextures->setTextureFromFile(1, mFile);
+	}
+	else if (!loaded && ext == "glsl")
+	{
+		//do not try to load by other ways
+		loaded = true;
+		//mShaders->incrementPreviewIndex();
+		//mUserInterface->mLibraryPanel->addShader(mFile);
+		if (mShaders->loadPixelFragmentShader(mFile))
+		{
+			mParameterBag->controlValues[13] = 1.0f;
+			//TODO timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+		}
+	}
+
+}
+void MixnMapApp::saveThumb()
+{
+	string filename = mShaders->getFragFileName() + ".jpg";
+	try
+	{
+		fs::path path = getAssetPath("") / "thumbs" / filename;
+		//TODO writeImage(path, mTextures->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
+		log->logTimedString("saved:" + filename);
+	}
+	catch (const std::exception &e)
+	{
+		log->logTimedString("unable to save:" + filename + string(e.what()));
+	}
+}
 void MixnMapApp::update()
 {
 	/*mParameterBag->iChannelTime[0] = getElapsedSeconds();

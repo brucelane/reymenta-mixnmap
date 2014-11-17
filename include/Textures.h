@@ -53,16 +53,17 @@ namespace Reymenta
 		{
 			return shared_ptr<Textures>(new Textures(aParameterBag, aShadersRef));
 		}
-		void						setTextureFromFile(int index, string fileName);
 		//! Returns Texture at index
 		ci::gl::TextureRef			getTexture(int index);
 		ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
-		int							getTextureCount() { return sTextures.size(); };
+		int							getTextureCount() { return MAX; };
 		ci::gl::TextureRef			getSenderTexture(int index);
+		// from audio
+		void						setAudioTexture(unsigned char *signal);
 
 		//! load image file as texture at index
-		void						loadImageFile(int index, string aFile);
+		void						setTextureFromFile(int index, string fileName);
 
 		//! main draw for fbos and textures
 		void						draw();
@@ -75,7 +76,7 @@ namespace Reymenta
 		LoggerRef					log;	
 		// vectors of textures
 		//! sTextures: Spout received textures
-		vector<ci::gl::TextureRef>	sTextures;
+		//vector<ci::gl::TextureRef>	sTextures;
 		//! mixTextures: mix of 2 textures from sTextures or shaders
 		vector<ci::gl::TextureRef>	mixTextures;
 		//! check if valid index
@@ -90,7 +91,11 @@ namespace Reymenta
 		gl::GlslProgRef				aShader;
 
 		static const int			MAX = 8;
-		char						mNewSenderName[256];						// new sender name 
+		char						mNewSenderName[256]; // new sender name 
+		//! audio texture
+		unsigned char				dTexture[1024];
+		//! inputTextures: array of Spout received textures or images or audio 
 		Sender						inputTextures[MAX];
+
 	};
 }

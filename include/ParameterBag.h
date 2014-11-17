@@ -69,7 +69,7 @@ namespace Reymenta {
 		bool						mUseLineIn;
 		float						mAudioMultFactor;
 		float						iFreqs[4];
-
+		int							mAudioTextureIndex;
 		// Textures
 		bool						mOriginUpperLeft;
 		int							currentSelectedIndex;

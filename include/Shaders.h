@@ -31,7 +31,11 @@ namespace Reymenta
 		}
 
 		string getFragError();
+		gl::GlslProgRef getShader(int aIndex) { return mFragmentShaders[aIndex]; };
 		gl::GlslProgRef getMixShader() { return mMixShader; };
+		bool loadPixelFragmentShader(string aFilePath);
+		string getFragFileName() { return mFragFileName; };
+		bool setGLSLString(string pixelFrag);
 
 		/*void loadFragmentShader(boost::filesystem::path aFilePath);
 		string getFileName(string aFilePath);
@@ -42,9 +46,19 @@ namespace Reymenta
 		LoggerRef					log;	
 		string						mixFileName;
 		string						mError;
-		// parameters
+		//! name of the loaded shader file
+		string						mFragFileName;
+		//! include shader lines for header of loaded files
+		std::string					header;
+		// current frag string
+		string						currentFrag;
+		//! vector of fragment shaders
+		vector<gl::GlslProgRef>		mFragmentShaders;
+		bool						validFrag;
+
+		//! parameters
 		ParameterBagRef				mParameterBag;
-		// mix shader
+		//! mix shader
 		gl::GlslProgRef mMixShader;
 	};
 }

@@ -127,6 +127,7 @@ void ParameterBag::reset()
 	mAudioMultFactor = 1.0;
 	mUseLineIn = true;
 	maxVolume = 0.0f;
+	mAudioTextureIndex = 0;
 	mData = new float[1024];
 	for (int i = 0; i < 1024; i++)
 	{

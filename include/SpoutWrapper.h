@@ -33,14 +33,10 @@ namespace Reymenta
 		void						update();
 		void						draw();
 		void						shutdown();
-		//char *						getSenderName(int index) { return senders[index].SenderName; };
-		//unsigned int				getSenderWidth(int index) { return senders[index].width; };
-		//unsigned int				getSenderHeight(int index) { return senders[index].height; };
 		int							getSenderCount() { return nReceivers; };
 	private:
 		// Logger
 		LoggerRef					log;
-
 		// parameters
 		ParameterBagRef				mParameterBag;
 		// textures

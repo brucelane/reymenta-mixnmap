@@ -115,6 +115,7 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\AudioWrapper.h" />
     <ClInclude Include="..\include\LibraryPanel.h" />
     <ClInclude Include="..\include\Logger.h" />
     <ClInclude Include="..\include\MixnMapApp.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\AudioWrapper.cpp" />
     <ClCompile Include="..\src\LibraryPanel.cpp" />
     <ClCompile Include="..\src\Logger.cpp" />
     <ClCompile Include="..\src\MixnMapApp.cpp" />

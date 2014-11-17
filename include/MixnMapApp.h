@@ -24,10 +24,7 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
-
-#include "WarpBilinear.h"
-#include "WarpPerspective.h"
-#include "WarpPerspectiveBilinear.h"
+#include "cinder/Timeline.h"
 
 // window manager
 #include "WindowMngr.h"
@@ -45,6 +42,8 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "OSCWrapper.h"
 // warps
 #include "WarpWrapper.h"
+// audio
+#include "AudioWrapper.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -67,6 +66,8 @@ public:
 
 	void keyDown(KeyEvent event);
 	void keyUp(KeyEvent event);
+	//! allow file drop of images, shaders
+	void fileDrop(FileDropEvent event);
 
 	void updateWindowTitle();
 private:
@@ -86,6 +87,10 @@ private:
 	void						showCodeCallback();
 	void						createUIWindow();
 
+	//! timeline to save thumb for shader
+	Anim<float>					mTimer;
+	void						saveThumb();
+
 	// minimalUI
 	UIRef						mUI;
 	// parameters
@@ -102,6 +107,8 @@ private:
 	OSCRef						mOSC;
 	// warps
 	WarpWrapperRef				mWarpings;
+	// audio
+	AudioWrapperRef				mAudio;
 
 	bool						newLogMsg;
 	string						mLogMsg;

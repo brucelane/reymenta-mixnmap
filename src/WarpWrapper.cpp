@@ -132,8 +132,8 @@ void WarpWrapper::draw()
 
 		if (i < mParameterBag->mWarpCount)
 		{
-			//warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
-			warp->draw(mTextures->getTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getSenderTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
+			warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
+			//warp->draw(mTextures->getTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getSenderTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 		}
 
 		i++;
