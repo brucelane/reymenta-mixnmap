@@ -10,6 +10,7 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 	log->logTimedString("Shaders constructor");
 	header = loadString(loadAsset("shaders/shadertoy.inc"));
 	defaultVertexShader = loadString(loadAsset("shaders/default.vert"));
+	defaultFragmentShader = loadString(loadAsset("shaders/default.glsl"));
 	validFrag = false;
 
 	//load mix shader
@@ -125,7 +126,13 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 		mError = string(e.what());
 		log->logTimedString(mFile + " unable to load shader:" + string(e.what()));
 	}
+	if (!rtn)
+	{
+		// error load default fragment shader
+		std::string fs = header + defaultFragmentShader;
+		rtn = setGLSLString(fs);
 
+	}
 	return rtn;
 }
 bool Shaders::setGLSLString(string pixelFrag)

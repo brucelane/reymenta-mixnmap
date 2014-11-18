@@ -47,8 +47,10 @@ namespace Reymenta
 		string						mFragFileName;
 		//! include shader lines for header of loaded files
 		std::string					header;
-		//! vertex shader string
+		//! default vertex shader string
 		std::string					defaultVertexShader;
+		//! default fragment shader string
+		std::string					defaultFragmentShader;
 		// current frag string
 		string						currentFrag;
 		//! vector of fragment shaders

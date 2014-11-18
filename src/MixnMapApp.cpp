@@ -3,7 +3,7 @@
 void MixnMapApp::prepareSettings(Settings *settings)
 {
 	// instanciate the logger class
-	log = Logger::create("MixnMaplog.txt");
+	log = Logger::create("MixnMap.txt");
 	log->logTimedString("start");
 	mLogMsg = "";
 	// parameters
