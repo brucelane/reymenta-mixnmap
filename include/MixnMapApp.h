@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2013, Paul Houx - All rights reserved.
+Copyright (c) 2010-2014, Paul Houx - All rights reserved.
 This code is intended for use with the Cinder C++ library: http://libcinder.org
 
 This file is part of Cinder-Warping.
@@ -18,13 +18,20 @@ You should have received a copy of the GNU General Public License
 along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cinder/ImageIo.h"
-#include "cinder/Rand.h"
 #include "cinder/app/AppNative.h"
 #include "cinder/app/RendererGl.h"
+#include "cinder/gl/GlslProg.h"
+#include "cinder/gl/Batch.h"
+#include "cinder/gl/Context.h"
+#include "cinder/ImageIo.h"
+#include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/Timeline.h"
+
+#include "WarpBilinear.h"
+#include "WarpPerspective.h"
+#include "WarpPerspectiveBilinear.h"
 
 // window manager
 #include "WindowMngr.h"
@@ -41,7 +48,7 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 // OSC
 #include "OSCWrapper.h"
 // warps
-#include "WarpWrapper.h"
+//#include "WarpWrapper.h"
 // audio
 #include "AudioWrapper.h"
 
@@ -70,6 +77,7 @@ public:
 	void fileDrop(FileDropEvent event);
 
 	void updateWindowTitle();
+
 private:
 	// windows
 	WindowRef					mMainWindow;
@@ -106,7 +114,11 @@ private:
 	// osc
 	OSCRef						mOSC;
 	// warps
-	WarpWrapperRef				mWarpings;
+	//WarpWrapperRef				mWarpings;
+	const string warpsFileName = "MixnMapWarps.xml";
+	WarpList					mWarps;
+	Area						mSrcArea;
+
 	// audio
 	AudioWrapperRef				mAudio;
 

@@ -1,4 +1,6 @@
-#version 120
+#version 150 core
+
+// Shader Inputs
 uniform vec3        iResolution;         	// viewport resolution (in pixels)
 uniform float       iChannelTime[4];     	// channel playback time (in seconds)
 uniform vec3        iChannelResolution[4];	// channel resolution (in pixels)

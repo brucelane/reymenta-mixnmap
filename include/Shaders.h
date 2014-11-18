@@ -5,7 +5,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "cinder/Utilities.h"
 #include "cinder/Timeline.h"
-
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include "Resources.h"
 // log
 #include "Logger.h"
@@ -29,18 +29,15 @@ namespace Reymenta
 		{
 			return shared_ptr<Shaders>( new Shaders( aParameterBag ) );
 		}
-
+		void update();
+		void resize();
 		string getFragError();
 		gl::GlslProgRef getShader(int aIndex) { return mFragmentShaders[aIndex]; };
 		gl::GlslProgRef getMixShader() { return mMixShader; };
-		bool loadPixelFragmentShader(string aFilePath);
+		bool loadPixelFragmentShader(const fs::path &fragment_path);
 		string getFragFileName() { return mFragFileName; };
 		bool setGLSLString(string pixelFrag);
 
-		/*void loadFragmentShader(boost::filesystem::path aFilePath);
-		string getFileName(string aFilePath);
-		string getNewFragFileName( string aFilePath);
-		string getFragStringFromFile( string fileName );*/
 	private:
 		// Logger
 		LoggerRef					log;	
@@ -50,6 +47,8 @@ namespace Reymenta
 		string						mFragFileName;
 		//! include shader lines for header of loaded files
 		std::string					header;
+		//! vertex shader string
+		std::string					defaultVertexShader;
 		// current frag string
 		string						currentFrag;
 		//! vector of fragment shaders

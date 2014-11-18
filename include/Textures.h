@@ -25,6 +25,8 @@
 #include "cinder/gl/Fbo.h"
 #include "cinder/Camera.h"
 #include "cinder/gl/Shader.h"
+#include "cinder/gl/VboMesh.h"
+
 // parameters
 #include "ParameterBag.h"
 // shaders
@@ -101,7 +103,8 @@ namespace Reymenta
 		unsigned char				dTexture[1024];
 		//! inputTextures: array of Spout received textures or images or audio 
 		Sender						inputTextures[MAX];
-		mat4				mRotation;
+		//! mesh for shader drawing
+		gl::VboMeshRef				mMesh;
 
 	};
 }

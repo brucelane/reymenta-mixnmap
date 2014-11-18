@@ -70,8 +70,28 @@ void MixnMapApp::setup()
 	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow);
 	mUI->setup();
 	// instanciate the warp wrapper class
-	mWarpings = WarpWrapper::create(mParameterBag, mTextures, mShaders);
+	//mWarpings = WarpWrapper::create(mParameterBag, mTextures, mShaders);
 
+	// initialize warps
+	log->logTimedString("Loading MixnMapWarps.xml");
+	fs::path settings = getAssetPath("") / warpsFileName;
+	if (fs::exists(settings))
+	{
+		// load warp settings from file if one exists
+		mWarps = Warp::readSettings(loadFile(settings));
+	}
+	else
+	{
+		// otherwise create a warp from scratch
+		mWarps.push_back(WarpPerspectiveBilinear::create());
+	}
+	mSrcArea = mTextures->getTexture(0)->getBounds();
+	// adjust the content size of the warps
+	Warp::setSize(mWarps, mTextures->getTexture(0)->getSize());
+	log->logTimedString("Warps count " + toString(mWarps.size()));
+
+	gl::enableDepthRead();
+	gl::enableDepthWrite();
 	mTimer = 0.0f;
 	mUI->tapTempo(true);
 
@@ -82,6 +102,7 @@ void MixnMapApp::setup()
 #endif  // _DEBUG	
 	log->logTimedString("setup done");
 }
+
 void MixnMapApp::windowManagement()
 {
 	log->logTimedString("windowManagement");
@@ -100,7 +121,9 @@ void MixnMapApp::shutdown()
 		log->logTimedString("shutdown");
 		deleteRenderWindows();
 		// save warp settings
-		mWarpings->save();
+		//mWarpings->save();
+		fs::path settings = getAssetPath("") / warpsFileName;
+		Warp::writeSettings(mWarps, writeFile(settings));
 
 		// close ui and save settings
 		mSpout->shutdown();
@@ -179,7 +202,10 @@ void MixnMapApp::update()
 	}
 	mOSC->update();
 	mAudio->update();
+	//! update textures
 	mTextures->update();
+	//! update shaders (must be after the textures update)
+	mShaders->update();
 	if (mParameterBag->mShowUI) mUI->update();
 	if (mParameterBag->mWindowToCreate > 0)
 	{
@@ -208,7 +234,15 @@ void MixnMapApp::drawRender()
 	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	gl::pushViewport(0, 0, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	gl::enableAlphaBlending();
-	mWarpings->draw();
+	//mWarpings->draw();
+	// iterate over the warps and draw their content
+	int i = 0;
+	for (auto &warp : mWarps) 
+	{
+		warp->draw(mTextures->getTexture(i), mSrcArea);
+		i++;
+	}
+
 	gl::disableAlphaBlending();
 	gl::popViewport();
 	gl::popMatrices();
@@ -268,32 +302,36 @@ void MixnMapApp::deleteRenderWindows()
 }
 void MixnMapApp::resize()
 {
-	mWarpings->resize();
+	mShaders->resize();
+	//mWarpings->resize();
 }
 
 void MixnMapApp::mouseMove(MouseEvent event)
 {
-	mWarpings->mouseMove(event);
+	//mWarpings->mouseMove(event);
 }
 
 void MixnMapApp::mouseDown(MouseEvent event)
 {
-	mWarpings->mouseDown(event);
+	mParameterBag->iMouse.z = event.getX();
+	mParameterBag->iMouse.w = getWindowHeight() - event.getY();
 }
 
 void MixnMapApp::mouseDrag(MouseEvent event)
 {
-	mWarpings->mouseDrag(event);
+	mParameterBag->iMouse.x =  event.getX();
+	mParameterBag->iMouse.y = getWindowHeight() - event.getY();
+	//mWarpings->mouseDrag(event);
 }
 
 void MixnMapApp::mouseUp(MouseEvent event)
 {
-	mWarpings->mouseUp(event);
+	//mWarpings->mouseUp(event);
 }
 
 void MixnMapApp::keyDown(KeyEvent event)
 {
-	mWarpings->keyDown(event);
+	//mWarpings->keyDown(event);
 
 	// warp editor did not handle the key, so handle it here
 	switch (event.getCode())
@@ -338,14 +376,14 @@ void MixnMapApp::keyDown(KeyEvent event)
 		break;
 	case KeyEvent::KEY_SPACE:
 		// save warp settings
-		mWarpings->save();
+		//mWarpings->save();
 		break;
 	}
 }
 
 void MixnMapApp::keyUp(KeyEvent event)
 {
-	mWarpings->keyUp(event);
+	//mWarpings->keyUp(event);
 
 }
 

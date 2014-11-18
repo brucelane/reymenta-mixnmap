@@ -25,6 +25,8 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 
 	// init
 	mNewSenderName[0] = NULL;
+	gl::Fbo::Format format;
+	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
 	for (int i = 0; i < MAX; i++)
 	{	
 		// create inputTextures and init with static image
@@ -36,8 +38,12 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 		// init mixTextures
 		mixTextures.push_back(img);
 		// create FBO
-		mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//640x480
+		mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x480
 	}
+	// create a rectangle to be drawn with our shader program
+	// default is from -0.5 to 0.5, so we scale by 2 to get -1.0 to 1.0
+	mMesh = gl::VboMesh::create(geom::Rect());// .scale(vec2(2.0f, 2.0f)));
+
 	log->logTimedString("Textures constructor end");
 }
 ci::gl::TextureRef Textures::getSenderTexture(int index)
@@ -118,43 +124,35 @@ void Textures::flipMixFbo(bool flip)
 	//mixTextures[0].setFlipped(flip);
 	mParameterBag->mOriginUpperLeft = flip;
 }
-// Render the color cube into the FBO
-void Textures::renderToFbo()
-{
-	// this will restore the old framebuffer binding when we leave this function
-	// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
-	// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
-	gl::ScopedFramebuffer fbScp(mFbos[3]);
-	// clear out the FBO with blue
-	gl::clear(Color(0.25, 0.5f, 1.0f));
 
-	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(ivec2(0), mFbos[3]->getSize());
-
-	// setup our camera to render the torus scene
-	CameraPersp cam(mFbos[3]->getWidth(), mFbos[3]->getHeight(), 60.0f);
-	cam.setPerspective(60, mFbos[3]->getAspectRatio(), 1, 1000);
-	cam.lookAt(vec3(2.8f, 1.8f, -2.8f), vec3(0));
-	gl::setMatrices(cam);
-
-	// set the modelview matrix to reflect our current rotation
-	gl::setModelMatrix(mRotation);
-
-	// render the color cube
-	gl::ScopedGlslProg shaderScp(gl::getStockShader(gl::ShaderDef().color()));
-	gl::color(Color(1.0f, 0.5f, 0.25f));
-	gl::drawColorCube(vec3(0), vec3(2.2f));
-	gl::color(Color::white());
-}
 void Textures::update()
 {
-	// Rotate the torus by .06 radians around an arbitrary axis
-	mRotation *= rotate(0.06f, normalize(vec3(0.16666f, 0.333333f, 0.666666f)));
-	// render into our FBO
-	renderToFbo();
+}
+void Textures::renderToFbo()
+{
+	int i = 0;
+	for (auto &mFbo : mFbos)
+	{
+		// this will restore the old framebuffer binding when we leave this function
+		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
+		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
+		gl::ScopedFramebuffer fbScp(mFbo);
+		// clear out the FBO with blue
+		gl::clear(Color(0.25, 0.5f, 1.0f));
+
+		// setup the viewport to match the dimensions of the FBO
+		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
+
+		gl::ScopedGlslProg shader(mShaders->getShader(i));
+		// draw our screen rectangle
+		gl::draw(mMesh);
+		inputTextures[i].texture = mFbo->getColorTexture();
+		i++;
+	}
 }
 void Textures::draw()
 {
+	renderToFbo();
 	/**********************************************
 	* library FBOs
 	*/
@@ -392,33 +390,7 @@ void Textures::draw()
 	gl::popViewport();
 	gl::popMatrices();
 
-	//sTextures[2] = mFbos[0]->getColorTexture();
 	mixTextures[0] = mFbos[0]->getColorTexture();
-
-	// from FBOBasic sample
-	// clear the window to gray
-	gl::clear(Color(0.35f, 0.35f, 0.35f));
-
-	// setup our camera to render the cube
-	CameraPersp cam(getWindowWidth(), getWindowHeight(), 60.0f);
-	cam.setPerspective(60, getWindowAspectRatio(), 1, 1000);
-	cam.lookAt(vec3(2.6f, 1.6f, -2.6f), vec3(0));
-	gl::setMatrices(cam);
-
-	// use the scene we rendered into the FBO as a texture
-	mFbos[3]->bindTexture();
-
-	// draw a cube textured with the FBO
-	{
-		gl::ScopedGlslProg shaderScp(gl::getStockShader(gl::ShaderDef().texture()));
-		gl::drawCube(vec3(0), vec3(2.2f));
-	}
-
-	// show the FBO color texture in the upper left corner
-	gl::setMatricesWindow(toPixels(getWindowSize()));
-	gl::draw(mFbos[3]->getColorTexture(), Rectf(0, 0, 128, 128));
-	// and draw the depth texture adjacent
-	//gl::draw(mFbos[3]->getDepthTexture(), Rectf(128, 0, 256, 128));
 }
 
 void Textures::shutdown()
