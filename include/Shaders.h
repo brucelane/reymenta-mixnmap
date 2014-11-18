@@ -32,7 +32,7 @@ namespace Reymenta
 		void update();
 		void resize();
 		string getFragError();
-		gl::GlslProgRef getShader(int aIndex) { return mFragmentShaders[aIndex]; };
+		gl::GlslProgRef getShader(int aIndex);
 		gl::GlslProgRef getMixShader() { return mMixShader; };
 		bool loadPixelFragmentShader(const fs::path &fragment_path);
 		string getFragFileName() { return mFragFileName; };

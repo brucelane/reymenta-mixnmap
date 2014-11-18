@@ -239,7 +239,8 @@ void MixnMapApp::drawRender()
 	int i = 0;
 	for (auto &warp : mWarps) 
 	{
-		warp->draw(mTextures->getTexture(i), mSrcArea);
+		//warp->draw(mTextures->getTexture(i), mSrcArea);
+		warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
 		i++;
 	}
 
@@ -251,17 +252,11 @@ void MixnMapApp::drawMain()
 {
 	//! clear the window
 	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
-	gl::pushMatrices();
-	gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
-	gl::pushViewport(0, 0, getWindowWidth(), getWindowHeight());
 	//! draw Spout received textures
 	mSpout->draw();
 	mTextures->draw();
-	gl::draw(mTextures->getFboTexture(mParameterBag->mMixFboIndex));
 	if (mParameterBag->mShowUI) mUI->draw();
 	gl::disableAlphaBlending();
-	gl::popViewport();
-	gl::popMatrices();
 }
 void MixnMapApp::createRenderWindow()
 {

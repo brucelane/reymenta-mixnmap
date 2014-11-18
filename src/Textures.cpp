@@ -141,7 +141,7 @@ void Textures::renderToFbo()
 		gl::clear(Color(0.25, 0.5f, 1.0f));
 
 		// setup the viewport to match the dimensions of the FBO
-		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
+		gl::ScopedViewport scpVp(ivec2(0.0), mFbo->getSize());
 
 		gl::ScopedGlslProg shader(mShaders->getShader(i));
 		// draw our screen rectangle
@@ -155,7 +155,7 @@ void Textures::draw()
 	renderToFbo();
 	/**********************************************
 	* library FBOs
-	*/
+	
 	// start of mLibraryFbos[mParameterBag->mLeftFboIndex]
 	mFbos[mParameterBag->mLeftFboIndex]->bindFramebuffer();
 	// setup the viewport to match the dimensions of the FBO
@@ -328,7 +328,7 @@ void Textures::draw()
 
 	/***********************************************
 	* mix 2 textures in FBOs with mix shader 
-	*/
+	
 	// draw using the mix shader
 	mFbos[0]->bindFramebuffer();
 
@@ -390,7 +390,7 @@ void Textures::draw()
 	gl::popViewport();
 	gl::popMatrices();
 
-	mixTextures[0] = mFbos[0]->getColorTexture();
+	mixTextures[0] = mFbos[0]->getColorTexture();*/
 }
 
 void Textures::shutdown()

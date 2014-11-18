@@ -85,6 +85,12 @@ void Shaders::update()
 		}
 	}
 }
+gl::GlslProgRef Shaders::getShader(int aIndex) 
+{ 
+	if (aIndex > mFragmentShaders.size() - 1) aIndex = mFragmentShaders.size() - 1;
+	if (aIndex < 0) aIndex = 0;
+	return mFragmentShaders[aIndex];
+};
 
 bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 {
