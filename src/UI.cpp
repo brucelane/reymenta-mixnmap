@@ -46,8 +46,8 @@ void UI::setup()
 	mParameterBag->mBodyFont = Font(loadResource(RES_GARAMOND), 19 * 2);
 	mParameterBag->mFooterFont = Font(loadResource(RES_GARAMOND_ITALIC), 14 * 2);
 
-	setupGlobal();
 	setupMiniControl();
+	setupGlobal();
 	setupSliders();
 	setupTextures();
 
@@ -165,7 +165,7 @@ void UI::setupMiniControl()
 }
 void UI::setupGlobal()
 {
-	gParams = UIController::create("{ \"x\":874, \"y\":456, \"depth\":300, \"width\":400, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	gParams = UIController::create("{ \"x\":874, \"y\":0, \"depth\":280, \"width\":400, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	gParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -189,7 +189,7 @@ void UI::setupGlobal()
 }
 void UI::setupTextures()
 {
-	tParams = UIController::create("{ \"x\":0, \"y\":156, \"depth\":300, \"width\":300, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams = UIController::create("{ \"x\":0, \"y\":178, \"depth\":300, \"width\":300, \"height\":340, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);

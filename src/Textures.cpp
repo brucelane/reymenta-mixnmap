@@ -146,6 +146,8 @@ void Textures::renderToFbo()
 		gl::ScopedGlslProg shader(mShaders->getShader(i));
 		// draw our screen rectangle
 		gl::draw(mMesh);
+		gl::drawSolidRect(Rectf(0,0,1024,768));
+
 		i++;
 	}
 }

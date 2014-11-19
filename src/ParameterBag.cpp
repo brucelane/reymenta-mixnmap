@@ -166,11 +166,9 @@ void ParameterBag::reset()
 	mFlipFbo = false;
 	mFboWidth = 640;
 	mFboHeight = 360;
-	mPreviewFboWidth = mFboWidth / 2;// 4;
-	mPreviewFboHeight = mFboHeight / 2;//4;
 	mPreviewWidth = 156;
 	mPreviewHeight = 88;
-	mOriginUpperLeft = true;
+	mOriginUpperLeft = false;
 	mCurrentPreviewFboIndex = 0;
 	mMixFboIndex = 1;
 	mLeftFboIndex = 2;
