@@ -5,7 +5,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "cinder/Utilities.h"
 #include "cinder/Timeline.h"
-
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include "Resources.h"
 // log
 #include "Logger.h"
@@ -20,7 +20,11 @@ namespace Reymenta
 {
 	// stores the pointer to the Shaders instance
 	typedef std::shared_ptr<class Shaders> ShadersRef;
-
+	struct Shada {
+		string fileName;
+		gl::GlslProgRef prog;
+		bool active;
+	};
 	class Shaders {
 	public:		
 		Shaders( ParameterBagRef aParameterBag );
@@ -29,22 +33,37 @@ namespace Reymenta
 		{
 			return shared_ptr<Shaders>( new Shaders( aParameterBag ) );
 		}
-
-		//string getFragError();
+		void update();
+		void resize();
+		string getFragError();
+		gl::GlslProgRef getShader(int aIndex);
 		gl::GlslProgRef getMixShader() { return mMixShader; };
+		bool loadPixelFragmentShader(const fs::path &fragment_path);
+		string getFragFileName() { return mFragFileName; };
+		bool setGLSLString(string pixelFrag, string fileName);
 
-		/*void loadFragmentShader(boost::filesystem::path aFilePath);
-		string getFileName(string aFilePath);
-		string getNewFragFileName( string aFilePath);
-		string getFragStringFromFile( string fileName );*/
 	private:
 		// Logger
 		LoggerRef					log;	
 		string						mixFileName;
 		string						mError;
-		// parameters
+		//! name of the loaded shader file
+		string						mFragFileName;
+		//! include shader lines for header of loaded files
+		std::string					header;
+		//! default vertex shader string
+		std::string					defaultVertexShader;
+		//! default fragment shader string
+		std::string					defaultFragmentShader;
+		// current frag string
+		string						currentFrag;
+		//! vector of fragment shaders
+		vector<Shada>				mFragmentShaders;
+		bool						validFrag;
+
+		//! parameters
 		ParameterBagRef				mParameterBag;
-		// mix shader
-		gl::GlslProgRef mMixShader;
+		//! mix shader
+		gl::GlslProgRef				mMixShader;
 	};
 }

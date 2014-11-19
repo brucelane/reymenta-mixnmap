@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2013, Paul Houx - All rights reserved.
+Copyright (c) 2010-2014, Paul Houx - All rights reserved.
 This code is intended for use with the Cinder C++ library: http://libcinder.org
 
 This file is part of Cinder-Warping.
@@ -18,18 +18,25 @@ You should have received a copy of the GNU General Public License
 along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cinder/app/AppNative.h"
+#include "cinder/app/RendererGl.h"
+#include "cinder/gl/GlslProg.h"
+#include "cinder/gl/Batch.h"
+#include "cinder/gl/Context.h"
 #include "cinder/ImageIo.h"
 #include "cinder/Rand.h"
-#include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/Timeline.h"
 
 #include "WarpBilinear.h"
 #include "WarpPerspective.h"
 #include "WarpPerspectiveBilinear.h"
 
+// window manager
+#include "WindowMngr.h"
 // UserInterface
-#include "imGuiCinder.h"
+#include "UI.h"
 // parameters
 #include "ParameterBag.h"
 // textures
@@ -40,6 +47,10 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "SpoutWrapper.h"
 // OSC
 #include "OSCWrapper.h"
+// warps
+//#include "WarpWrapper.h"
+// audio
+#include "AudioWrapper.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -47,14 +58,12 @@ using namespace ph::warping;
 using namespace std;
 using namespace Reymenta;
 
-class MixnMapApp : public AppBasic {
+class MixnMapApp : public AppNative {
 public:
 	void prepareSettings(Settings *settings);
 	void setup();
 	void shutdown();
 	void update();
-	void draw();
-
 	void resize();
 
 	void mouseMove(MouseEvent event);
@@ -64,10 +73,34 @@ public:
 
 	void keyDown(KeyEvent event);
 	void keyUp(KeyEvent event);
+	//! allow file drop of images, shaders
+	void fileDrop(FileDropEvent event);
 
 	void updateWindowTitle();
-	void getWindowsResolution();
+
 private:
+	// windows
+	WindowRef					mMainWindow;
+	void						windowManagement();
+	void						getWindowsResolution();
+	void						drawMain();
+	WindowRef					mCodeEditorWindow;
+	bool						mCursorVisible;
+	bool						mIsShutDown;
+	// render
+	void						createRenderWindow();
+	void						deleteRenderWindows();
+	vector<WindowMngr>			allRenderWindows;
+	void						drawRender();
+	void						showCodeCallback();
+	void						createUIWindow();
+
+	//! timeline to save thumb for shader
+	Anim<float>					mTimer;
+	void						saveThumb();
+
+	// minimalUI
+	UIRef						mUI;
 	// parameters
 	ParameterBagRef				mParameterBag;
 	// Logger
@@ -80,9 +113,14 @@ private:
 	SpoutWrapperRef				mSpout;
 	// osc
 	OSCRef						mOSC;
-
-	WarpList					mWarps;
+	// warps
+	//WarpWrapperRef				mWarpings;
 	const string warpsFileName = "MixnMapWarps.xml";
+	WarpList					mWarps;
+	Area						mSrcArea;
+
+	// audio
+	AudioWrapperRef				mAudio;
 
 	bool						newLogMsg;
 	string						mLogMsg;

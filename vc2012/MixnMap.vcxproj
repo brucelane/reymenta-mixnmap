@@ -1,4 +1,3 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -11,7 +10,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{19EEAEBD-3864-45FE-B41D-BD973E5C30D0}</ProjectGuid>
+    <ProjectGuid>{CD064CE6-48C7-46FC-AC2E-8DF2DF99FCEC}</ProjectGuid>
     <RootNamespace>MixnMap</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -19,14 +18,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -50,7 +49,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Cinder-Spout\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Spout\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -64,7 +63,7 @@
       <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249d.lib;..\..\..\blocks\Cinder-Spout\lib\Spout.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies);..\..\..\blocks\Spout\lib\Spout.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -74,13 +73,13 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout.dll" "$(OutDir)"
-xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+      <Command>xcopy /y "..\..\..\blocks\Spout\lib\Spout.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Cinder-Spout\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost";..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OpenCV\include;..\..\..\blocks\OpenCV\include\opencv2;..\..\..\blocks\OSC\src;..\..\..\blocks\Spout\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -95,7 +94,7 @@
       <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249.lib;..\..\..\blocks\Cinder-Spout\lib\Spout.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies);..\..\..\blocks\Spout\lib\Spout.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -107,20 +106,14 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout.dll" "$(OutDir)"
-xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+      <Command>xcopy /y "..\..\..\blocks\Spout\lib\Spout.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\AudioWrapper.h" />
-    <ClInclude Include="..\include\LibraryPanel.h" />
-    <ClInclude Include="..\include\Logger.h" />
-    <ClInclude Include="..\include\MixnMapApp.h" />
-    <ClInclude Include="..\include\OSCWrapper.h" />
-    <ClInclude Include="..\include\ParameterBag.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MinimalUI\include\Button.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MinimalUI\include\Label.h" />
@@ -152,19 +145,8 @@
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.h" />
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.h" />
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
-    <ClInclude Include="..\include\Shaders.h" />
-    <ClInclude Include="..\include\SlidersPanel.h" />
-    <ClInclude Include="..\include\SpoutWrapper.h" />
-    <ClInclude Include="..\include\Textures.h" />
-    <ClInclude Include="..\include\UI.h" />
-    <ClInclude Include="..\include\WarpPanel.h" />
-    <ClInclude Include="..\include\WarpWrapper.h" />
-    <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\AudioWrapper.cpp" />
-    <ClCompile Include="..\src\LibraryPanel.cpp" />
-    <ClCompile Include="..\src\Logger.cpp" />
     <ClCompile Include="..\src\MixnMapApp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\Button.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\Label.cpp" />
@@ -188,15 +170,6 @@
     <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscTypes.cpp" />
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\NetworkingUtils.cpp" />
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp" />
-    <ClCompile Include="..\src\OSCWrapper.cpp" />
-    <ClCompile Include="..\src\ParameterBag.cpp" />
-    <ClCompile Include="..\src\Shaders.cpp" />
-    <ClCompile Include="..\src\SlidersPanel.cpp" />
-    <ClCompile Include="..\src\SpoutWrapper.cpp" />
-    <ClCompile Include="..\src\Textures.cpp" />
-    <ClCompile Include="..\src\UI.cpp" />
-    <ClCompile Include="..\src\WarpPanel.cpp" />
-    <ClCompile Include="..\src\WarpWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

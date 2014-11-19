@@ -1,17 +1,8 @@
 // uniforms begin
 #version 120
 uniform vec3        iResolution;         	// viewport resolution (in pixels)
-uniform float       iChannelTime[4];     	// channel playback time (in seconds)
-uniform vec3        iChannelResolution[4];	// channel resolution (in pixels)
-uniform sampler2D   iChannel0;				// input channel 0 (TODO: support samplerCube)
+uniform sampler2D   iChannel0;				// input channel 0
 uniform sampler2D   iChannel1;				// input channel 1 
-uniform sampler2D   iChannel2;				// input channel 2
-uniform sampler2D   iChannel3;				// input channel 3
-uniform sampler2D   iChannel4;				// input channel 4
-uniform sampler2D   iChannel5;				// input channel 5
-uniform sampler2D   iChannel6;				// input channel 6
-uniform sampler2D   iChannel7;				// input channel 7
-uniform sampler2D   iAudio0;				// input channel 0 (audio)
 uniform vec4        iMouse;              	// mouse pixel coords. xy: current (if MLB down), zw: click
 uniform float       iGlobalTime;         	// shader playback time (in seconds)
 uniform vec3        iBackgroundColor;    	// background color

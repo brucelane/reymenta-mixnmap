@@ -16,7 +16,7 @@ ParameterBag::ParameterBag()
 	reset();
 
 	// check to see if ReymentaSettings.xml file exists and restore if it does
-	fs::path params = getDocumentsDirectory() / "Reymenta" / settingsFileName;
+	fs::path params = getAssetPath("") / settingsFileName;
 	if (fs::exists(params))
 		restore();
 }
@@ -29,7 +29,7 @@ ParameterBagRef ParameterBag::create()
 bool ParameterBag::save()
 {
 	// attempt to create "reymenta" directory in Documents directory
-	fs::path directory = getDocumentsDirectory() / "Reymenta";
+	fs::path directory = getAssetPath("");
 	if (!fs::exists(directory)) {
 		if (!createDirectories(directory / settingsFileName)) {
 			return false;
@@ -61,7 +61,7 @@ bool ParameterBag::save()
 bool ParameterBag::restore()
 {
 	// check to see if ReymentaSettings.xml file exists
-	fs::path params = getDocumentsDirectory() / "Reymenta" / settingsFileName;
+	fs::path params = getAssetPath("") / settingsFileName;
 	if (fs::exists(params)) {
 		// if it does, restore
 		const XmlTree xml(loadFile(params));
@@ -96,39 +96,64 @@ bool ParameterBag::restore()
 
 void ParameterBag::reset()
 {
+	mRenderWidth = 1024;
+	mRenderHeight = 768;
+	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = vec2(0.0);
+	mRenderPosXY = vec2(0.0, 320.0);
+	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
+	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
+	mPreviewFragXY = vec2(0.0, 0.0);
+	mWindowToCreate = 0;
+
 	// spout
 	mMemoryMode = false;
 	mUseDX9 = false;
-	
+
+	mUIRefresh = 1;
+	mOptimizeUI = false;
 	mShowUI = true;
 	mShowConsole = false;
-	// fbo
-	mFboWidth = 640;
-	mFboHeight = 360;
-	mFlipFbo = false;
+	FPSColor = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
+	ColorGreen = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
+	ColorRed = ColorA(1.0f, 0.0f, 0.0f, 1.0f);
+
 	// tempo
 	mTempo = 166.0;
 	mUseTimeWithTempo = false;
 	iDeltaTime = 60 / mTempo;
 	iTempoTime = 0.0;
 	iTimeFactor = 1.0;
-
+	//audio
+	// audio in multiplication factor
+	mAudioMultFactor = 1.0;
+	mUseLineIn = true;
+	maxVolume = 0.0f;
+	mAudioTextureIndex = 0;
+	mData = new float[1024];
+	for (int i = 0; i < 1024; i++)
+	{
+		mData[i] = 0;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		iFreqs[i] = i;
+	}
 	// shader uniforms
 	iGlobalTime = 1.0f;
-	iResolution = Vec3f(mRenderWidth, mRenderHeight, 1.0);
+	iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
 	for (int i = 0; i < 4; i++)
 	{
 		iChannelTime[i] = i;
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		iChannelResolution[i] = Vec3f(mRenderWidth, mRenderHeight, 1.0);
+		iChannelResolution[i] = vec3(mRenderWidth, mRenderHeight, 1.0);
 	}
 	iCrossfade = iPreviewCrossfade = 0.5;
 	iDebug = iFade = iLight = iLightAuto = iRepeat = false;
 	iFps = 60.0;
 	iShowFps = true;
-	iMouse = Vec4f(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
+	iMouse = vec4(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
 	iGreyScale = false;
 
 	// transition
@@ -136,24 +161,39 @@ void ParameterBag::reset()
 	iAnim = 0.0;
 	mTransitionDuration = 1.0f;
 
-	mOriginUpperLeft = true;
+
+	// fbo
+	mFlipFbo = false;
+	mFboWidth = 640;
+	mFboHeight = 360;
+	mPreviewWidth = 156;
+	mPreviewHeight = 88;
+	mOriginUpperLeft = false;
+	mCurrentPreviewFboIndex = 0;
+	mMixFboIndex = 1;
+	mLeftFboIndex = 2;
+	mRightFboIndex = 3;
+
+	mPreviewFragIndex = 0;
+	mLeftFragIndex = 0;
+	mRightFragIndex = 1;
+	mWarpCount = 3;
 	// OSC
-	mOSCDestinationHost = "127.0.0.1";// "192.168.0.18";
+	mOSCDestinationHost = "127.0.0.1";
 	mOSCDestinationPort = 7000;
 	mOSCReceiverPort = 9000;
 	OSCMsg = "OSC listening on port 9000";
-	mRenderWidth = 1024;
-	mRenderHeight = 768;
-	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = Vec2f::zero();
-	mRenderPosXY = Vec2f(0.0, 320.0);
-	mRenderResoXY = Vec2f(mRenderWidth, mRenderHeight);
-	mRenderResolution = Vec2i(mRenderWidth, mRenderHeight);
+	InfoMsg = "";
+	// colors
+	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
+	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
 
 	currentSelectedIndex = 0;
 
 	for (int a = 0; a < 8; a++)
 	{
-		iChannels[a] = 0;// a;
+		iChannels[a] = a;
+		iWarpFboChannels[a] = a;
 	}
 
 	// midi and OSC
