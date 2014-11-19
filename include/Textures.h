@@ -44,7 +44,8 @@ namespace Reymenta
 	typedef std::shared_ptr<class Textures> TexturesRef;
 
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures
-	typedef struct Sender {
+	//typedef 
+	struct Sender {
 		char SenderName[256];
 		unsigned int width, height;
 		ci::gl::TextureRef texture;
@@ -101,8 +102,9 @@ namespace Reymenta
 		char						mNewSenderName[256]; // new sender name 
 		//! audio texture
 		unsigned char				dTexture[1024];
-		//! inputTextures: array of Spout received textures or images or audio 
+		//! inputTextures: array of Spout received textures
 		Sender						inputTextures[MAX];
+		Sender						audioTexture;
 		//! mesh for shader drawing
 		gl::VboMeshRef				mMesh;
 

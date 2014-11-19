@@ -58,10 +58,10 @@ void Textures::setSenderTextureSize(int index, int width, int height)
 }
 void Textures::setAudioTexture( unsigned char *signal)
 {
-	memcpy(inputTextures[mParameterBag->mAudioTextureIndex].SenderName, "Audio", strlen("Audio") + 1);
-	inputTextures[mParameterBag->mAudioTextureIndex].width = 512;
-	inputTextures[mParameterBag->mAudioTextureIndex].height = 2;
-	inputTextures[mParameterBag->mAudioTextureIndex].texture = gl::Texture::create(signal, GL_LUMINANCE16I_EXT, 512, 2);
+	memcpy(audioTexture.SenderName, "Audio", strlen("Audio") + 1);
+	audioTexture.width = 512;
+	audioTexture.height = 2;
+	audioTexture.texture = gl::Texture::create(signal, GL_LUMINANCE16I_EXT, 512, 2);
 }
 int Textures::checkedIndex(int index)
 {
@@ -146,7 +146,6 @@ void Textures::renderToFbo()
 		gl::ScopedGlslProg shader(mShaders->getShader(i));
 		// draw our screen rectangle
 		gl::draw(mMesh);
-		inputTextures[i].texture = mFbo->getColorTexture();
 		i++;
 	}
 }

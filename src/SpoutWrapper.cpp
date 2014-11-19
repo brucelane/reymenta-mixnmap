@@ -33,7 +33,7 @@ void SpoutWrapper::update()
 		{
 			mSpoutReceivers[0].GetSenderName(i, &mNewSenderName[0], MaxSize);
 			memcpy(mTextures->getSenderName(i), mNewSenderName, strlen(mNewSenderName) + 1);
-			// fix for old beta of Spout, should not be put to true
+			// fix for old beta of Spout, should not be set to "true"
 			mSpoutReceivers[i].SetDX9(mParameterBag->mUseDX9);
 			log->logTimedString("DX9:" + toString(mParameterBag->mUseDX9));
 

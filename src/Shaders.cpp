@@ -54,10 +54,10 @@ void Shaders::resize()
 {
 	for (auto &shader : mFragmentShaders)
 	{
-		auto map = shader->getActiveUniformTypes();
+		auto map = shader.prog->getActiveUniformTypes();
 		if (map.find("iResolution") != map.end())
 		{
-			shader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			shader.prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
 		}
 	}
 }
@@ -71,18 +71,18 @@ void Shaders::update()
 	// when compiled, only uniforms that are used remain in the program
 	for (auto &shader : mFragmentShaders)
 	{
-		auto map = shader->getActiveUniformTypes();
+		auto map = shader.prog->getActiveUniformTypes();
 		if (map.find("iGlobalTime") != map.end())
 		{
-			shader->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+			shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
 		}
 		if (map.find("iDate") != map.end())
 		{
-			shader->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
+			shader.prog->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
 		}
 		if (map.find("iMouse") != map.end())
 		{
-			shader->uniform("iMouse", mParameterBag->iMouse);
+			shader.prog->uniform("iMouse", mParameterBag->iMouse);
 		}
 	}
 }
@@ -90,7 +90,7 @@ gl::GlslProgRef Shaders::getShader(int aIndex)
 { 
 	if (aIndex > mFragmentShaders.size() - 1) aIndex = mFragmentShaders.size() - 1;
 	if (aIndex < 0) aIndex = 0;
-	return mFragmentShaders[aIndex];
+	return mFragmentShaders[aIndex].prog;
 };
 
 bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
@@ -99,17 +99,15 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 	// reset 
 	mParameterBag->iFade = false;
 	mParameterBag->controlValues[13] = 1.0f;
-	string name = "unknown";
 	string mFile = fragment_path.string();
 	try
 	{
-		if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
-		mFragFileName = name;
+		if (mFile.find_last_of("\\") != std::string::npos) mFragFileName = mFile.substr(mFile.find_last_of("\\") + 1);
 		if (fs::exists(fragment_path))
 		{
 			//validFrag = false;
 			std::string fs = header + loadString(loadFile(fragment_path));
-			rtn = setGLSLString(fs);
+			rtn = setGLSLString(fs, mFragFileName);
 		}
 		else
 		{
@@ -130,21 +128,24 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 	{
 		// error load default fragment shader
 		std::string fs = header + defaultFragmentShader;
-		rtn = setGLSLString(fs);
-
+		rtn = setGLSLString(fs, "default.glsl");
 	}
 	return rtn;
 }
-bool Shaders::setGLSLString(string pixelFrag)
+bool Shaders::setGLSLString(string pixelFrag, string fileName)
 {
 	currentFrag = pixelFrag;
 	int foundIndex = -1;
+	Shada newShada;
+	newShada.fileName = fileName;
+	newShada.active = true;
+	newShada.prog = gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str()));
 	try
 	{
 		// searching first index of not running shader
 		if (mFragmentShaders.size() < 8)
 		{
-			mFragmentShaders.push_back(gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str())));
+			mFragmentShaders.push_back(newShada);
 			foundIndex = mFragmentShaders.size() - 1;
 		}
 		else
@@ -164,14 +165,15 @@ bool Shaders::setGLSLString(string pixelFrag)
 				}
 			}
 			// load the new shader
-			mFragmentShaders[foundIndex] = gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str()));
+
+			mFragmentShaders[foundIndex] = newShada;
 
 			//preview the new loaded shader
 			mParameterBag->mPreviewFragIndex = foundIndex;
 		}
 		log->logTimedString("setGLSLString success");
 		// check that uniforms exist before setting the constant uniforms
-		auto map = mFragmentShaders[foundIndex]->getActiveUniformTypes();
+		auto map = mFragmentShaders[foundIndex].prog->getActiveUniformTypes();
 
 		log->logTimedString("Found uniforms:");
 		for (const auto &pair : map)
@@ -181,7 +183,7 @@ bool Shaders::setGLSLString(string pixelFrag)
 		console() << endl;
 		if (map.find("iResolution") != map.end())
 		{
-			mFragmentShaders[foundIndex]->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			mFragmentShaders[foundIndex].prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
 		}
 		mError = "";
 		validFrag = true;

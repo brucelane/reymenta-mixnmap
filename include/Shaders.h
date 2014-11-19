@@ -20,7 +20,11 @@ namespace Reymenta
 {
 	// stores the pointer to the Shaders instance
 	typedef std::shared_ptr<class Shaders> ShadersRef;
-
+	struct Shada {
+		string fileName;
+		gl::GlslProgRef prog;
+		bool active;
+	};
 	class Shaders {
 	public:		
 		Shaders( ParameterBagRef aParameterBag );
@@ -36,7 +40,7 @@ namespace Reymenta
 		gl::GlslProgRef getMixShader() { return mMixShader; };
 		bool loadPixelFragmentShader(const fs::path &fragment_path);
 		string getFragFileName() { return mFragFileName; };
-		bool setGLSLString(string pixelFrag);
+		bool setGLSLString(string pixelFrag, string fileName);
 
 	private:
 		// Logger
@@ -54,12 +58,12 @@ namespace Reymenta
 		// current frag string
 		string						currentFrag;
 		//! vector of fragment shaders
-		vector<gl::GlslProgRef>		mFragmentShaders;
+		vector<Shada>				mFragmentShaders;
 		bool						validFrag;
 
 		//! parameters
 		ParameterBagRef				mParameterBag;
 		//! mix shader
-		gl::GlslProgRef mMixShader;
+		gl::GlslProgRef				mMixShader;
 	};
 }
