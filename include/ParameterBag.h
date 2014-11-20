@@ -1,3 +1,11 @@
+/**
+* \file ParameterBag.h
+* \author Bruce LANE/Nathan Selikoff
+* \date 20 november 2014
+*
+* Parameters for all classes.
+*
+*/
 #pragma once
 
 #include "cinder/app/AppNative.h"

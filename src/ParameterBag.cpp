@@ -1,8 +1,11 @@
-//
-//  ParameterBag.cpp
-//  From Nathan Selikoff on 4/26/14.
-//
-//
+/**
+* \file ParameterBag.cpp
+* \author Bruce LANE/Nathan Selikoff
+* \date 20 november 2014
+*
+* Parameters for all classes.
+*
+*/
 
 #include "ParameterBag.h"
 

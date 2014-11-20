@@ -1,9 +1,7 @@
 /**
 * \file Textures.cpp
-* \brief Texture manager.
 * \author Bruce LANE
-* \version 0.1
-* \date 13 november 2014
+* \date 20 november 2014
 *
 * Manages the textures.
 *
@@ -42,7 +40,7 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	}
 	// create a rectangle to be drawn with our shader program
 	// default is from -0.5 to 0.5, so we scale by 2 to get -1.0 to 1.0
-	mMesh = gl::VboMesh::create(geom::Rect());// .scale(vec2(2.0f, 2.0f)));
+	mMesh = gl::VboMesh::create(geom::Rect(Rectf(-2.0, -2.0, 2.0, 2.0)));// .scale(vec2(2.0f, 2.0f)));
 
 	log->logTimedString("Textures constructor end");
 }
@@ -133,12 +131,25 @@ void Textures::saveThumb()
 	string filename = mShaders->getFragFileName() + ".jpg";
 	try
 	{
-		mFbos[mParameterBag->mPreviewFragIndex]->bindFramebuffer();
+		mFbos[mParameterBag->mCurrentPreviewFboIndex]->bindFramebuffer();
 		Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
-		mFbos[mParameterBag->mPreviewFragIndex]->unbindFramebuffer();
+		mFbos[mParameterBag->mCurrentPreviewFboIndex]->unbindFramebuffer();
 		fs::path path = getAssetPath("") / "thumbs" / filename;
 		writeImage(path, ImageSourceRef(fboSurf));
 		log->logTimedString("saved:" + filename);
+		int i = 0;
+		for (auto &mFbo : mFbos)
+		{
+			filename = mShaders->getFragFileName() + static_cast<ostringstream*>(&(ostringstream() << i))->str() + ".jpg";
+			mFbo->bindFramebuffer();
+			Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
+			mFbo->unbindFramebuffer();
+			fs::path path = getAssetPath("") / "thumbs" / filename;
+			writeImage(path, ImageSourceRef(fboSurf));
+
+
+			i++;
+		}
 	}
 	catch (const std::exception &e)
 	{

@@ -1,3 +1,11 @@
+/**
+* \file Shaders.cpp
+* \author Bruce LANE
+* \date 20 november 2014
+*
+* Manages the shaders.
+*
+*/
 #include "Shaders.h"
 
 using namespace Reymenta;
@@ -170,7 +178,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 			//preview the new loaded shader
 		}
 		mParameterBag->mPreviewFragIndex = foundIndex;
-		log->logTimedString("setGLSLString success");
+		log->logTimedString("setGLSLString success" + static_cast<ostringstream*>(&(ostringstream() << foundIndex))->str());
 		// check that uniforms exist before setting the constant uniforms
 		auto map = mFragmentShaders[foundIndex].prog->getActiveUniformTypes();
 

@@ -130,7 +130,7 @@ void MixnMapApp::shutdown()
 		mSpout->shutdown();
 		mTextures->shutdown();
 		mUI->shutdown();
-		quit();
+		timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ quit(); });
 	}
 
 }

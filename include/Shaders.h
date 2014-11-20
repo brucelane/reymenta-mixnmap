@@ -1,3 +1,11 @@
+/**
+* \file Shaders.h
+* \author Bruce LANE
+* \date 20 november 2014
+*
+* Manages the shaders.
+*
+*/
 #pragma once
 
 #include "cinder/Cinder.h"
