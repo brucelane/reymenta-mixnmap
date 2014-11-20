@@ -173,6 +173,7 @@ void ParameterBag::reset()
 	mMixFboIndex = 1;
 	mLeftFboIndex = 2;
 	mRightFboIndex = 3;
+	mDirectRender = false;
 
 	mPreviewFragIndex = 0;
 	mLeftFragIndex = 0;
