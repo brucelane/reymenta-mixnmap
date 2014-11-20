@@ -128,6 +128,23 @@ void Textures::flipMixFbo(bool flip)
 void Textures::update()
 {
 }
+void Textures::saveThumb()
+{
+	string filename = mShaders->getFragFileName() + ".jpg";
+	try
+	{
+		mFbos[mParameterBag->mPreviewFragIndex]->bindFramebuffer();
+		Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
+		mFbos[mParameterBag->mPreviewFragIndex]->unbindFramebuffer();
+		fs::path path = getAssetPath("") / "thumbs" / filename;
+		writeImage(path, ImageSourceRef(fboSurf));
+		log->logTimedString("saved:" + filename);
+	}
+	catch (const std::exception &e)
+	{
+		log->logTimedString("unable to save:" + filename + string(e.what()));
+	}
+}
 void Textures::renderToFbo()
 {
 	int i = 0;
@@ -146,7 +163,6 @@ void Textures::renderToFbo()
 		gl::ScopedGlslProg shader(mShaders->getShader(i));
 		// draw our screen rectangle
 		gl::draw(mMesh);
-		gl::drawSolidRect(Rectf(0,0,1024,768));
 
 		i++;
 	}

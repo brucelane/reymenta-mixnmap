@@ -165,12 +165,11 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 				}
 			}
 			// load the new shader
-
 			mFragmentShaders[foundIndex] = newShada;
 
 			//preview the new loaded shader
-			mParameterBag->mPreviewFragIndex = foundIndex;
 		}
+		mParameterBag->mPreviewFragIndex = foundIndex;
 		log->logTimedString("setGLSLString success");
 		// check that uniforms exist before setting the constant uniforms
 		auto map = mFragmentShaders[foundIndex].prog->getActiveUniformTypes();

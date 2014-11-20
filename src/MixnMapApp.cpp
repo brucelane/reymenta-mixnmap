@@ -115,10 +115,11 @@ void MixnMapApp::windowManagement()
 }
 void MixnMapApp::shutdown()
 {
+	log->logTimedString("shutdown");
 	if (!mIsShutDown)
 	{
 		mIsShutDown = true;
-		log->logTimedString("shutdown");
+		log->logTimedString("1st screen shutdown must be done once");
 		deleteRenderWindows();
 		// save warp settings
 		//mWarpings->save();
@@ -129,12 +130,12 @@ void MixnMapApp::shutdown()
 		mSpout->shutdown();
 		mTextures->shutdown();
 		mUI->shutdown();
+		quit();
 	}
 
 }
 void MixnMapApp::fileDrop(FileDropEvent event)
 {
-	bool loaded = false;
 	string ext = "";
 	// use the last of the dropped files
 	boost::filesystem::path mPath = event.getFile(event.getNumFiles() - 1);
@@ -152,34 +153,18 @@ void MixnMapApp::fileDrop(FileDropEvent event)
 		//mTextures->loadImageFile(mParameterBag->currentSelectedIndex, mFile);
 		mTextures->setTextureFromFile(1, mFile);
 	}
-	else if (!loaded && ext == "glsl")
+	else if (ext == "glsl")
 	{
-		//do not try to load by other ways
-		loaded = true;
-		//mShaders->incrementPreviewIndex();
 		//mUserInterface->mLibraryPanel->addShader(mFile);
 		if (mShaders->loadPixelFragmentShader(mFile))
 		{
 			mParameterBag->controlValues[13] = 1.0f;
-			//TODO timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+			timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ mTextures->saveThumb(); });
 		}
 	}
 
 }
-void MixnMapApp::saveThumb()
-{
-	string filename = mShaders->getFragFileName() + ".jpg";
-	try
-	{
-		fs::path path = getAssetPath("") / "thumbs" / filename;
-		//TODO writeImage(path, mTextures->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
-		log->logTimedString("saved:" + filename);
-	}
-	catch (const std::exception &e)
-	{
-		log->logTimedString("unable to save:" + filename + string(e.what()));
-	}
-}
+
 void MixnMapApp::update()
 {
 	if (mParameterBag->iGreyScale)

@@ -78,6 +78,7 @@ namespace Reymenta
 		void						flipMixFbo(bool flip);
 		char*						getSenderName(int index) { return &inputTextures[index].SenderName[0]; };
 		void						renderToFbo();
+		void						saveThumb();
 
 	private:
 		//! Logger
