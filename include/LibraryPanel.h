@@ -38,6 +38,7 @@ namespace Reymenta
 
 		void toggleVisibility() { mVisible ? hide() : show(); }
 		void setCurrentFbo(const int &aIndex, const bool &pressed);
+		void setInput(const int &aIndex, const bool &pressed);
 
 		void show();
 		void hide();
@@ -52,7 +53,7 @@ namespace Reymenta
 		void setRightFragActive(const int &aIndex, const bool &pressed);
 		void setPreviewActive(const int &aIndex, const bool &pressed);
 		//void setFboActive(const int &aIndex, const bool &pressed);
-		vector<MinimalUI::UIElementRef>	buttonFrag, buttonActive;
+		vector<MinimalUI::UIElementRef>	labelInput, buttonFrag;
 		
 		MinimalUI::UIElementRef			flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY, sliderPreviewRenderXY;
 		MinimalUI::UIControllerRef		mParams;

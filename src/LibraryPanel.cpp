@@ -44,7 +44,8 @@ void LibraryPanel::setupParams()
 	// create 8 frag btns
 	for (int i = 0; i < 8; i++)
 	{
-		buttonFrag.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setCurrentFbo, this, i + 8, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
+		labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
+		buttonFrag.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
 		mParams->addButton("L", std::bind(&LibraryPanel::setLeftFragActive, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }");
 		mParams->addButton("R", std::bind(&LibraryPanel::setRightFragActive, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }");
 		mParams->addButton("P", std::bind(&LibraryPanel::setPreviewActive, this, i, std::placeholders::_1), "{ \"width\":18, \"stateless\":false, \"group\":\"c2\", \"exclusive\":true }");
@@ -54,9 +55,12 @@ void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)
 {
 	mTextures->flipMixFbo(pressed);
 }
+void LibraryPanel::setInput(const int &aIndex, const bool &pressed)
+{
+	if (pressed) labelInput[aIndex]->setName(mTextures->setInput(aIndex));
+}
 void LibraryPanel::setCurrentFbo(const int &aIndex, const bool &pressed)
 {
-	//if (pressed) mParameterBag->mCurrentFboLibraryIndex = aIndex;
 }
 void LibraryPanel::setLeftFragActive(const int &aIndex, const bool &pressed)
 {
@@ -81,6 +85,7 @@ void LibraryPanel::update()
 		{
 			if (getElapsedFrames() % (mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh) == 0)
 			{
+				//TODO buttonInput->setBackgroundTexture(mTextures->getShaderTexture());
 				sliderLeftRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mLeftFboIndex));
 				sliderRightRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mRightFboIndex));
 				sliderMixRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mMixFboIndex));

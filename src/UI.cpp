@@ -203,8 +203,7 @@ void UI::setupTextures()
 	for (int i = 0; i < mTextures->getTextureCount(); i++)
 	{
 		buttonTextures[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
-		buttonFbo[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
-		buttonMix[i] = tParams->addButton(toString(i), std::bind(&UI::setLayer, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
+		buttonShader[i] = tParams->addButton(toString(i), std::bind(&UI::setShada, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"layer\", \"exclusive\":true }");
 		labelTextures[i] = tParams->addLabel(toString(i), "{ \"width\":176 }");
 	}
 
@@ -270,6 +269,13 @@ void UI::setLayer(const int &aLayer, const bool &pressed)
 	{
 		mParameterBag->currentSelectedIndex = aLayer;
 		mParameterBag->iChannels[0] = aLayer;
+	}
+}
+void UI::setShada(const int &aShada, const bool &pressed)
+{
+	if (pressed)
+	{
+		mTextures->setShadaIndex(aShada);
 	}
 }
 
@@ -501,8 +507,7 @@ void UI::update()
 			for (int i = 0; i < mTextures->getTextureCount(); i++)
 			{
 				buttonTextures[i]->setBackgroundTexture(mTextures->getTexture(i));
-				buttonFbo[i]->setBackgroundTexture(mTextures->getFboTexture(i));
-				buttonMix[i]->setBackgroundTexture(mTextures->getMixTexture(i));
+				buttonShader[i]->setBackgroundTexture(mTextures->getFboTexture(i));
 				labelTextures[i]->setName(mTextures->getSenderName(i));
 			}
 		}

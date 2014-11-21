@@ -35,13 +35,18 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 		inputTextures[i].texture = img;
 		// init mixTextures
 		mixTextures.push_back(img);
-		// create FBO
-		mFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x480
+		// create FBOs
+		ShadaFbo sFbo;
+		sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());//640x480
+		sFbo.shadaIndex = 0;
+		mShadaFbos.push_back(sFbo);
+		mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x480
 	}
 	// create a rectangle to be drawn with our shader program
 	// default is from -0.5 to 0.5, so we scale by 2 to get -1.0 to 1.0
-	mMesh = gl::VboMesh::create(geom::Rect(Rectf(-2.0, -2.0, 2.0, 2.0)));// .scale(vec2(2.0f, 2.0f)));
-
+	// coming soon in Cinder? mMesh = gl::VboMesh::create(geom::Rect().scale(vec2(2.0f, 2.0f))); 
+	mMesh = gl::VboMesh::create(geom::Rect(Rectf(-2.0, -2.0, 2.0, 2.0)));
+	selectedShada = 0;
 	log->logTimedString("Textures constructor end");
 }
 ci::gl::TextureRef Textures::getSenderTexture(int index)
@@ -101,21 +106,6 @@ void Textures::setTextureFromFile(int index, string fileName)
 	}
 }
 
-ci::gl::TextureRef Textures::getTexture(int index)
-{
-	return inputTextures[checkedIndex(index)].texture;
-}
-ci::gl::TextureRef Textures::getMixTexture(int index)
-{
-	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
-	return mixTextures[index];
-}
-ci::gl::TextureRef Textures::getFboTexture(int index)
-{
-	if (index > mFbos.size() - 1) index = mFbos.size() - 1;
-	return mFbos[index]->getColorTexture();
-}
-
 void Textures::flipMixFbo(bool flip)
 {
 	//mFbos[0].getTexture(0).setFlipped(flip);
@@ -131,19 +121,19 @@ void Textures::saveThumb()
 	string filename = mShaders->getFragFileName() + ".jpg";
 	try
 	{
-		mFbos[mParameterBag->mCurrentPreviewFboIndex]->bindFramebuffer();
+		mShadaFbos[mParameterBag->mCurrentPreviewFboIndex].fbo->bindFramebuffer();
 		Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
-		mFbos[mParameterBag->mCurrentPreviewFboIndex]->unbindFramebuffer();
+		mShadaFbos[mParameterBag->mCurrentPreviewFboIndex].fbo->unbindFramebuffer();
 		fs::path path = getAssetPath("") / "thumbs" / filename;
 		writeImage(path, ImageSourceRef(fboSurf));
 		log->logTimedString("saved:" + filename);
 		int i = 0;
-		for (auto &mFbo : mFbos)
+		for (auto &mFbo : mShadaFbos)
 		{
 			filename = mShaders->getFragFileName() + static_cast<ostringstream*>(&(ostringstream() << i))->str() + ".jpg";
-			mFbo->bindFramebuffer();
+			mFbo.fbo->bindFramebuffer();
 			Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
-			mFbo->unbindFramebuffer();
+			mFbo.fbo->unbindFramebuffer();
 			fs::path path = getAssetPath("") / "thumbs" / filename;
 			writeImage(path, ImageSourceRef(fboSurf));
 
@@ -156,10 +146,46 @@ void Textures::saveThumb()
 		log->logTimedString("unable to save:" + filename + string(e.what()));
 	}
 }
-void Textures::renderToFbo()
+ci::gl::TextureRef Textures::getTexture(int index)
+{
+	return inputTextures[checkedIndex(index)].texture;
+}
+ci::gl::TextureRef Textures::getMixTexture(int index)
+{
+	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
+	return mixTextures[index];
+}
+ci::gl::TextureRef Textures::getFboTexture(int index)
+{
+	if (index > mShadaFbos.size() - 1) index = mShadaFbos.size() - 1;
+	return mShadaFbos[index].fbo->getColorTexture();
+}
+void Textures::renderShadersToFbo()
 {
 	int i = 0;
-	for (auto &mFbo : mFbos)
+	for (auto &mFbo : mShadaFbos)
+	{
+		// this will restore the old framebuffer binding when we leave this function
+		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
+		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
+		gl::ScopedFramebuffer fbScp(mFbo.fbo);
+		// clear out the FBO with blue
+		gl::clear(Color(0.25, 0.5f, 1.0f));
+
+		// setup the viewport to match the dimensions of the FBO
+		gl::ScopedViewport scpVp(ivec2(0.0), mFbo.fbo->getSize());
+
+		gl::ScopedGlslProg shader(mShaders->getShader(mFbo.shadaIndex));
+		// draw our screen rectangle
+		gl::draw(mMesh);
+
+		i++;
+	}
+}
+void Textures::renderMixesToFbo()
+{
+	int i = 0;
+	for (auto &mFbo : mMixesFbos)
 	{
 		// this will restore the old framebuffer binding when we leave this function
 		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
@@ -171,7 +197,7 @@ void Textures::renderToFbo()
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0.0), mFbo->getSize());
 
-		gl::ScopedGlslProg shader(mShaders->getShader(i));
+		gl::ScopedGlslProg shader(mShaders->getMixShader());
 		// draw our screen rectangle
 		gl::draw(mMesh);
 
@@ -180,7 +206,10 @@ void Textures::renderToFbo()
 }
 void Textures::draw()
 {
-	renderToFbo();
+	//! 1 render the active shaders to Fbos
+	renderShadersToFbo();
+	//! 2 render mixes of shader Fbos as texture, images, Spout sources as Fbos
+	renderMixesToFbo();
 	/**********************************************
 	* library FBOs
 	

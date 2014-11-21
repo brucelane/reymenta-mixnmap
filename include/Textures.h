@@ -49,6 +49,10 @@ namespace Reymenta
 		ci::gl::TextureRef texture;
 		bool active;
 	};
+	struct ShadaFbo {
+		ci::gl::FboRef fbo;
+		int shadaIndex;
+	};
 	class Textures {
 	public:		
 		Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef);
@@ -75,9 +79,11 @@ namespace Reymenta
 		void						setSenderTextureSize(int index, int width, int height);
 		void						flipMixFbo(bool flip);
 		char*						getSenderName(int index) { return &inputTextures[index].SenderName[0]; };
-		void						renderToFbo();
+		void						renderShadersToFbo();
+		void						renderMixesToFbo();
 		void						saveThumb();
-
+		void						setShadaIndex(int index) { selectedShada = index; };
+		string						setInput(int index) { mShadaFbos[index].shadaIndex = selectedShada; return toString(selectedShada); };
 	private:
 		//! Logger
 		LoggerRef					log;	
@@ -90,12 +96,15 @@ namespace Reymenta
 		int checkedIndex(int index);
 		//! parameters
 		ParameterBagRef				mParameterBag;
-		//! fbo
-		vector<gl::FboRef>			mFbos;
+		//! mixes fbos
+		vector<gl::FboRef>			mMixesFbos;
+		//! shader fbos
+		vector<ShadaFbo>			mShadaFbos;
 		//! Shaders
 		ShadersRef					mShaders;
 		//! shader
 		gl::GlslProgRef				aShader;
+		int							selectedShada;
 
 		static const int			MAX = 8;
 		char						mNewSenderName[256]; // new sender name 

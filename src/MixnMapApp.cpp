@@ -225,7 +225,8 @@ void MixnMapApp::drawRender()
 	for (auto &warp : mWarps) 
 	{
 		//warp->draw(mTextures->getTexture(i), mSrcArea);
-		warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
+		warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
+		//warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
 		i++;
 	}
 
@@ -288,17 +289,32 @@ void MixnMapApp::resize()
 
 void MixnMapApp::mouseMove(MouseEvent event)
 {
+	// pass this mouse event to the warp editor first
+	if (!Warp::handleMouseMove(mWarps, event))
+	{
+		// let your application perform its mouseMove handling here
+	}	
 	//mWarpings->mouseMove(event);
 }
 
 void MixnMapApp::mouseDown(MouseEvent event)
 {
+	// pass this mouse event to the warp editor first
+	if (!Warp::handleMouseDown(mWarps, event))
+	{
+		// let your application perform its mouseDown handling here
+	}
 	mParameterBag->iMouse.z = event.getX();
 	mParameterBag->iMouse.w = getWindowHeight() - event.getY();
 }
 
 void MixnMapApp::mouseDrag(MouseEvent event)
 {
+	// pass this mouse event to the warp editor first
+	if (!Warp::handleMouseDrag(mWarps, event))
+	{
+		// let your application perform its mouseDrag handling here
+	}	
 	mParameterBag->iMouse.x =  event.getX();
 	mParameterBag->iMouse.y = getWindowHeight() - event.getY();
 	//mWarpings->mouseDrag(event);
@@ -306,6 +322,11 @@ void MixnMapApp::mouseDrag(MouseEvent event)
 
 void MixnMapApp::mouseUp(MouseEvent event)
 {
+	// pass this mouse event to the warp editor first
+	if (!Warp::handleMouseUp(mWarps, event))
+	{
+		// let your application perform its mouseUp handling here
+	}
 	//mWarpings->mouseUp(event);
 }
 
@@ -319,6 +340,14 @@ void MixnMapApp::keyDown(KeyEvent event)
 	case KeyEvent::KEY_ESCAPE:
 		// quit the application
 		quit();
+		break;
+	case KeyEvent::KEY_n:
+		// create a warp
+		mWarps.push_back(WarpPerspectiveBilinear::create());
+		break;
+	case KeyEvent::KEY_w:
+		// toggle warp edit mode
+		Warp::enableEditMode(!Warp::isEditModeEnabled());
 		break;
 
 	case KeyEvent::KEY_m:
@@ -357,6 +386,8 @@ void MixnMapApp::keyDown(KeyEvent event)
 	case KeyEvent::KEY_SPACE:
 		// save warp settings
 		//mWarpings->save();
+		fs::path settings = getAssetPath("") / warpsFileName;
+		Warp::writeSettings(mWarps, writeFile(settings));
 		break;
 	}
 }

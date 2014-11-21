@@ -61,7 +61,8 @@ namespace Reymenta
 		void toggleWarpPanel(const bool &pressed) { mWarpPanel->toggleVisibility(); };
 		void setTimeFactor(const int &aTimeFactor, const bool &pressed);
 		void setUIRefresh(const int &aFrames, const bool &pressed);
-		void setLayer( const int &aLayer, const bool &pressed );
+		void setLayer(const int &aLayer, const bool &pressed);
+		void setShada(const int &aShada, const bool &pressed);
 		void createRenderWindow(const int &aIndex, const bool &pressed) { mParameterBag->mWindowToCreate = aIndex; }
 		void deleteRenderWindows(const bool &pressed) { mParameterBag->mWindowToCreate = 2; };
 
@@ -101,8 +102,7 @@ namespace Reymenta
 		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer, labelInfo;
 		MinimalUI::UIElementRef				buttonChannels;
 		MinimalUI::UIElementRef				buttonTextures[8];
-		MinimalUI::UIElementRef				buttonFbo[8];
-		MinimalUI::UIElementRef				buttonMix[8];
+		MinimalUI::UIElementRef				buttonShader[8];
 		MinimalUI::UIElementRef				labelTextures[8];
 		MinimalUI::UIElementRef				fpsMvg, volMvg, tempoMvg;
 		MinimalUI::UIElementRef				sliderAudioMul;
