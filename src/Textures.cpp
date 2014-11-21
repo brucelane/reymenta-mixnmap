@@ -23,9 +23,7 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 
 	// init
 	mNewSenderName[0] = NULL;
-	gl::Fbo::Format format;
-	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	for (int i = 0; i < MAX; i++)
+	for (int i = 0; i < mParameterBag->MAX; i++)
 	{	
 		// create inputTextures and init with static image
 		memcpy(&inputTextures[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
@@ -35,11 +33,6 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 		inputTextures[i].texture = img;
 		// init mixTextures
 		mixTextures.push_back(img);
-		// create FBOs
-		ShadaFbo sFbo;
-		sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());//640x480
-		sFbo.shadaIndex = 0;
-		mShadaFbos.push_back(sFbo);
 		mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x480
 	}
 	// create a rectangle to be drawn with our shader program
@@ -112,10 +105,6 @@ void Textures::flipMixFbo(bool flip)
 	//mixTextures[0].setFlipped(flip);
 	mParameterBag->mOriginUpperLeft = flip;
 }
-
-void Textures::update()
-{
-}
 void Textures::saveThumb()
 {
 	string filename = mShaders->getFragFileName() + ".jpg";
@@ -146,6 +135,21 @@ void Textures::saveThumb()
 		log->logTimedString("unable to save:" + filename + string(e.what()));
 	}
 }
+
+void Textures::update()
+{
+	// compare then number of shader to the number of ShadaFbos
+	// in case of a new shader, add a ShadaFbo if size is < MAX
+	if (mShadaFbos.size() < mShaders->getShaderCount())
+	{
+		// add a ShadaFbo
+		ShadaFbo sFbo;
+		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
+		sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());
+		sFbo.shadaIndex = 0;
+		mShadaFbos.push_back(sFbo);
+	}
+}
 ci::gl::TextureRef Textures::getTexture(int index)
 {
 	return inputTextures[checkedIndex(index)].texture;
@@ -169,8 +173,8 @@ void Textures::renderShadersToFbo()
 		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
 		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
 		gl::ScopedFramebuffer fbScp(mFbo.fbo);
-		// clear out the FBO with blue
-		gl::clear(Color(0.25, 0.5f, 1.0f));
+		// clear out the FBO with black
+		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
 
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0.0), mFbo.fbo->getSize());
@@ -191,8 +195,8 @@ void Textures::renderMixesToFbo()
 		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
 		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
 		gl::ScopedFramebuffer fbScp(mFbo);
-		// clear out the FBO with blue
-		gl::clear(Color(0.25, 0.5f, 1.0f));
+		// clear out the FBO with black
+		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
 
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0.0), mFbo->getSize());

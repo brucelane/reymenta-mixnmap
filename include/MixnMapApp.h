@@ -71,12 +71,12 @@ public:
 	void mouseDrag(MouseEvent event);
 	void mouseUp(MouseEvent event);
 
-	void keyDown(KeyEvent event);
-	void keyUp(KeyEvent event);
+	void						keyDown(KeyEvent event);
+	void						keyUp(KeyEvent event);
 	//! allow file drop of images, shaders
-	void fileDrop(FileDropEvent event);
+	void						fileDrop(FileDropEvent event);
 
-	void updateWindowTitle();
+	void						updateWindowTitle();
 
 private:
 	// windows
@@ -94,7 +94,8 @@ private:
 	void						drawRender();
 	void						showCodeCallback();
 	void						createUIWindow();
-
+	boost::signals2::connection	mainDrawConnection;
+	boost::signals2::connection	renderDrawConnection;
 	//! timeline to save thumb for shader
 	Anim<float>					mTimer;
 	void						saveThumb();
@@ -115,7 +116,7 @@ private:
 	OSCRef						mOSC;
 	// warps
 	//WarpWrapperRef				mWarpings;
-	const string warpsFileName = "MixnMapWarps.xml";
+	const string				warpsFileName = "MixnMapWarps.xml";
 	WarpList					mWarps;
 	Area						mSrcArea;
 

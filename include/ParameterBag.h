@@ -71,7 +71,8 @@ namespace Reymenta {
 		ColorA						FPSColor;
 		ColorA						ColorGreen;
 		ColorA						ColorRed;
-
+		//! maximum bound for fbos, shaders, textures
+		static const int			MAX = 8;
 		// audio
 		float						*mData;
 		float						maxVolume;
@@ -105,11 +106,15 @@ namespace Reymenta {
 		float						iTimeFactor;
 		bool						mUseTimeWithTempo;
 		// shader uniforms
-		float						iGlobalTime;        // shader playback time (in seconds)
+		//! shader playback time (in seconds)
+		float						iGlobalTime;			
 		float						iChannelTime[4];
-		vec3						iResolution;        // viewport resolution (in pixels)
-		vec3						iChannelResolution[4];	// channel resolution (in pixels)
-		vec4						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
+		//! viewport resolution (in pixels)
+		vec3						iResolution;
+		//! channel resolution (in pixels)			
+		vec3						iChannelResolution[4];
+		//! mouse pixel coords. xy: current (if MLB down), zw: click	
+		vec4						iMouse;					
 		bool						iFade;
 		bool						iRepeat;
 		bool						iLight;
@@ -128,7 +133,7 @@ namespace Reymenta {
 		float						mTransitionDuration;
 		// spout
 		bool						mMemoryMode;			// tells us if texture share compatible
-		bool						mUseDX9;				// use DirectX 9 mode
+		bool						mUseDX9;				// use DirectX 9 mode, should not be set to true, unless old beta of Spout
 	private:
 		const string settingsFileName = "MixnMapSettings.xml";
 	};

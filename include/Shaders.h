@@ -36,20 +36,20 @@ namespace Reymenta
 	class Shaders {
 	public:		
 		Shaders( ParameterBagRef aParameterBag );
-		virtual					~Shaders();
+		virtual						~Shaders();
 		static ShadersRef	create( ParameterBagRef aParameterBag )
 		{
 			return shared_ptr<Shaders>( new Shaders( aParameterBag ) );
 		}
-		void update();
-		void resize();
-		string getFragError();
-		gl::GlslProgRef getShader(int aIndex);
-		gl::GlslProgRef getMixShader() { return mMixShader; };
-		bool loadPixelFragmentShader(const fs::path &fragment_path);
-		string getFragFileName() { return mFragFileName; };
-		bool setGLSLString(string pixelFrag, string fileName);
-
+		void						update();
+		void						resize();
+		string						getFragError();
+		gl::GlslProgRef				getShader(int aIndex);
+		gl::GlslProgRef				getMixShader() { return mMixShader; };
+		bool						loadPixelFragmentShader(const fs::path &fragment_path);
+		string						getFragFileName() { return mFragFileName; };
+		bool						setGLSLString(string pixelFrag, string fileName);
+		int							getShaderCount() { return mFragmentShaders.size(); };
 	private:
 		// Logger
 		LoggerRef					log;	
@@ -68,7 +68,6 @@ namespace Reymenta
 		//! vector of fragment shaders
 		vector<Shada>				mFragmentShaders;
 		bool						validFrag;
-
 		//! parameters
 		ParameterBagRef				mParameterBag;
 		//! mix shader

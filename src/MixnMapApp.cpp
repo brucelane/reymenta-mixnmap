@@ -110,7 +110,7 @@ void MixnMapApp::windowManagement()
 	// setup the main window and associated draw function
 	mMainWindow = getWindow();
 	mMainWindow->setTitle("Reymenta mix-n-map");
-	mMainWindow->connectDraw(&MixnMapApp::drawMain, this);
+	mainDrawConnection = mMainWindow->connectDraw(&MixnMapApp::drawMain, this);
 	mMainWindow->connectClose(&MixnMapApp::shutdown, this);
 }
 void MixnMapApp::shutdown()
@@ -120,6 +120,8 @@ void MixnMapApp::shutdown()
 	{
 		mIsShutDown = true;
 		log->logTimedString("1st screen shutdown must be done once");
+		renderDrawConnection.disconnect();
+		mainDrawConnection.disconnect();
 		deleteRenderWindows();
 		// save warp settings
 		//mWarpings->save();
@@ -272,7 +274,7 @@ void MixnMapApp::createRenderWindow()
 	mRenderWindow->setPos(mParameterBag->mRenderX, 0);
 #endif  // _DEBUG	
 	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	mRenderWindow->connectDraw(&MixnMapApp::drawRender, this);
+	renderDrawConnection = mRenderWindow->connectDraw(&MixnMapApp::drawRender, this);
 	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, 0);
 
 }

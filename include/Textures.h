@@ -44,19 +44,19 @@ namespace Reymenta
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures
 	//typedef 
 	struct Sender {
-		char SenderName[256];
-		unsigned int width, height;
-		ci::gl::TextureRef texture;
-		bool active;
+		char						SenderName[256];
+		unsigned int				width, height;
+		ci::gl::TextureRef			texture;
+		bool						active;
 	};
 	struct ShadaFbo {
-		ci::gl::FboRef fbo;
-		int shadaIndex;
+		ci::gl::FboRef				fbo;
+		int							shadaIndex;
 	};
 	class Textures {
 	public:		
 		Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef);
-		static TexturesRef	create(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
+		static TexturesRef			create(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 		{
 			return shared_ptr<Textures>(new Textures(aParameterBag, aShadersRef));
 		}
@@ -88,12 +88,12 @@ namespace Reymenta
 		//! Logger
 		LoggerRef					log;	
 		// vectors of textures
-		//! sTextures: Spout received textures
-		//vector<ci::gl::TextureRef>	sTextures;
+		//! fboFormat
+		gl::Fbo::Format				format;
 		//! mixTextures: mix of 2 textures from sTextures or shaders
 		vector<ci::gl::TextureRef>	mixTextures;
 		//! check if valid index
-		int checkedIndex(int index);
+		int							checkedIndex(int index);
 		//! parameters
 		ParameterBagRef				mParameterBag;
 		//! mixes fbos
@@ -105,12 +105,13 @@ namespace Reymenta
 		//! shader
 		gl::GlslProgRef				aShader;
 		int							selectedShada;
-
+		// TODO should be removed and use mParameterBag->MAX
 		static const int			MAX = 8;
 		char						mNewSenderName[256]; // new sender name 
 		//! audio texture
 		unsigned char				dTexture[1024];
 		//! inputTextures: array of Spout received textures
+		// TODO MAX should be mParameterBag->MAX
 		Sender						inputTextures[MAX];
 		Sender						audioTexture;
 		//! mesh for shader drawing

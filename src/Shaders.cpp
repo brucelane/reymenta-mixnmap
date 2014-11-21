@@ -52,11 +52,6 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 		localFile = getAssetPath("") / "shaders" / fileName;
 		loadPixelFragmentShader(localFile.string());
 	}
-	// init with passthru shader if something goes wrong	
-	/*for (size_t m = mFragmentShaders.size(); m < 8; m++)
-	{
-		mFragmentShaders.push_back(gl::GlslProg::create(loadResource(PASSTHROUGH2_VERT), loadResource(PASSTHROUGH_FRAG)));
-	}*/
 }
 void Shaders::resize()
 {
@@ -151,7 +146,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 	try
 	{
 		// searching first index of not running shader
-		if (mFragmentShaders.size() < 8)
+		if (mFragmentShaders.size() < mParameterBag->MAX)
 		{
 			mFragmentShaders.push_back(newShada);
 			foundIndex = mFragmentShaders.size() - 1;
