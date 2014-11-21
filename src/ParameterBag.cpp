@@ -172,13 +172,12 @@ void ParameterBag::reset()
 	mPreviewWidth = 156;
 	mPreviewHeight = 88;
 	mOriginUpperLeft = false;
-	mCurrentPreviewFboIndex = 0;
+	mCurrentShadaFboIndex = 0;
 	mMixFboIndex = 1;
 	mLeftFboIndex = 2;
 	mRightFboIndex = 3;
 	mDirectRender = false;
 
-	mPreviewFragIndex = 0;
 	mLeftFragIndex = 0;
 	mRightFragIndex = 1;
 	mWarpCount = 3;

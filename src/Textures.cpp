@@ -110,9 +110,9 @@ void Textures::saveThumb()
 	string filename = mShaders->getFragFileName() + ".jpg";
 	try
 	{
-		mShadaFbos[mParameterBag->mCurrentPreviewFboIndex].fbo->bindFramebuffer();
+		mShadaFbos[mParameterBag->mCurrentShadaFboIndex].fbo->bindFramebuffer();
 		Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
-		mShadaFbos[mParameterBag->mCurrentPreviewFboIndex].fbo->unbindFramebuffer();
+		mShadaFbos[mParameterBag->mCurrentShadaFboIndex].fbo->unbindFramebuffer();
 		fs::path path = getAssetPath("") / "thumbs" / filename;
 		writeImage(path, ImageSourceRef(fboSurf));
 		log->logTimedString("saved:" + filename);

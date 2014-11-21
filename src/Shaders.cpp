@@ -163,16 +163,16 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 				while (!indexFound)
 				{
 					foundIndex++;
-					if (foundIndex != mParameterBag->mLeftFragIndex && foundIndex != mParameterBag->mRightFragIndex && foundIndex != mParameterBag->mPreviewFragIndex) indexFound = true;
+					if (foundIndex != mParameterBag->mLeftFragIndex && foundIndex != mParameterBag->mRightFragIndex && foundIndex != mParameterBag->mCurrentShadaFboIndex) indexFound = true;
 					if (foundIndex > mFragmentShaders.size() - 1) indexFound = true;
 				}
 			}
 			// load the new shader
 			mFragmentShaders[foundIndex] = newShada;
 
-			//preview the new loaded shader
 		}
-		mParameterBag->mPreviewFragIndex = foundIndex;
+		//preview the new loaded shader
+		mParameterBag->mCurrentShadaFboIndex = foundIndex;
 		log->logTimedString("setGLSLString success" + static_cast<ostringstream*>(&(ostringstream() << foundIndex))->str());
 		// check that uniforms exist before setting the constant uniforms
 		auto map = mFragmentShaders[foundIndex].prog->getActiveUniformTypes();

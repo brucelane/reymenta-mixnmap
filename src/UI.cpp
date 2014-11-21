@@ -59,7 +59,7 @@ void UI::setup()
 }
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
-	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":1052, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\", \"height\":174 }");
+	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":1052, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
 	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -90,7 +90,7 @@ void UI::setupMiniControl()
 	// output 
 	mMiniControl->addLabel("Rndr\nwin", "{ \"width\":48, \"clear\":false }");
 	mMiniControl->addButton("1", std::bind(&UI::createRenderWindow, this, 1, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true }");
-	mMiniControl->addButton("x", std::bind(&UI::deleteRenderWindows, this, std::placeholders::_1), "{ \"stateless\":false, \"group\":\"render\", \"exclusive\":true, \"pressed\":true }");
+	mMiniControl->addButton("x", std::bind(&UI::deleteRenderWindows, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true, \"pressed\":true }");
 	// Audio
 	volMvg = mMiniControl->addMovingGraphButton("audio in", &mParameterBag->maxVolume, std::bind(&UI::useLineIn, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"width\":48.0, \"min\":0.0, \"max\":500.0 }");
 	sliderAudioMul = mMiniControl->addSlider("mul", &mParameterBag->mAudioMultFactor, "{ \"min\":0.01, \"max\":10.0, \"handleVisible\":false, \"width\":76, \"clear\":false }");//\"vertical\":true,
@@ -189,7 +189,7 @@ void UI::setupGlobal()
 }
 void UI::setupTextures()
 {
-	tParams = UIController::create("{ \"x\":0, \"y\":178, \"depth\":300, \"width\":300, \"height\":340, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams = UIController::create("{ \"x\":0, \"y\":138, \"depth\":300, \"width\":300, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -198,6 +198,8 @@ void UI::setupTextures()
 	tParams->setFont("body", mParameterBag->mBodyFont);
 	tParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(tParams);
+	sliderPreviewShadaXY = tParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+
 	// Textures select
 	// Button Group
 	for (int i = 0; i < mTextures->getTextureCount(); i++)
@@ -503,6 +505,7 @@ void UI::update()
 			labelOSC->setName(mParameterBag->OSCMsg);
 			labelInfo->setName(mParameterBag->InfoMsg);
 			labelError->setName(mShaders->getFragError());
+			sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 
 			for (int i = 0; i < mTextures->getTextureCount(); i++)
 			{

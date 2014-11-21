@@ -42,20 +42,18 @@ namespace Reymenta
 
 		void show();
 		void hide();
-		//void addShader(std::string fullPath);
+
 		void setUpdateFrequency() { mParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh; };
 	private:
 		void setupParams();
 		void flipLibraryCurrentFbo(const bool &pressed);
-		//void setLeftFboActive(const int &aIndex, const bool &pressed);
-		//void setRightFboActive(const int &aIndex, const bool &pressed);
+
 		void setLeftFragActive(const int &aIndex, const bool &pressed);
 		void setRightFragActive(const int &aIndex, const bool &pressed);
-		void setPreviewActive(const int &aIndex, const bool &pressed);
-		//void setFboActive(const int &aIndex, const bool &pressed);
+
 		vector<MinimalUI::UIElementRef>	labelInput, buttonFrag;
 		
-		MinimalUI::UIElementRef			flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY, sliderPreviewRenderXY;
+		MinimalUI::UIElementRef			flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
 		MinimalUI::UIControllerRef		mParams;
 		bool							mVisible;
 

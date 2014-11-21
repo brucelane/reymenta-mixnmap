@@ -94,10 +94,10 @@ namespace Reymenta {
 		int							mFboWidth, mFboHeight;
 		bool						mFlipFbo;
 		int							mWarpCount;
-		int							mCurrentPreviewFboIndex;
+		int							mCurrentShadaFboIndex;
 		int							mMixFboIndex;
 		int							mLeftFboIndex, mRightFboIndex;
-		int							mLeftFragIndex, mRightFragIndex, mPreviewFragIndex;
+		int							mLeftFragIndex, mRightFragIndex;
 		float						iZoomLeft, iZoomRight;
 		// tap tempo
 		float						mTempo;

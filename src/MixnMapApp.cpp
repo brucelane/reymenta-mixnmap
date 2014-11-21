@@ -132,7 +132,7 @@ void MixnMapApp::shutdown()
 		mSpout->shutdown();
 		mTextures->shutdown();
 		mUI->shutdown();
-		timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ quit(); });
+		// TODO causes error in vao.h, and it never quits if this is not called.. timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ quit(); });
 	}
 
 }
@@ -169,48 +169,51 @@ void MixnMapApp::fileDrop(FileDropEvent event)
 
 void MixnMapApp::update()
 {
-	if (mParameterBag->iGreyScale)
+	if (!mIsShutDown)
 	{
-		mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
-		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
-	}
-	mParameterBag->iChannelTime[0] = getElapsedSeconds();
-	mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
-	mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
-	mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
-	//
-	if (mParameterBag->mUseTimeWithTempo)
-	{
-		mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
-	}
-	else
-	{
-		mParameterBag->iGlobalTime = getElapsedSeconds();
-	}
-	mOSC->update();
-	mAudio->update();
-	//! update textures
-	mTextures->update();
-	//! update shaders (must be after the textures update)
-	mShaders->update();
-	if (mParameterBag->mShowUI) mUI->update();
-	if (mParameterBag->mWindowToCreate > 0)
-	{
-		// try to create the window only once
-		int windowToCreate = mParameterBag->mWindowToCreate;
-		mParameterBag->mWindowToCreate = 0;
-		switch (windowToCreate)
+		if (mParameterBag->iGreyScale)
 		{
-		case 1:
-			createRenderWindow();
-			break;
-		case 2:
-			deleteRenderWindows();
-			break;
+			mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
+			mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
 		}
+		mParameterBag->iChannelTime[0] = getElapsedSeconds();
+		mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
+		mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
+		mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
+		//
+		if (mParameterBag->mUseTimeWithTempo)
+		{
+			mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
+		}
+		else
+		{
+			mParameterBag->iGlobalTime = getElapsedSeconds();
+		}
+		mOSC->update();
+		mAudio->update();
+		//! update textures
+		mTextures->update();
+		//! update shaders (must be after the textures update)
+		mShaders->update();
+		if (mParameterBag->mShowUI) mUI->update();
+		if (mParameterBag->mWindowToCreate > 0)
+		{
+			// try to create the window only once
+			int windowToCreate = mParameterBag->mWindowToCreate;
+			mParameterBag->mWindowToCreate = 0;
+			switch (windowToCreate)
+			{
+			case 1:
+				createRenderWindow();
+				break;
+			case 2:
+				deleteRenderWindows();
+				break;
+			}
+		}
+		mSpout->update();
+		updateWindowTitle();
 	}
-	mSpout->update();
-	updateWindowTitle();
 }
 
 void MixnMapApp::drawRender()
@@ -243,6 +246,7 @@ void MixnMapApp::drawMain()
 	//! draw Spout received textures
 	mSpout->draw();
 	mTextures->draw();
+	gl::draw(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 	if (mParameterBag->mShowUI) mUI->draw();
 	gl::disableAlphaBlending();
 }
@@ -396,17 +400,17 @@ void MixnMapApp::keyDown(KeyEvent event)
 
 void MixnMapApp::keyUp(KeyEvent event)
 {
+	// pass this key event to the warp editor first
+	if (!Warp::handleKeyUp(mWarps, event))
+	{
+		// let your application perform its keyUp handling here
+	}
 	//mWarpings->keyUp(event);
-
 }
 
 void MixnMapApp::updateWindowTitle()
 {
-	if (!mIsShutDown)
-	{
-		//if (mParameterBag->mShowConsole) { if (getElapsedFrames() % 3000 == 0) log->logTimedString(toString(floor(getAverageFps())) + " fps") };
-		getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
-	}
+	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
 }
 
 CINDER_APP_NATIVE(MixnMapApp, RendererGl)
