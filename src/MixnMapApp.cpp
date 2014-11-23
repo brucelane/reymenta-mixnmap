@@ -14,9 +14,9 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	settings->setWindowSize(mParameterBag->mMainDisplayWidth/2, mParameterBag->mMainDisplayHeight - 200);
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth/1.9, mParameterBag->mRenderY + 50));
 #else
-	settings->setWindowSize(mParameterBag->mMainDisplayWidth, mParameterBag->mMainDisplayHeight);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY));
-	setBorderless();
+	settings->setWindowSize(mParameterBag->mMainDisplayWidth*2/3, mParameterBag->mMainDisplayHeight - 200);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY + 50));
+	//setBorderless();
 #endif  // _DEBUG
 	settings->setResizable(true); // allowed for a receiver
 	// set a high frame rate to disable limitation

@@ -24,11 +24,12 @@ void SpoutWrapper::update()
 
 	if (nSenders != nReceivers && nSenders > 0)
 	{
-		mNewSenderName[0] = NULL;// the name will be filled when the receiver connects to a sender
+		//! the name will be filled when the receiver connects to a sender
+		mNewSenderName[0] = NULL;
 		log->logTimedString("new sender found or sender deleted");
 
 		nReceivers = 0;
-		// loop to find existing sender with that name
+		//! loop to find existing sender with that name
 		for (int i = 0; i < nSenders; i++)
 		{
 			mSpoutReceivers[0].GetSenderName(i, &mNewSenderName[0], MaxSize);
