@@ -85,6 +85,11 @@ void MixnMapApp::setup()
 		// otherwise create a warp from scratch
 		mWarps.push_back(WarpPerspectiveBilinear::create());
 	}
+	// create warpInputs and UI
+	for (auto &warp : mWarps)
+	{
+		mUI->createWarp();
+	}
 	mSrcArea = mTextures->getTexture(0)->getBounds();
 	// adjust the content size of the warps
 	Warp::setSize(mWarps, mTextures->getTexture(0)->getSize());
@@ -143,8 +148,10 @@ void MixnMapApp::fileDrop(FileDropEvent event)
 	boost::filesystem::path mPath = event.getFile(event.getNumFiles() - 1);
 	string mFile = mPath.string();
 	if (mFile.find_last_of(".") != std::string::npos) ext = mFile.substr(mFile.find_last_of(".") + 1);
-	//mParameterBag->currentSelectedIndex = (int)(event.getX() / 80);//76+margin mParameterBag->mPreviewWidth);
-	log->logTimedString(mFile + " dropped, currentSelectedIndex:" + toString(mParameterBag->currentSelectedIndex) + " x: " + toString(event.getX()) + " mPreviewWidth: " + toString(mParameterBag->mPreviewWidth));
+	// transform to lower case
+	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+	//mParameterBag->currentInputTextureIndex = (int)(event.getX() / 80);//76+margin mParameterBag->mPreviewWidth);
+	log->logTimedString(mFile + " dropped, x: " + toString(event.getX()) + " mPreviewWidth: " + toString(mParameterBag->mPreviewWidth));
 
 	if (ext == "wav" || ext == "mp3")
 	{
@@ -182,11 +189,6 @@ void MixnMapApp::update()
 		if (mUI->getTextureButtonsCount() < mTextures->getInputTexturesCount())
 		{
 			mUI->addTextureControls();
-		}
-		if (mParameterBag->iGreyScale)
-		{
-			mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
-			mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
 		}
 		mParameterBag->iChannelTime[0] = getElapsedSeconds();
 		mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
@@ -242,8 +244,8 @@ void MixnMapApp::drawRender()
 	for (auto &warp : mWarps) 
 	{
 		//warp->draw(mTextures->getTexture(i), mSrcArea);
-		warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
-		//warp->draw(mTextures->getTexture(i), mTextures->getTexture(i)->getBounds());
+		//warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
+		warp->draw(mTextures->getMixTexture(i), mTextures->getMixTexture(i)->getBounds());
 		i++;
 	}
 

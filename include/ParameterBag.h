@@ -82,7 +82,6 @@ namespace Reymenta {
 		int							mAudioTextureIndex;
 		// Textures
 		bool						mOriginUpperLeft;
-		int							currentSelectedIndex;
 
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;

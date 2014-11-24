@@ -58,6 +58,12 @@ void UI::setup()
 
 	mSetupComplete = true;
 }
+void UI::createWarp()
+{
+	mTextures->createWarpInput();
+	mLibraryPanel->addButtons();
+}
+
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
 	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":1052, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
@@ -143,9 +149,8 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("t", std::bind(&UI::tempoBA, this, std::placeholders::_1), "{ \"width\":9, \"stateless\":false, \"group\":\"ba\", \"exclusive\":true, \"clear\":false }");
 	mMiniControl->addButton("x", std::bind(&UI::resetBA, this, std::placeholders::_1), "{ \"width\":9, \"stateless\":false, \"group\":\"ba\", \"exclusive\":true, \"pressed\":true, \"clear\":false }");
 
-	mMiniControl->addButton("grey scale", std::bind(&UI::togglePhong, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
+	mMiniControl->addButton("grey scale", std::bind(&UI::toggleGreyScale, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("Black", std::bind(&UI::InstantBlack, this, std::placeholders::_1), "{ \"width\":72 }");
-	//mMiniControl->addButton("Strobe", std::bind(&UI::Strobe, this, std::placeholders::_1), "{  }");
 	// Simple Buttons
 	mMiniControl->addButton("lib", std::bind(&UI::toggleLibPanel, this, std::placeholders::_1), "{ \"clear\":false, \"width\":48 }");
 	mMiniControl->addButton("wrp", std::bind(&UI::toggleWarpPanel, this, std::placeholders::_1), "{ \"clear\":false, \"width\":48 }");
@@ -220,7 +225,6 @@ void UI::setupShaders()
 	sParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(sParams);
 	sliderPreviewShadaXY = sParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
-
 }
 void UI::addShadaControls()
 {
@@ -283,12 +287,12 @@ void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
 		}
 	}
 }
-
 void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
 	if (pressed)
 	{
-		mParameterBag->currentSelectedIndex = aTextureIndex;
+		// 0 for input texture
+		mTextures->setInputTextureIndex(aTextureIndex, 0);
 		mParameterBag->iChannels[0] = aTextureIndex;
 	}
 }
@@ -296,7 +300,8 @@ void UI::setShadaIndex(const int &aShadaIndex, const bool &pressed)
 {
 	if (pressed)
 	{
-		mTextures->setShadaIndex(aShadaIndex);
+		// 1 for shader
+		mTextures->setShadaIndex(aShadaIndex, 1);
 	}
 }
 
@@ -692,9 +697,15 @@ void UI::toggleLightAuto(const bool &pressed)
 {
 	mParameterBag->iLightAuto = pressed;
 }
-void UI::togglePhong(const bool &pressed)
+void UI::toggleGreyScale(const bool &pressed)
 {
 	mParameterBag->iGreyScale = pressed;
+	if (mParameterBag->iGreyScale)
+	{
+		mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
+		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
+	}
+
 }
 void UI::toggleOriginUpperLeft(const bool &pressed)
 {

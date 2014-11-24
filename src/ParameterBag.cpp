@@ -191,8 +191,6 @@ void ParameterBag::reset()
 	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
 	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
 
-	currentSelectedIndex = 0;
-
 	for (int a = 0; a < 8; a++)
 	{
 		iChannels[a] = a;

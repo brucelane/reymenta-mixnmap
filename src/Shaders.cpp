@@ -13,7 +13,7 @@ using namespace Reymenta;
 Shaders::Shaders(ParameterBagRef aParameterBag)
 {
 	mParameterBag = aParameterBag;
-	// instanciate the logger class
+	//! instanciate the logger class
 	log = Logger::create("ReymentaRenderShadersLog.txt");
 	log->logTimedString("Shaders constructor");
 	header = loadString(loadAsset("shaders/shadertoy.inc"));
@@ -21,13 +21,60 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 	defaultFragmentShader = loadString(loadAsset("shaders/default.glsl"));
 	validFrag = false;
 
-	//load mix shader
+	//! load mix shader
+	loadMixShader();
+	//! init some shaders
+	string fileName;
+	fs::path localFile;
+	for (size_t m = 0; m < 3; m++)
+	{
+		fileName = toString(m) + ".glsl";
+		localFile = getAssetPath("") / "shaders" / fileName;
+		loadPixelFragmentShader(localFile.string());
+	}
+}
+void Shaders::loadMixShader()
+{
 	try
 	{
 		fs::path mixFragFile = getAssetPath("") / "shaders" / "mix.frag";
 		if (fs::exists(mixFragFile))
 		{
 			mMixShader = gl::GlslProg::create(loadResource(PASSTHROUGH2_VERT), loadFile(mixFragFile));
+			// check that uniforms exist before setting the constant uniforms
+			auto mixMap = mMixShader->getActiveUniformTypes();
+			log->logTimedString("Found MixShader uniforms:");
+			/* should be
+			uniform vec3        iResolution;         	// viewport resolution (in pixels)
+			uniform sampler2D   iChannel0;				// input channel 0
+			uniform sampler2D   iChannel1;				// input channel 1
+			uniform float       iCrossfade;          	// CrossFade 2 shaders
+			uniform float       iAlpha;          	  	// alpha
+			*/
+			for (const auto &pair : mixMap)
+			{
+				log->logTimedString(pair.first);
+			}
+			if (mixMap.find("iResolution") != mixMap.end())
+			{
+				mMixShader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			}
+			if (mixMap.find("iChannel0") != mixMap.end())
+			{
+				mMixShader->uniform("iChannel0", 0);
+			}
+			if (mixMap.find("iChannel1") != mixMap.end())
+			{
+				mMixShader->uniform("iChannel1", 1);
+			}
+			if (mixMap.find("iCrossfade") != mixMap.end())
+			{
+				mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
+			}
+			if (mixMap.find("iAlpha") != mixMap.end())
+			{
+				mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
+			}
 		}
 		else
 		{
@@ -44,17 +91,11 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 		mError = string(e.what());
 		log->logTimedString("unable to load shader:" + string(e.what()));
 	}
-	string fileName;
-	fs::path localFile;
-	for (size_t m = 0; m < 3; m++)
-	{
-		fileName = toString(m) + ".glsl";
-		localFile = getAssetPath("") / "shaders" / fileName;
-		loadPixelFragmentShader(localFile.string());
-	}
+
 }
 void Shaders::resize()
 {
+	// change iResolution
 	for (auto &shader : mFragmentShaders)
 	{
 		auto map = shader.prog->getActiveUniformTypes();
@@ -63,6 +104,12 @@ void Shaders::resize()
 			shader.prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
 		}
 	}
+	auto mixMap = mMixShader->getActiveUniformTypes();
+	if (mixMap.find("iResolution") != mixMap.end())
+	{
+		mMixShader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+	}
+
 }
 void Shaders::update()
 {
@@ -88,9 +135,18 @@ void Shaders::update()
 			shader.prog->uniform("iMouse", mParameterBag->iMouse);
 		}
 	}
+	auto mixMap = mMixShader->getActiveUniformTypes();
+	if (mixMap.find("iCrossfade") != mixMap.end())
+	{
+		mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
+	}
+	if (mixMap.find("iAlpha") != mixMap.end())
+	{
+		mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
+	}
 }
-gl::GlslProgRef Shaders::getShader(int aIndex) 
-{ 
+gl::GlslProgRef Shaders::getShader(int aIndex)
+{
 	if (aIndex > mFragmentShaders.size() - 1) aIndex = mFragmentShaders.size() - 1;
 	if (aIndex < 0) aIndex = 0;
 	return mFragmentShaders[aIndex].prog;
@@ -180,7 +236,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 		log->logTimedString("Found uniforms:");
 		for (const auto &pair : map)
 		{
-			log->logTimedString(pair.first );
+			log->logTimedString(pair.first);
 		}
 		console() << endl;
 		if (map.find("iResolution") != map.end())

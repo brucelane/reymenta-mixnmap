@@ -43,15 +43,24 @@ namespace Reymenta
 
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures
 	//typedef 
-	struct Sender {
+	struct Sender 
+	{
 		char						SenderName[256];
 		unsigned int				width, height;
 		ci::gl::TextureRef			texture;
 		bool						active;
 	};
-	struct ShadaFbo {
+	struct ShadaFbo 
+	{
 		ci::gl::FboRef				fbo;
 		int							shadaIndex;
+	};
+	struct WarpInput
+	{
+		int							leftIndex;
+		int							leftMode; // 0 for input texture, 1 for shader
+		int							rightIndex;
+		int							rightMode;
 	};
 	class Textures {
 	public:		
@@ -62,7 +71,7 @@ namespace Reymenta
 		}
 		//! Returns Texture at index
 		ci::gl::TextureRef			getTexture(int index);
-		ci::gl::TextureRef			getMixTexture(int index);
+		//ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
 		int							getInputTexturesCount() { return inputTextures.size(); };
 		ci::gl::TextureRef			getSenderTexture(int index);
@@ -83,18 +92,21 @@ namespace Reymenta
 		void						renderShadersToFbo();
 		void						renderMixesToFbo();
 		void						saveThumb();
-		void						setShadaIndex(int index) { selectedShada = index; };
-		string						setInput(int index) { mShadaFbos[index].shadaIndex = selectedShada; return toString(selectedShada); };
+		void						setShadaIndex(int index, int mode) { selectedShada = index; currentMode = mode; };
+		void						setInputTextureIndex(int index, int mode) { currentInputTextureIndex = index; currentMode = mode; };
+		string						setInput(int index, bool left);
 		int							getShadaFbosSize() { return mShadaFbos.size(); };
 		int							addShadaFbo();
+		void						createWarpInput();
 	private:
 		//! Logger
 		LoggerRef					log;	
-		// vectors of textures
+		//! startup image
+		gl::TextureRef				startupImage;
 		//! fboFormat
 		gl::Fbo::Format				format;
 		//! mixTextures: mix of 2 textures from sTextures or shaders
-		vector<ci::gl::TextureRef>	mixTextures;
+		//vector<ci::gl::TextureRef>	mixTextures;
 		//! check if valid index
 		int							checkedIndex(int index);
 		//! parameters
@@ -110,6 +122,11 @@ namespace Reymenta
 		int							selectedShada;
 		//! inputTextures: vector of Spout received textures
 		vector<Sender>				inputTextures;
+		int							currentInputTextureIndex;
+		//! select mode for routing from texture or shader to the mixing (0 for input texture, 1 for shader)
+		unsigned int				currentMode;
+		//! warpInputs: vector of warp input textures/shader fbo texture
+		vector<WarpInput>			warpInputs;
 		//! mesh for shader drawing
 		gl::VboMeshRef				mMesh;
 

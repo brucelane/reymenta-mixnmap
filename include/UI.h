@@ -49,7 +49,7 @@ namespace Reymenta
 		void								toggleLight(const bool &pressed);
 		void								toggleLightAuto(const bool &pressed);
 		void								toggleFade(const bool &pressed);
-		void								togglePhong(const bool &pressed);
+		void								toggleGreyScale(const bool &pressed);
 		void								toggleOriginUpperLeft(const bool &pressed);
 		void								InstantBlack(const bool &pressed);
 		void								debug(const bool &pressed);
@@ -113,6 +113,7 @@ namespace Reymenta
 		void								addShadaControls();
 		void								addTextureControls();
 		int									getTextureButtonsCount() { return buttonTexture.size(); };
+		void								createWarp();
 	private:
 		void								setupGlobal();
 		void								setupMiniControl();

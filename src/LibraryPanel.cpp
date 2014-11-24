@@ -40,33 +40,52 @@ void LibraryPanel::setupParams()
 	sliderMixRenderXY = mParams->addSlider2D("MixXY", &mParameterBag->mPreviewRenderXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	mParams->addSlider("LZoom", &mParameterBag->iZoomLeft, "{ \"clear\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
 	mParams->addSlider("RZoom", &mParameterBag->iZoomRight, "{ \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
-	// create 8 frag btns
+	/* dynamic now
+	create 8 frag btns
 	for (int i = 0; i < 8; i++)
 	{
 		labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
-		buttonFrag.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
-		mParams->addButton("L", std::bind(&LibraryPanel::setLeftFragActive, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }");
-		mParams->addButton("R", std::bind(&LibraryPanel::setRightFragActive, this, i, std::placeholders::_1), "{  \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }");
-	}
+		buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
+		buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
+		buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
+	}*/
 }
+void LibraryPanel::addButtons()
+{
+	int i = buttonLeft.size();
+	labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
+	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
+	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
+	buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
+
+}
+
 void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)
 {
 	mTextures->flipMixFbo(pressed);
 }
-void LibraryPanel::setInput(const int &aIndex, const bool &pressed)
+void LibraryPanel::setPreview(const int &aIndex, const bool &pressed)
 {
-	if (pressed) labelInput[aIndex]->setName(mTextures->setInput(aIndex));
+	
 }
 void LibraryPanel::setCurrentFbo(const int &aIndex, const bool &pressed)
 {
 }
-void LibraryPanel::setLeftFragActive(const int &aIndex, const bool &pressed)
+void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 {
-	if (pressed) mParameterBag->mLeftFragIndex = aIndex;
+	if (pressed)
+	{
+		mParameterBag->mLeftFragIndex = aIndex;
+		buttonLeft[aIndex]->setName(mTextures->setInput(aIndex, true));
+	}
 }
-void LibraryPanel::setRightFragActive(const int &aIndex, const bool &pressed)
+void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 {
-	if (pressed) mParameterBag->mRightFragIndex = aIndex;
+	if (pressed)
+	{
+		mParameterBag->mRightFragIndex = aIndex;
+		buttonRight[aIndex]->setName(mTextures->setInput(aIndex, false));
+	}
 }
 void LibraryPanel::update()
 {

@@ -19,27 +19,79 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	log->logTimedString("Textures constructor");
 
 	// init texture
-	gl::TextureRef img = gl::Texture::create(loadImage(loadResource(IMG)));
+	startupImage = gl::Texture::create(loadImage(loadResource(IMG)));
 
 	// init
 	string pathToStartupFile = (getAssetPath("") / "startup.jpg").string();
 	if (fs::exists(pathToStartupFile))
 	{
 		log->logTimedString("startup.jpg image found, loading");
-		img = gl::Texture::create(loadImage(loadAsset("startup.jpg")));
+		startupImage = gl::Texture::create(loadImage(loadAsset("startup.jpg")));
 		log->logTimedString("startup.jpg image loaded");
 	}
-	createTexture("startup image", mParameterBag->mFboWidth, mParameterBag->mFboHeight, img );
-	// init mixTextures
-	mixTextures.push_back(img);
-	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
+	createTexture("startup image", mParameterBag->mFboWidth, mParameterBag->mFboHeight, startupImage);
 	// create a rectangle to be drawn with our shader program
 	// default is from -0.5 to 0.5, so we scale by 2 to get -1.0 to 1.0
 	// coming soon in Cinder? mMesh = gl::VboMesh::create(geom::Rect().scale(vec2(2.0f, 2.0f))); 
 	mMesh = gl::VboMesh::create(geom::Rect(Rectf(-2.0, -2.0, 2.0, 2.0)));
 	selectedShada = 0;
+	currentInputTextureIndex = 0;
+	currentMode = 0;
+
 	log->logTimedString("Textures constructor end");
 }
+void Textures::createWarpInput()
+{
+	WarpInput newWarpInput;
+	newWarpInput.leftIndex = 0;
+	newWarpInput.leftMode = 0;
+	newWarpInput.rightIndex = 0;
+	newWarpInput.rightMode = 0;
+	warpInputs.push_back(newWarpInput);
+	// init mixTextures
+	//mixTextures.push_back(startupImage);
+	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
+}
+
+string Textures::setInput(int index, bool left) 
+{ 
+	string name;
+	if (currentMode == 0)
+	{
+		// 0 = input texture mode
+		name = "T" + toString(currentInputTextureIndex);
+		if (left)
+		{
+			warpInputs[index].leftIndex = currentInputTextureIndex;
+			warpInputs[index].leftMode = 0; // 0 for input texture
+		}
+		else
+		{
+			warpInputs[index].rightIndex = currentInputTextureIndex;
+			warpInputs[index].rightMode = 0; // 0 for input texture
+		}
+	}
+	else
+	{
+		// 1 = shader mode
+		mShadaFbos[index].shadaIndex = selectedShada;
+		name = "S" + toString(selectedShada);
+		if (left)
+		{
+			warpInputs[index].leftIndex = selectedShada;
+			warpInputs[index].leftMode = 1; // 1 for shader
+
+		}
+		else
+		{
+			warpInputs[index].rightIndex = selectedShada;
+			warpInputs[index].rightMode = 1; // 1 for shader
+
+		}
+	}
+	return name; 
+};
+
 ci::gl::TextureRef Textures::getSenderTexture(int index)
 {
 	return inputTextures[checkedIndex(index)].texture;
@@ -164,15 +216,13 @@ void Textures::update()
 }
 ci::gl::TextureRef Textures::getTexture(int index)
 {
-	log->logTimedString("getTexture, index:" + toString(index));
-	log->logTimedString("getTexture, checkedIndex(index):" + toString(checkedIndex(index)));
 	return inputTextures[checkedIndex(index)].texture;
 }
-ci::gl::TextureRef Textures::getMixTexture(int index)
+/*ci::gl::TextureRef Textures::getMixTexture(int index)
 {
 	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
 	return mixTextures[index];
-}
+}*/
 ci::gl::TextureRef Textures::getFboTexture(int index)
 {
 	if (index > mShadaFbos.size() - 1) index = mShadaFbos.size() - 1;
@@ -199,6 +249,7 @@ void Textures::renderShadersToFbo()
 }
 void Textures::renderMixesToFbo()
 {
+	int i = 0;
 	for (auto &mFbo : mMixesFbos)
 	{
 		// this will restore the old framebuffer binding when we leave this function
@@ -212,8 +263,30 @@ void Textures::renderMixesToFbo()
 		gl::ScopedViewport scpVp(ivec2(0.0), mFbo->getSize());
 
 		gl::ScopedGlslProg shader(mShaders->getMixShader());
+		if (warpInputs[i].leftMode == 0)
+		{
+			// 0 for input texture
+			getSenderTexture(warpInputs[i].leftIndex)->bind(0);
+		}
+		else
+		{
+			// 1 for shader
+			getFboTexture(warpInputs[i].leftIndex)->bind(0);
+		}
+		if (warpInputs[i].rightMode == 0)
+		{
+			// 0 for input texture
+			getSenderTexture(warpInputs[i].rightIndex)->bind(1);
+		}
+		else
+		{
+			// 1 for shader
+			getFboTexture(warpInputs[i].rightIndex)->bind(1);
+		}
+
 		// draw our screen rectangle
 		gl::draw(mMesh);
+		i++;
 	}
 }
 void Textures::draw()

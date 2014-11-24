@@ -73,5 +73,6 @@ namespace Reymenta
 		ParameterBagRef				mParameterBag;
 		//! mix shader
 		gl::GlslProgRef				mMixShader;
+		void						loadMixShader();
 	};
 }
