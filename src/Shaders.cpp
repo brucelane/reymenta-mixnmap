@@ -134,6 +134,14 @@ void Shaders::update()
 		{
 			shader.prog->uniform("iMouse", mParameterBag->iMouse);
 		}
+		if (map.find("iColor") != map.end())
+		{
+			shader.prog->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
+		}
+		if (map.find("iBackgroundColor") != map.end())
+		{
+			shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
+		}
 	}
 	auto mixMap = mMixShader->getActiveUniformTypes();
 	if (mixMap.find("iCrossfade") != mixMap.end())

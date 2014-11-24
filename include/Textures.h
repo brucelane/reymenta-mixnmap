@@ -71,7 +71,7 @@ namespace Reymenta
 		}
 		//! Returns Texture at index
 		ci::gl::TextureRef			getTexture(int index);
-		//ci::gl::TextureRef			getMixTexture(int index);
+		ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
 		int							getInputTexturesCount() { return inputTextures.size(); };
 		ci::gl::TextureRef			getSenderTexture(int index);

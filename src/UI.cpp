@@ -66,7 +66,7 @@ void UI::createWarp()
 
 void UI::setupMiniControl()
 {//\"width\":1052, \"panelColor\":\"0x44282828\", \"height\":174
-	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":1052, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
+	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":940, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
 	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -93,7 +93,7 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("optim\nUI", std::bind(&UI::toggleOptimizeUI, this, std::placeholders::_1), "{ \"clear\":false, \"width\":56, \"stateless\":false}");
 	/*
 		Panel selector
-		*/
+	*/
 	// output 
 	mMiniControl->addLabel("Rndr\nwin", "{ \"width\":48, \"clear\":false }");
 	mMiniControl->addButton("1", std::bind(&UI::createRenderWindow, this, 1, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true }");
@@ -171,7 +171,7 @@ void UI::setupMiniControl()
 }
 void UI::setupGlobal()
 {
-	gParams = UIController::create("{ \"x\":874, \"y\":0, \"depth\":280, \"width\":400, \"height\":300, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	gParams = UIController::create("{ \"x\":960, \"y\":0, \"depth\":280, \"width\":370, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	gParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -195,7 +195,7 @@ void UI::setupGlobal()
 }
 void UI::setupTextures()
 {
-	tParams = UIController::create("{ \"x\":0, \"y\":138, \"depth\":300, \"width\":180, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams = UIController::create("{ \"x\":0, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -204,6 +204,7 @@ void UI::setupTextures()
 	tParams->setFont("body", mParameterBag->mBodyFont);
 	tParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(tParams);
+	tParams->addLabel("Input textures", "{ \"width\":100 }");
 	sliderPreviewTextureXY = tParams->addSlider2D("PreviewTextureXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 }
 void UI::addTextureControls()
@@ -215,7 +216,7 @@ void UI::addTextureControls()
 }
 void UI::setupShaders()
 {
-	sParams = UIController::create("{ \"x\":178, \"y\":138, \"depth\":300, \"width\":180, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	sParams = UIController::create("{ \"x\":178, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	sParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	sParams->setFont("label", mParameterBag->mLabelFont);
 	sParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -224,6 +225,7 @@ void UI::setupShaders()
 	sParams->setFont("body", mParameterBag->mBodyFont);
 	sParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(sParams);
+	sParams->addLabel("Shaders", "{ \"width\":100 }");
 	sliderPreviewShadaXY = sParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 }
 void UI::addShadaControls()

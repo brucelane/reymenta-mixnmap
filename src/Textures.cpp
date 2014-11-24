@@ -218,11 +218,11 @@ ci::gl::TextureRef Textures::getTexture(int index)
 {
 	return inputTextures[checkedIndex(index)].texture;
 }
-/*ci::gl::TextureRef Textures::getMixTexture(int index)
+ci::gl::TextureRef Textures::getMixTexture(int index)
 {
-	if (index > mixTextures.size() - 1) index = mixTextures.size() - 1;
-	return mixTextures[index];
-}*/
+	if (index > mMixesFbos.size() - 1) index = mMixesFbos.size() - 1;
+	return mMixesFbos[index]->getColorTexture();
+}
 ci::gl::TextureRef Textures::getFboTexture(int index)
 {
 	if (index > mShadaFbos.size() - 1) index = mShadaFbos.size() - 1;

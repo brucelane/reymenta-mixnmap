@@ -11,8 +11,8 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	getWindowsResolution();
 #ifdef _DEBUG
 	// debug mode
-	settings->setWindowSize(mParameterBag->mMainDisplayWidth/2, mParameterBag->mMainDisplayHeight - 200);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth/1.9, mParameterBag->mRenderY + 50));
+	settings->setWindowSize(mParameterBag->mMainDisplayWidth-200, mParameterBag->mMainDisplayHeight - 200);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth +200, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mMainDisplayWidth*2/3, mParameterBag->mMainDisplayHeight - 200);
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY + 50));

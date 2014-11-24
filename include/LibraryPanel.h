@@ -52,7 +52,7 @@ namespace Reymenta
 		void setRightInput(const int &aIndex, const bool &pressed);
 		void setPreview(const int &aIndex, const bool &pressed);
 
-		vector<MinimalUI::UIElementRef>	labelInput, buttonSelect, buttonLeft, buttonRight;
+		vector<MinimalUI::UIElementRef>	buttonSelect, buttonLeft, buttonRight;//labelInput, 
 		
 		MinimalUI::UIElementRef			flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
 		MinimalUI::UIControllerRef		mParams;

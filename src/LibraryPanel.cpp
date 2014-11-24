@@ -23,8 +23,8 @@ LibraryPanelRef LibraryPanel::create(ParameterBagRef aParameterBag, TexturesRef 
 
 void LibraryPanel::setupParams()
 {
-	mParams = UIController::create("{ \"visible\":true, \"x\":366, \"y\":138, \"width\":700, \"height\":530, \"depth\":203, \"panelColor\":\"0x44282828\" }");
-	mParams->DEFAULT_UPDATE_FREQUENCY = 12;
+	mParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":700, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
+	//mParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	// set custom fonts for a UIController
 	mParams->setFont("label", mParameterBag->mLabelFont);
 	mParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -33,7 +33,7 @@ void LibraryPanel::setupParams()
 	mParams->setFont("body", mParameterBag->mBodyFont);
 	mParams->setFont("footer", mParameterBag->mFooterFont);
 
-	mParams->addLabel("Frag", "{ \"clear\":false, \"width\":64 }");
+	mParams->addLabel("Texture mixing", "{ \"clear\":false, \"width\":64 }");
 	flipButton = mParams->addButton("Flip", std::bind(&LibraryPanel::flipLibraryCurrentFbo, this, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"pressed\":true }");
 	sliderLeftRenderXY = mParams->addSlider2D("LeftXY", &mParameterBag->mLeftRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	sliderRightRenderXY = mParams->addSlider2D("RightXY", &mParameterBag->mRightRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
@@ -53,11 +53,10 @@ void LibraryPanel::setupParams()
 void LibraryPanel::addButtons()
 {
 	int i = buttonLeft.size();
-	labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
-	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
-	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
+	//labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
+	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
+	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
 	buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
-
 }
 
 void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)
@@ -77,6 +76,7 @@ void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 	{
 		mParameterBag->mLeftFragIndex = aIndex;
 		buttonLeft[aIndex]->setName(mTextures->setInput(aIndex, true));
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
 	}
 }
 void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
@@ -85,6 +85,7 @@ void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 	{
 		mParameterBag->mRightFragIndex = aIndex;
 		buttonRight[aIndex]->setName(mTextures->setInput(aIndex, false));
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
 	}
 }
 void LibraryPanel::update()
@@ -102,6 +103,7 @@ void LibraryPanel::update()
 				sliderLeftRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mLeftFboIndex));
 				sliderRightRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mRightFboIndex));
 				sliderMixRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mMixFboIndex));
+
 			}
 		}
 	}
