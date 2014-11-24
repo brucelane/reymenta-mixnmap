@@ -171,6 +171,13 @@ void MixnMapApp::update()
 {
 	if (!mIsShutDown)
 	{
+		// compare then number of shader to the number of ShadaFbos
+		// in case of a new shader, add a ShadaFbo TODO: recycle if size is > MAX
+		if (mTextures->getShadaFbosSize() < mShaders->getShaderCount())
+		{
+			mTextures->addShadaFbo();
+			mUI->addShadaControls();
+		}
 		if (mParameterBag->iGreyScale)
 		{
 			mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];

@@ -1,3 +1,11 @@
+/**
+* \file AudioWrapper.h
+* \author Bruce LANE
+* \date 24 november 2014
+*
+* Manages the Audio.
+*
+*/
 #pragma once
 
 #include "cinder/app/AppNative.h"
@@ -19,7 +27,7 @@
 #include "cinder/audio/NodeEffects.h"
 #include "cinder/audio/MonitorNode.h"
 //#include "AudioDrawUtils.h"
-#include "cinder/gl/Vbo.h"
+
 
 using namespace ci;
 using namespace ci::app;
@@ -45,6 +53,7 @@ namespace Reymenta
 		ParameterBagRef					mParameterBag;
 		// Textures
 		TexturesRef						mTextures;
+		int								audioTextureIndex;
 		// Logger
 		LoggerRef						log;
 

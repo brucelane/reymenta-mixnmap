@@ -22,7 +22,7 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	gl::TextureRef img = gl::Texture::create(loadImage(loadResource(IMG)));
 
 	// init
-	mNewSenderName[0] = NULL;
+	/*mNewSenderName[0] = NULL;
 	for (int i = 0; i < mParameterBag->MAX; i++)
 	{	
 		// create inputTextures and init with static image
@@ -31,10 +31,18 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 		inputTextures[i].height = mParameterBag->mFboHeight;
 		// TODO: replace with 0.jpg to 7.jpg if exists or load from settings file
 		inputTextures[i].texture = img;
-		// init mixTextures
-		mixTextures.push_back(img);
-		mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x480
+	}*/
+	string pathToStartupFile = (getAssetPath("") / "startup.jpg").string();
+	if (fs::exists(pathToStartupFile))
+	{
+		log->logTimedString("startup.jpg image found, loading");
+		img = gl::Texture::create(loadImage(loadAsset("startup.jpg")));
+		log->logTimedString("startup.jpg image loaded");
 	}
+	createTexture("startup image", mParameterBag->mFboWidth, mParameterBag->mFboHeight, img );
+	// init mixTextures
+	mixTextures.push_back(img);
+	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
 	// create a rectangle to be drawn with our shader program
 	// default is from -0.5 to 0.5, so we scale by 2 to get -1.0 to 1.0
 	// coming soon in Cinder? mMesh = gl::VboMesh::create(geom::Rect().scale(vec2(2.0f, 2.0f))); 
@@ -52,12 +60,32 @@ void Textures::setSenderTextureSize(int index, int width, int height)
 	inputTextures[index].height = height;
 	inputTextures[index].texture = gl::Texture::create(width, height);
 }
-void Textures::setAudioTexture( unsigned char *signal)
+int Textures::addShadaFbo()
 {
-	memcpy(audioTexture.SenderName, "Audio", strlen("Audio") + 1);
-	audioTexture.width = 512;
-	audioTexture.height = 2;
-	audioTexture.texture = gl::Texture::create(signal, GL_LUMINANCE16I_EXT, 512, 2);
+	// add a ShadaFbo
+	ShadaFbo sFbo;
+	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
+	sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());
+	sFbo.shadaIndex = 0;
+	mShadaFbos.push_back(sFbo);
+	return mShadaFbos.size() - 1;
+}
+
+int Textures::createTexture(char name[256], unsigned int width, unsigned int height, gl::TextureRef texture)
+{
+	Sender newTexture;
+	// create inputTextures and init with static image
+	memcpy(&name[0], mNewSenderName, strlen(mNewSenderName) + 1);
+	newTexture.width = width;
+	newTexture.height = height;
+	newTexture.texture = texture;
+	//! add to the inputTextures vector
+	inputTextures.push_back(newTexture);
+	return inputTextures.size() - 1;
+}
+void Textures::setAudioTexture(int audioTextureIndex, unsigned char *signal)
+{
+	inputTextures[audioTextureIndex].texture = gl::Texture::create(signal, GL_LUMINANCE16I_EXT, 512, 2);
 }
 int Textures::checkedIndex(int index)
 {
@@ -138,17 +166,7 @@ void Textures::saveThumb()
 
 void Textures::update()
 {
-	// compare then number of shader to the number of ShadaFbos
-	// in case of a new shader, add a ShadaFbo if size is < MAX
-	if (mShadaFbos.size() < mShaders->getShaderCount())
-	{
-		// add a ShadaFbo
-		ShadaFbo sFbo;
-		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-		sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());
-		sFbo.shadaIndex = 0;
-		mShadaFbos.push_back(sFbo);
-	}
+
 }
 ci::gl::TextureRef Textures::getTexture(int index)
 {
@@ -166,7 +184,6 @@ ci::gl::TextureRef Textures::getFboTexture(int index)
 }
 void Textures::renderShadersToFbo()
 {
-	int i = 0;
 	for (auto &mFbo : mShadaFbos)
 	{
 		// this will restore the old framebuffer binding when we leave this function
@@ -182,13 +199,10 @@ void Textures::renderShadersToFbo()
 		gl::ScopedGlslProg shader(mShaders->getShader(mFbo.shadaIndex));
 		// draw our screen rectangle
 		gl::draw(mMesh);
-
-		i++;
 	}
 }
 void Textures::renderMixesToFbo()
 {
-	int i = 0;
 	for (auto &mFbo : mMixesFbos)
 	{
 		// this will restore the old framebuffer binding when we leave this function
@@ -204,8 +218,6 @@ void Textures::renderMixesToFbo()
 		gl::ScopedGlslProg shader(mShaders->getMixShader());
 		// draw our screen rectangle
 		gl::draw(mMesh);
-
-		i++;
 	}
 }
 void Textures::draw()

@@ -61,8 +61,8 @@ namespace Reymenta
 		void toggleWarpPanel(const bool &pressed) { mWarpPanel->toggleVisibility(); };
 		void setTimeFactor(const int &aTimeFactor, const bool &pressed);
 		void setUIRefresh(const int &aFrames, const bool &pressed);
-		void setLayer(const int &aLayer, const bool &pressed);
-		void setShada(const int &aShada, const bool &pressed);
+		void setTextureIndex(const int &aTextureIndex, const bool &pressed);
+		void setShadaIndex(const int &aShadaIndex, const bool &pressed);
 		void createRenderWindow(const int &aIndex, const bool &pressed) { mParameterBag->mWindowToCreate = aIndex; }
 		void deleteRenderWindows(const bool &pressed) { mParameterBag->mWindowToCreate = 2; };
 
@@ -97,13 +97,12 @@ namespace Reymenta
 		MinimalUI::UIElementRef				sliderRed, sliderGreen, sliderBlue, sliderAlpha;
 		MinimalUI::UIElementRef				sliderBackgroundRed, sliderBackgroundGreen, sliderBackgroundBlue, sliderBackgroundAlpha;
 		MinimalUI::UIElementRef				labelXY, labelPosXY;
-		MinimalUI::UIElementRef				sliderRenderXY, sliderRenderPosXY, sliderXSpeed, sliderYSpeed, sliderPreviewShadaXY;
+		MinimalUI::UIElementRef				sliderRenderXY, sliderRenderPosXY, sliderXSpeed, sliderYSpeed, sliderPreviewTextureXY, sliderPreviewShadaXY;
 
 		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer, labelInfo;
 		MinimalUI::UIElementRef				buttonChannels;
-		MinimalUI::UIElementRef				buttonTextures[8];
-		MinimalUI::UIElementRef				buttonShader[8];
-		MinimalUI::UIElementRef				labelTextures[8];
+		vector<MinimalUI::UIElementRef>		buttonShada, buttonTexture, labelTexture, labelShada;
+		
 		MinimalUI::UIElementRef				fpsMvg, volMvg, tempoMvg;
 		MinimalUI::UIElementRef				sliderAudioMul;
 		void toggleVisibility() { mVisible ? hide() : show(); }
@@ -111,17 +110,19 @@ namespace Reymenta
 		void hide();
 		void shutdown();
 		LibraryPanelRef				mLibraryPanel;
+		void addShadaControls();
+		void addTextureControls();
 	private:
 		void setupGlobal();
 		void setupMiniControl();
 		void setupSliders();
 		void setupTextures();
-
+		void setupShaders();
 		void mouseDown( ci::app::MouseEvent &event );
 		void keyDown( ci::app::KeyEvent &event );
 
 		// windows mgmt
-		MinimalUI::UIControllerRef mMiniControl, gParams, tParams;
+		MinimalUI::UIControllerRef mMiniControl, gParams, tParams, sParams;
 		// panels
 		SlidersPanelRef				mSlidersPanel;
 		WarpPanelRef				mWarpPanel;
