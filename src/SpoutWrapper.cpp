@@ -38,7 +38,7 @@ void SpoutWrapper::update()
 			mSpoutReceivers[i].SetDX9(mParameterBag->mUseDX9);
 			log->logTimedString("DX9:" + toString(mParameterBag->mUseDX9));
 
-			if (mSpoutReceivers[i].CreateReceiver(mTextures->getSenderName(i), mNewWidth, mNewHeight))//, true)) // true to find the active sender
+			if (mSpoutReceivers[i].CreateReceiver(mTextures->getSenderName(i), mNewWidth, mNewHeight))
 			{
 				bInitialized = true;
 				mTextures->setSenderTextureSize(i, mNewWidth, mNewHeight);

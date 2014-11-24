@@ -140,7 +140,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 	currentFrag = pixelFrag;
 	int foundIndex = -1;
 	Shada newShada;
-	newShada.fileName = fileName;
+	newShada.name = fileName;
 	newShada.active = true;
 	newShada.prog = gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str()));
 	try

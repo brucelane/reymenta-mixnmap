@@ -152,8 +152,7 @@ void MixnMapApp::fileDrop(FileDropEvent event)
 	}
 	else if (ext == "png" || ext == "jpg")
 	{
-		//mTextures->loadImageFile(mParameterBag->currentSelectedIndex, mFile);
-		mTextures->setTextureFromFile(1, mFile);
+		mTextures->setTextureFromFile(mFile);
 	}
 	else if (ext == "glsl")
 	{
@@ -171,12 +170,18 @@ void MixnMapApp::update()
 {
 	if (!mIsShutDown)
 	{
-		// compare then number of shader to the number of ShadaFbos
+		// compare then number of shaders to the number of ShadaFbos
 		// in case of a new shader, add a ShadaFbo TODO: recycle if size is > MAX
 		if (mTextures->getShadaFbosSize() < mShaders->getShaderCount())
 		{
 			mTextures->addShadaFbo();
 			mUI->addShadaControls();
+		}
+		// compare then number of textures to the number of ui tParams elements
+		// in case of a new texture, create the new uiElements
+		if (mUI->getTextureButtonsCount() < mTextures->getInputTexturesCount())
+		{
+			mUI->addTextureControls();
 		}
 		if (mParameterBag->iGreyScale)
 		{

@@ -64,14 +64,14 @@ namespace Reymenta
 		ci::gl::TextureRef			getTexture(int index);
 		ci::gl::TextureRef			getMixTexture(int index);
 		ci::gl::TextureRef			getFboTexture(int index);
-		int							getTextureCount() { return inputTextures.size(); };
+		int							getInputTexturesCount() { return inputTextures.size(); };
 		ci::gl::TextureRef			getSenderTexture(int index);
 		int							createTexture(char name[256], unsigned int width, unsigned int height, gl::TextureRef texture);
 		// from audio
 		void						setAudioTexture(int audioTextureIndex, unsigned char *signal);
 
-		//! load image file as texture at index
-		void						setTextureFromFile(int index, string fileName);
+		//! load image file as texture
+		void						setTextureFromFile(string fileName);
 
 		//! main draw for fbos and textures
 		void						draw();
@@ -79,7 +79,7 @@ namespace Reymenta
 		void						shutdown();
 		void						setSenderTextureSize(int index, int width, int height);
 		void						flipMixFbo(bool flip);
-		char*						getSenderName(int index) { return &inputTextures[index].SenderName[0]; };
+		char*						getSenderName(int index);
 		void						renderShadersToFbo();
 		void						renderMixesToFbo();
 		void						saveThumb();
@@ -108,14 +108,8 @@ namespace Reymenta
 		//! shader
 		gl::GlslProgRef				aShader;
 		int							selectedShada;
-		// TODO should be removed and use mParameterBag->MAX
-		static const int			MAX = 8;
-		char						mNewSenderName[256]; // new sender name 
-		//! audio texture
-		unsigned char				dTexture[1024];
 		//! inputTextures: vector of Spout received textures
 		vector<Sender>				inputTextures;
-		//Sender						audioTexture;
 		//! mesh for shader drawing
 		gl::VboMeshRef				mMesh;
 

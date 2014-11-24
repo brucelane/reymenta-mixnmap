@@ -188,37 +188,9 @@ void UI::setupGlobal()
 
 	labelError = gParams->addLabel("no error", "{ \"clear\":false, \"width\":370, \"nameColor\":\"0xFFAA0000\" }");
 }
-void UI::setupShaders()
-{
-	sParams = UIController::create("{ \"x\":0, \"y\":138, \"depth\":300, \"width\":300, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
-	sParams->DEFAULT_UPDATE_FREQUENCY = 12;
-	sParams->setFont("label", mParameterBag->mLabelFont);
-	sParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
-	sParams->setFont("icon", mParameterBag->mIconFont);
-	sParams->setFont("header", mParameterBag->mHeaderFont);
-	sParams->setFont("body", mParameterBag->mBodyFont);
-	sParams->setFont("footer", mParameterBag->mFooterFont);
-	mPanels.push_back(sParams);
-	sliderPreviewShadaXY = tParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
-
-}
-void UI::addShadaControls()
-{
-	// Shaders select
-	// Button Group: shaders
-	buttonShada.push_back(tParams->addButton(toString(buttonShada.size()), std::bind(&UI::setShadaIndex, this, buttonShada.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"shaders\", \"exclusive\":true }"));
-	labelShada.push_back(tParams->addLabel(toString(labelShada.size()), "{ \"width\":176 }"));
-}
-void UI::addTextureControls()
-{
-	// Textures select
-	// Button Group: textures
-	buttonTexture.push_back(tParams->addButton(toString(buttonTexture.size()), std::bind(&UI::setTextureIndex, this, buttonTexture.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"textures\", \"exclusive\":true }"));
-	labelTexture.push_back(tParams->addLabel(toString(labelTexture.size()), "{ \"width\":176 }"));
-}
 void UI::setupTextures()
 {
-	tParams = UIController::create("{ \"x\":0, \"y\":138, \"depth\":300, \"width\":300, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams = UIController::create("{ \"x\":0, \"y\":138, \"depth\":300, \"width\":180, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -228,8 +200,34 @@ void UI::setupTextures()
 	tParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(tParams);
 	sliderPreviewTextureXY = tParams->addSlider2D("PreviewTextureXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+}
+void UI::addTextureControls()
+{
+	// Textures select
+	// Button Group: textures
+	buttonTexture.push_back(tParams->addButton(toString(buttonTexture.size()), std::bind(&UI::setTextureIndex, this, buttonTexture.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"textures\", \"exclusive\":true }"));
+	labelTexture.push_back(tParams->addLabel(toString(labelTexture.size()), "{ \"width\":100 }"));
+}
+void UI::setupShaders()
+{
+	sParams = UIController::create("{ \"x\":178, \"y\":138, \"depth\":300, \"width\":180, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	sParams->DEFAULT_UPDATE_FREQUENCY = 12;
+	sParams->setFont("label", mParameterBag->mLabelFont);
+	sParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
+	sParams->setFont("icon", mParameterBag->mIconFont);
+	sParams->setFont("header", mParameterBag->mHeaderFont);
+	sParams->setFont("body", mParameterBag->mBodyFont);
+	sParams->setFont("footer", mParameterBag->mFooterFont);
+	mPanels.push_back(sParams);
+	sliderPreviewShadaXY = sParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 
-
+}
+void UI::addShadaControls()
+{
+	// Shaders select
+	// Button Group: shaders
+	buttonShada.push_back(sParams->addButton(toString(buttonShada.size()), std::bind(&UI::setShadaIndex, this, buttonShada.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"shaders\", \"exclusive\":true }"));
+	labelShada.push_back(sParams->addLabel(toString(labelShada.size()), "{ \"width\":100 }"));
 }
 void UI::setupSliders()
 {
@@ -528,10 +526,14 @@ void UI::update()
 			labelError->setName(mShaders->getFragError());
 			sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 
-			for (int i = 0; i < mTextures->getTextureCount(); i++)
+			for (int i = 0; i < buttonShada.size(); i++)
+			{
+				buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
+				labelShada[i]->setName(mShaders->getShaderName(i));
+			}
+			for (int i = 0; i < buttonTexture.size(); i++)
 			{
 				buttonTexture[i]->setBackgroundTexture(mTextures->getTexture(i));
-				buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
 				labelTexture[i]->setName(mTextures->getSenderName(i));
 			}
 		}

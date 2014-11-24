@@ -22,16 +22,6 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	gl::TextureRef img = gl::Texture::create(loadImage(loadResource(IMG)));
 
 	// init
-	/*mNewSenderName[0] = NULL;
-	for (int i = 0; i < mParameterBag->MAX; i++)
-	{	
-		// create inputTextures and init with static image
-		memcpy(&inputTextures[i].SenderName[0], mNewSenderName, strlen(mNewSenderName) + 1);
-		inputTextures[i].width = mParameterBag->mFboWidth;
-		inputTextures[i].height = mParameterBag->mFboHeight;
-		// TODO: replace with 0.jpg to 7.jpg if exists or load from settings file
-		inputTextures[i].texture = img;
-	}*/
 	string pathToStartupFile = (getAssetPath("") / "startup.jpg").string();
 	if (fs::exists(pathToStartupFile))
 	{
@@ -52,13 +42,13 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 }
 ci::gl::TextureRef Textures::getSenderTexture(int index)
 {
-	return inputTextures[index].texture;
+	return inputTextures[checkedIndex(index)].texture;
 }
 void Textures::setSenderTextureSize(int index, int width, int height)
 {
-	inputTextures[index].width = width;
-	inputTextures[index].height = height;
-	inputTextures[index].texture = gl::Texture::create(width, height);
+	inputTextures[checkedIndex(index)].width = width;
+	inputTextures[checkedIndex(index)].height = height;
+	inputTextures[checkedIndex(index)].texture = gl::Texture::create(width, height);
 }
 int Textures::addShadaFbo()
 {
@@ -74,8 +64,8 @@ int Textures::addShadaFbo()
 int Textures::createTexture(char name[256], unsigned int width, unsigned int height, gl::TextureRef texture)
 {
 	Sender newTexture;
-	// create inputTextures and init with static image
-	memcpy(&name[0], mNewSenderName, strlen(mNewSenderName) + 1);
+	// create new texture
+	memcpy(&newTexture.SenderName[0], name, strlen(name) + 1);
 	newTexture.width = width;
 	newTexture.height = height;
 	newTexture.texture = texture;
@@ -83,47 +73,49 @@ int Textures::createTexture(char name[256], unsigned int width, unsigned int hei
 	inputTextures.push_back(newTexture);
 	return inputTextures.size() - 1;
 }
+char* Textures::getSenderName(int index) 
+{ 
+	return &inputTextures[checkedIndex(index)].SenderName[0];
+}
+
 void Textures::setAudioTexture(int audioTextureIndex, unsigned char *signal)
 {
 	inputTextures[audioTextureIndex].texture = gl::Texture::create(signal, GL_LUMINANCE16I_EXT, 512, 2);
 }
 int Textures::checkedIndex(int index)
 {
-	int i = min(index, MAX - 1);
+	int i = min(index, int(inputTextures.size() - 1));
 	return max(i, 0);
 }
 
-void Textures::setTextureFromFile(int index, string fileName)
+void Textures::setTextureFromFile(string fileName)
 {
-	if (index > MAX - 1) index = MAX - 1;
-	if (index > 0)
+	string shortName = "image";
+	char *name;
+	try
 	{
-		try
+		if (!fs::exists(fileName))
 		{
-			if (!fs::exists(fileName))
-			{
-				log->logTimedString("asset file not found: " + fileName);
-			}
-			else
-			{
-				log->logTimedString("asset found file: " + fileName);
-				fs::path fr = fileName;
-				string name = "image";
-				string mFile = fr.string();
-				if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
-
-				memcpy(inputTextures[index].SenderName, name.c_str(), strlen(name.c_str()) + 1);
-				inputTextures[index].texture = gl::Texture::create(loadImage(fileName));
-				inputTextures[index].width = inputTextures[index].texture->getWidth();
-				inputTextures[index].height = inputTextures[index].texture->getHeight();
-
-				log->logTimedString("asset loaded: " + fileName);
-			}
+			log->logTimedString("asset file not found: " + fileName);
 		}
-		catch (...)
+		else
 		{
-			log->logTimedString("Load asset error: " + fileName);
+			log->logTimedString("asset found file: " + fileName);
+			fs::path fr = fileName;
+			string mFile = fr.string();
+			if (mFile.find_last_of("\\") != std::string::npos)
+			{
+				shortName = mFile.substr(mFile.find_last_of("\\") + 1);
+			}
+			name = &shortName[0];
+			gl::TextureRef newTexture = gl::Texture::create(loadImage(fileName));
+			createTexture(name, newTexture->getWidth(), newTexture->getHeight(), newTexture);
+			log->logTimedString("asset loaded: " + fileName);
 		}
+	}
+	catch (...)
+	{
+		log->logTimedString("Load asset error: " + fileName);
 	}
 }
 
@@ -139,7 +131,8 @@ void Textures::saveThumb()
 	try
 	{
 		mShadaFbos[mParameterBag->mCurrentShadaFboIndex].fbo->bindFramebuffer();
-		Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
+		// Should get the FBO's pixels since it is bound (instead of the screen's)
+		Surface fboSurf = copyWindowSurface(Area(ivec2(0,0),ivec2(mParameterBag->mFboWidth,mParameterBag->mFboHeight)));  
 		mShadaFbos[mParameterBag->mCurrentShadaFboIndex].fbo->unbindFramebuffer();
 		fs::path path = getAssetPath("") / "thumbs" / filename;
 		writeImage(path, ImageSourceRef(fboSurf));
@@ -149,7 +142,8 @@ void Textures::saveThumb()
 		{
 			filename = mShaders->getFragFileName() + static_cast<ostringstream*>(&(ostringstream() << i))->str() + ".jpg";
 			mFbo.fbo->bindFramebuffer();
-			Surface fboSurf = copyWindowSurface();  // Should get the FBO's pixels since it is bound (instead of the screen's)
+			// Should get the FBO's pixels since it is bound (instead of the screen's)
+			Surface fboSurf = copyWindowSurface(Area(ivec2(0,0),ivec2(mParameterBag->mFboWidth,mParameterBag->mFboHeight)));  
 			mFbo.fbo->unbindFramebuffer();
 			fs::path path = getAssetPath("") / "thumbs" / filename;
 			writeImage(path, ImageSourceRef(fboSurf));
@@ -170,6 +164,8 @@ void Textures::update()
 }
 ci::gl::TextureRef Textures::getTexture(int index)
 {
+	log->logTimedString("getTexture, index:" + toString(index));
+	log->logTimedString("getTexture, checkedIndex(index):" + toString(checkedIndex(index)));
 	return inputTextures[checkedIndex(index)].texture;
 }
 ci::gl::TextureRef Textures::getMixTexture(int index)

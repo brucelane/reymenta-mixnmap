@@ -29,7 +29,7 @@ namespace Reymenta
 	// stores the pointer to the Shaders instance
 	typedef std::shared_ptr<class Shaders> ShadersRef;
 	struct Shada {
-		string fileName;
+		string name;
 		gl::GlslProgRef prog;
 		bool active;
 	};
@@ -48,6 +48,7 @@ namespace Reymenta
 		gl::GlslProgRef				getMixShader() { return mMixShader; };
 		bool						loadPixelFragmentShader(const fs::path &fragment_path);
 		string						getFragFileName() { return mFragFileName; };
+		string						getShaderName(int aIndex) { return mFragmentShaders[aIndex].name; };
 		bool						setGLSLString(string pixelFrag, string fileName);
 		int							getShaderCount() { return mFragmentShaders.size(); };
 	private:
