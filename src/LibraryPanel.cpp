@@ -23,7 +23,7 @@ LibraryPanelRef LibraryPanel::create(ParameterBagRef aParameterBag, TexturesRef 
 
 void LibraryPanel::setupParams()
 {
-	mParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":700, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
+	mParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":500, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
 	//mParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	// set custom fonts for a UIController
 	mParams->setFont("label", mParameterBag->mLabelFont);
