@@ -245,7 +245,7 @@ void MixnMapApp::drawRender()
 	{
 		//warp->draw(mTextures->getTexture(i), mSrcArea);
 		//warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
-		warp->draw(mTextures->getMixTexture(i), mTextures->getMixTexture(i)->getBounds());
+		warp->draw(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 		i++;
 	}
 
