@@ -68,11 +68,11 @@ void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 	buttonLeft[aIndex]->setName(toString( wi.leftIndex));
 	if (wi.leftMode = 0)
 	{
-		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
 	}
 	else
 	{
-		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(aIndex));
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
 	}
 }
 void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
@@ -81,11 +81,11 @@ void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 	buttonRight[aIndex]->setName(toString(wi.rightIndex));
 	if (wi.rightMode = 0)
 	{
-		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
 	}
 	else
 	{
-		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(aIndex));
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
 	}
 
 }
