@@ -40,23 +40,15 @@ void LibraryPanel::setupParams()
 	sliderMixRenderXY = mParams->addSlider2D("MixXY", &mParameterBag->mPreviewRenderXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	mParams->addSlider("LZoom", &mParameterBag->iZoomLeft, "{ \"clear\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
 	mParams->addSlider("RZoom", &mParameterBag->iZoomRight, "{ \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
-	/* dynamic now
-	create 8 frag btns
-	for (int i = 0; i < 8; i++)
-	{
-		labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
-		buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
-		buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":18, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
-		buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
-	}*/
 }
 void LibraryPanel::addButtons()
 {
 	int i = buttonLeft.size();
 	//labelInput.push_back(mParams->addLabel("In", "{ \"clear\":false, \"width\":18}"));
-	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"c0\", \"exclusive\":true }"));
-	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"c1\", \"exclusive\":true }"));
-	buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"group\":\"fbolib\", \"exclusive\":true }"));
+	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c0\", \"exclusive\":true }"));
+	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c1\", \"exclusive\":true }"));
+	buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"pvw\", \"exclusive\":true }"));
+	sliderCrossfade.push_back(mParams->addSlider("xFade", &mTextures->iCrossfade[i], "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
 }
 
 void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)
@@ -65,28 +57,37 @@ void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)
 }
 void LibraryPanel::setPreview(const int &aIndex, const bool &pressed)
 {
-	
+
 }
 void LibraryPanel::setCurrentFbo(const int &aIndex, const bool &pressed)
 {
 }
 void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 {
-	if (pressed)
+	WarpInput wi = mTextures->setInput(aIndex, true);
+	buttonLeft[aIndex]->setName(toString( wi.leftIndex));
+	if (wi.leftMode = 0)
 	{
-		mParameterBag->mLeftFragIndex = aIndex;
-		buttonLeft[aIndex]->setName(mTextures->setInput(aIndex, true));
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
+	}
+	else
+	{
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(aIndex));
 	}
 }
 void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 {
-	if (pressed)
+	WarpInput wi = mTextures->setInput(aIndex, false);
+	buttonRight[aIndex]->setName(toString(wi.rightIndex));
+	if (wi.rightMode = 0)
 	{
-		mParameterBag->mRightFragIndex = aIndex;
-		buttonRight[aIndex]->setName(mTextures->setInput(aIndex, false));
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(aIndex));
 	}
+	else
+	{
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(aIndex));
+	}
+
 }
 void LibraryPanel::update()
 {
@@ -100,9 +101,9 @@ void LibraryPanel::update()
 			if (getElapsedFrames() % (mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh) == 0)
 			{
 				//TODO buttonInput->setBackgroundTexture(mTextures->getShaderTexture());
-				sliderLeftRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mLeftFboIndex));
-				sliderRightRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mRightFboIndex));
-				sliderMixRenderXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mMixFboIndex));
+				sliderLeftRenderXY->setBackgroundTexture(mTextures->getMixTexture(0));
+				sliderRightRenderXY->setBackgroundTexture(mTextures->getMixTexture(1));
+				sliderMixRenderXY->setBackgroundTexture(mTextures->getMixTexture(2));
 
 			}
 		}

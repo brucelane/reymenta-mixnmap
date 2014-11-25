@@ -53,7 +53,7 @@ namespace Reymenta
 		int							getShaderCount() { return mFragmentShaders.size(); };
 	private:
 		// Logger
-		LoggerRef					log;	
+		LoggerRef					log;
 		string						mixFileName;
 		string						mError;
 		//! name of the loaded shader file

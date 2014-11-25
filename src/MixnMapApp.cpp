@@ -150,7 +150,7 @@ void MixnMapApp::fileDrop(FileDropEvent event)
 	if (mFile.find_last_of(".") != std::string::npos) ext = mFile.substr(mFile.find_last_of(".") + 1);
 	// transform to lower case
 	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-	//mParameterBag->currentInputTextureIndex = (int)(event.getX() / 80);//76+margin mParameterBag->mPreviewWidth);
+	//mParameterBag->selectedInputTexture = (int)(event.getX() / 80);//76+margin mParameterBag->mPreviewWidth);
 	log->logTimedString(mFile + " dropped, x: " + toString(event.getX()) + " mPreviewWidth: " + toString(mParameterBag->mPreviewWidth));
 
 	if (ext == "wav" || ext == "mp3")

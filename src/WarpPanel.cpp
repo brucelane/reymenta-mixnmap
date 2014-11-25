@@ -67,7 +67,7 @@ void WarpPanel::update()
 		mParams->update();
 		for (int i = 0; i < 8; i++)
 		{
-			buttonIndex[i]->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]));
+			buttonIndex[i]->setBackgroundTexture(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]));
 		}
 	}
 }

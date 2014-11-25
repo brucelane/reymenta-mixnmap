@@ -66,7 +66,7 @@ namespace Reymenta {
 		int							mRenderY;
 		int							mDisplayCount;
 		int							mWindowToCreate;
-		bool						mDirectRender, mOptimizeUI;
+		bool						mOptimizeUI;
 		int							mUIRefresh;
 		ColorA						FPSColor;
 		ColorA						ColorGreen;
@@ -96,7 +96,6 @@ namespace Reymenta {
 		int							mCurrentShadaFboIndex;
 		int							mMixFboIndex;
 		int							mLeftFboIndex, mRightFboIndex;
-		int							mLeftFragIndex, mRightFragIndex;
 		float						iZoomLeft, iZoomRight;
 		// tap tempo
 		float						mTempo;

@@ -66,7 +66,7 @@ void UI::createWarp()
 
 void UI::setupMiniControl()
 {
-	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":940, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
+	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":948, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
 	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -149,7 +149,7 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("t", std::bind(&UI::tempoBA, this, std::placeholders::_1), "{ \"width\":9, \"stateless\":false, \"group\":\"ba\", \"exclusive\":true, \"clear\":false }");
 	mMiniControl->addButton("x", std::bind(&UI::resetBA, this, std::placeholders::_1), "{ \"width\":9, \"stateless\":false, \"group\":\"ba\", \"exclusive\":true, \"pressed\":true, \"clear\":false }");
 
-	mMiniControl->addButton("grey scale", std::bind(&UI::toggleGreyScale, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
+	mMiniControl->addButton("greyScale", std::bind(&UI::toggleGreyScale, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("Black", std::bind(&UI::InstantBlack, this, std::placeholders::_1), "{ \"width\":72 }");
 	// Simple Buttons
 	mMiniControl->addButton("lib", std::bind(&UI::toggleLibPanel, this, std::placeholders::_1), "{ \"clear\":false, \"width\":48 }");
@@ -171,7 +171,7 @@ void UI::setupMiniControl()
 }
 void UI::setupGlobal()
 {
-	gParams = UIController::create("{ \"x\":960, \"y\":0, \"depth\":280, \"width\":350, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	gParams = UIController::create("{ \"x\":960, \"y\":0, \"depth\":280, \"width\":340, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	gParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
@@ -211,7 +211,7 @@ void UI::addTextureControls()
 {
 	// Textures select
 	// Button Group: textures
-	buttonTexture.push_back(tParams->addButton(toString(buttonTexture.size()), std::bind(&UI::setTextureIndex, this, buttonTexture.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"textures\", \"exclusive\":true }"));
+	buttonTexture.push_back(tParams->addButton(toString(buttonTexture.size()), std::bind(&UI::setTextureIndex, this, buttonTexture.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"textures\", \"exclusive\":true }"));
 	labelTexture.push_back(tParams->addLabel(toString(labelTexture.size()), "{ \"width\":100 }"));
 }
 void UI::setupShaders()
@@ -232,7 +232,7 @@ void UI::addShadaControls()
 {
 	// Shaders select
 	// Button Group: shaders
-	buttonShada.push_back(sParams->addButton(toString(buttonShada.size()), std::bind(&UI::setShadaIndex, this, buttonShada.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"shaders\", \"exclusive\":true }"));
+	buttonShada.push_back(sParams->addButton(toString(buttonShada.size()), std::bind(&UI::setShadaIndex, this, buttonShada.size(), std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"shaders\", \"exclusive\":true }"));
 	labelShada.push_back(sParams->addLabel(toString(labelShada.size()), "{ \"width\":100 }"));
 }
 void UI::setupSliders()
@@ -291,20 +291,13 @@ void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
 }
 void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
-	if (pressed)
-	{
-		// 0 for input texture
-		mTextures->setInputTextureIndex(aTextureIndex, 0);
-		mParameterBag->iChannels[0] = aTextureIndex;
-	}
+	mTextures->setInputTextureIndex(aTextureIndex);
+	mParameterBag->iChannels[0] = aTextureIndex;
 }
 void UI::setShadaIndex(const int &aShadaIndex, const bool &pressed)
 {
-	if (pressed)
-	{
-		// 1 for shader
-		mTextures->setShadaIndex(aShadaIndex, 1);
-	}
+	mParameterBag->mCurrentShadaFboIndex = aShadaIndex;
+	mTextures->setShadaIndex(aShadaIndex);
 }
 
 void UI::draw()
@@ -531,18 +524,19 @@ void UI::update()
 			labelOSC->setName(mParameterBag->OSCMsg);
 			labelInfo->setName(mParameterBag->InfoMsg);
 			labelError->setName(mShaders->getFragError());
-			sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 
 			for (int i = 0; i < buttonShada.size(); i++)
 			{
 				buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
 				labelShada[i]->setName(mShaders->getShaderName(i));
 			}
+			sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 			for (int i = 0; i < buttonTexture.size(); i++)
 			{
 				buttonTexture[i]->setBackgroundTexture(mTextures->getTexture(i));
 				labelTexture[i]->setName(mTextures->getSenderName(i));
 			}
+			sliderPreviewTextureXY->setBackgroundTexture(mTextures->getTexture(mTextures->getInputTextureIndex()));
 		}
 	}
 }

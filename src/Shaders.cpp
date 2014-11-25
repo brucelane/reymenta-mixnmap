@@ -202,7 +202,6 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 bool Shaders::setGLSLString(string pixelFrag, string fileName)
 {
 	currentFrag = pixelFrag;
-	int foundIndex = -1;
 	Shada newShada;
 	newShada.name = fileName;
 	newShada.active = true;
@@ -213,33 +212,17 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 		if (mFragmentShaders.size() < mParameterBag->MAX)
 		{
 			mFragmentShaders.push_back(newShada);
-			foundIndex = mFragmentShaders.size() - 1;
 		}
 		else
 		{
-			bool indexFound = false;
-			if (mParameterBag->mDirectRender)
-			{
-				foundIndex = mParameterBag->mRightFragIndex;
-			}
-			else
-			{
-				while (!indexFound)
-				{
-					foundIndex++;
-					if (foundIndex != mParameterBag->mLeftFragIndex && foundIndex != mParameterBag->mRightFragIndex && foundIndex != mParameterBag->mCurrentShadaFboIndex) indexFound = true;
-					if (foundIndex > mFragmentShaders.size() - 1) indexFound = true;
-				}
-			}
 			// load the new shader
-			mFragmentShaders[foundIndex] = newShada;
-
+			mFragmentShaders[mFragmentShaders.size() - 1] = newShada;
 		}
 		//preview the new loaded shader
-		mParameterBag->mCurrentShadaFboIndex = foundIndex;
-		log->logTimedString("setGLSLString success" + static_cast<ostringstream*>(&(ostringstream() << foundIndex))->str());
+		mParameterBag->mCurrentShadaFboIndex = mFragmentShaders.size() - 1;
+		log->logTimedString("setGLSLString success" + static_cast<ostringstream*>(&(ostringstream() << mFragmentShaders.size() - 1))->str());
 		// check that uniforms exist before setting the constant uniforms
-		auto map = mFragmentShaders[foundIndex].prog->getActiveUniformTypes();
+		auto map = mFragmentShaders[mFragmentShaders.size() - 1].prog->getActiveUniformTypes();
 
 		log->logTimedString("Found uniforms:");
 		for (const auto &pair : map)
@@ -249,7 +232,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 		console() << endl;
 		if (map.find("iResolution") != map.end())
 		{
-			mFragmentShaders[foundIndex].prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			mFragmentShaders[mFragmentShaders.size() - 1].prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
 		}
 		mError = "";
 		validFrag = true;

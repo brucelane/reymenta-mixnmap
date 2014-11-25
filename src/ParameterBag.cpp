@@ -176,10 +176,7 @@ void ParameterBag::reset()
 	mMixFboIndex = 1;
 	mLeftFboIndex = 2;
 	mRightFboIndex = 3;
-	mDirectRender = false;
 
-	mLeftFragIndex = 0;
-	mRightFragIndex = 1;
 	mWarpCount = 3;
 	// OSC
 	mOSCDestinationHost = "127.0.0.1";

@@ -35,13 +35,14 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 	// coming soon in Cinder? mMesh = gl::VboMesh::create(geom::Rect().scale(vec2(2.0f, 2.0f))); 
 	mMesh = gl::VboMesh::create(geom::Rect(Rectf(-2.0, -2.0, 2.0, 2.0)));
 	selectedShada = 0;
-	currentInputTextureIndex = 0;
+	selectedInputTexture = 0;
 	currentMode = 0;
 
 	log->logTimedString("Textures constructor end");
 }
 void Textures::createWarpInput()
 {
+	iCrossfade.push_back(0.0);
 	WarpInput newWarpInput;
 	newWarpInput.leftIndex = 0;
 	newWarpInput.leftMode = 0;
@@ -53,28 +54,28 @@ void Textures::createWarpInput()
 	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
 }
 
-string Textures::setInput(int index, bool left) 
+WarpInput Textures::setInput(int index, bool left)
 { 
 	string name;
 	if (currentMode == 0)
 	{
 		// 0 = input texture mode
-		name = "T" + toString(currentInputTextureIndex);
+		name = "T" + toString(selectedInputTexture);
 		if (left)
 		{
-			warpInputs[index].leftIndex = currentInputTextureIndex;
+			warpInputs[index].leftIndex = selectedInputTexture;
 			warpInputs[index].leftMode = 0; // 0 for input texture
 		}
 		else
 		{
-			warpInputs[index].rightIndex = currentInputTextureIndex;
+			warpInputs[index].rightIndex = selectedInputTexture;
 			warpInputs[index].rightMode = 0; // 0 for input texture
 		}
 	}
 	else
 	{
 		// 1 = shader mode
-		mShadaFbos[index].shadaIndex = selectedShada;
+		//??? mShadaFbos[index].shadaIndex = selectedShada;
 		name = "S" + toString(selectedShada);
 		if (left)
 		{
@@ -89,7 +90,7 @@ string Textures::setInput(int index, bool left)
 
 		}
 	}
-	return name; 
+	return warpInputs[index];
 };
 
 ci::gl::TextureRef Textures::getSenderTexture(int index)
@@ -108,7 +109,7 @@ int Textures::addShadaFbo()
 	ShadaFbo sFbo;
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
 	sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());
-	sFbo.shadaIndex = 0;
+	sFbo.shadaIndex = mShadaFbos.size();
 	mShadaFbos.push_back(sFbo);
 	return mShadaFbos.size() - 1;
 }

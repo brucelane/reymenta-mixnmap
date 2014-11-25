@@ -92,12 +92,14 @@ namespace Reymenta
 		void						renderShadersToFbo();
 		void						renderMixesToFbo();
 		void						saveThumb();
-		void						setShadaIndex(int index, int mode) { selectedShada = index; currentMode = mode; };
-		void						setInputTextureIndex(int index, int mode) { currentInputTextureIndex = index; currentMode = mode; };
-		string						setInput(int index, bool left);
+		void						setShadaIndex(int index) { log->logTimedString("setShadaIndex:" + toString( index)); selectedShada = index; currentMode = 1; };
+		void						setInputTextureIndex(int index) { log->logTimedString("setInputTextureIndex:" + toString(index)); selectedInputTexture = index; currentMode = 0;};
+		int							getInputTextureIndex() { return selectedInputTexture; };
+		WarpInput					setInput(int index, bool left);
 		int							getShadaFbosSize() { return mShadaFbos.size(); };
 		int							addShadaFbo();
 		void						createWarpInput();
+		vector<float>				iCrossfade;
 	private:
 		//! Logger
 		LoggerRef					log;	
@@ -122,7 +124,7 @@ namespace Reymenta
 		int							selectedShada;
 		//! inputTextures: vector of Spout received textures
 		vector<Sender>				inputTextures;
-		int							currentInputTextureIndex;
+		int							selectedInputTexture;
 		//! select mode for routing from texture or shader to the mixing (0 for input texture, 1 for shader)
 		unsigned int				currentMode;
 		//! warpInputs: vector of warp input textures/shader fbo texture
