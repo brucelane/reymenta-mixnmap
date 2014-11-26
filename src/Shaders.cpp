@@ -14,18 +14,20 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 {
 	mParameterBag = aParameterBag;
 	//! instanciate the logger class
-	log = Logger::create("ReymentaRenderShadersLog.txt");
+	log = Logger::create("ShadersLog.txt");
 	log->logTimedString("Shaders constructor");
 	header = loadString(loadAsset("shaders/shadertoy.inc"));
 	defaultVertexShader = loadString(loadAsset("shaders/default.vert"));
 	defaultFragmentShader = loadString(loadAsset("shaders/default.glsl"));
 	validFrag = false;
 
-	//! load mix shader
-	loadMixShader();
-	//! init some shaders
 	string fileName;
 	fs::path localFile;
+	//! load mix shader
+	fileName = "mix.glsl";
+	localFile = getAssetPath("") / "shaders" / fileName;
+	loadPixelFragmentShader(localFile.string());
+	//! init some shaders
 	for (size_t m = 0; m < 3; m++)
 	{
 		fileName = toString(m) + ".glsl";
@@ -33,66 +35,7 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 		loadPixelFragmentShader(localFile.string());
 	}
 }
-void Shaders::loadMixShader()
-{
-	try
-	{
-		fs::path mixFragFile = getAssetPath("") / "shaders" / "mix.frag";
-		if (fs::exists(mixFragFile))
-		{
-			mMixShader = gl::GlslProg::create(loadResource(PASSTHROUGH2_VERT), loadFile(mixFragFile));
-			// check that uniforms exist before setting the constant uniforms
-			auto mixMap = mMixShader->getActiveUniformTypes();
-			log->logTimedString("Found MixShader uniforms:");
-			/* should be
-			uniform vec3        iResolution;         	// viewport resolution (in pixels)
-			uniform sampler2D   iChannel0;				// input channel 0
-			uniform sampler2D   iChannel1;				// input channel 1
-			uniform float       iCrossfade;          	// CrossFade 2 shaders
-			uniform float       iAlpha;          	  	// alpha
-			*/
-			for (const auto &pair : mixMap)
-			{
-				log->logTimedString(pair.first);
-			}
-			if (mixMap.find("iResolution") != mixMap.end())
-			{
-				mMixShader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
-			}
-			if (mixMap.find("iChannel0") != mixMap.end())
-			{
-				mMixShader->uniform("iChannel0", 0);
-			}
-			if (mixMap.find("iChannel1") != mixMap.end())
-			{
-				mMixShader->uniform("iChannel1", 1);
-			}
-			if (mixMap.find("iCrossfade") != mixMap.end())
-			{
-				mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
-			}
-			if (mixMap.find("iAlpha") != mixMap.end())
-			{
-				mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
-			}
-		}
-		else
-		{
-			log->logTimedString("mix.frag does not exist:");
-		}
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		log->logTimedString("unable to load/compile shader:" + string(exc.what()));
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		log->logTimedString("unable to load shader:" + string(e.what()));
-	}
 
-}
 void Shaders::resize()
 {
 	// change iResolution
@@ -189,8 +132,20 @@ void Shaders::update()
 		{
 			shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
 		}
+		if (map.find("iChannel0") != map.end())
+		{
+			shader.prog->uniform("iChannel0", 0);
+		}
+		if (map.find("iChannel1") != map.end())
+		{
+			shader.prog->uniform("iChannel1", 1);
+		}
 	}
 	auto mixMap = mMixShader->getActiveUniformTypes();
+	if (mixMap.find("iGlobalTime") != mixMap.end())
+	{
+		mMixShader->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+	}
 	if (mixMap.find("iCrossfade") != mixMap.end())
 	{
 		//mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
@@ -217,31 +172,50 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 	newShada.prog = gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str()));
 	try
 	{
-		// searching first index of not running shader
-		if (mFragmentShaders.size() < mParameterBag->MAX)
+		// special treatment for mix.glsl
+		if (fileName == "mix.glsl")
 		{
-			mFragmentShaders.push_back(newShada);
+			mMixShader = gl::GlslProg::create(gl::GlslProg::Format().vertex(defaultVertexShader.c_str()).fragment(currentFrag.c_str()));
+			log->logTimedString("setGLSLString success for mMixShader ");
+			auto mixMap = mMixShader->getActiveUniformTypes();
+			for (const auto &pair : mixMap)
+			{
+				log->logTimedString(pair.first);
+			}
+			if (mixMap.find("iResolution") != mixMap.end())
+			{
+				mMixShader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			}
 		}
 		else
 		{
-			// load the new shader
-			mFragmentShaders[mFragmentShaders.size() - 1] = newShada;
-		}
-		//preview the new loaded shader
-		mParameterBag->mCurrentShadaFboIndex = mFragmentShaders.size() - 1;
-		log->logTimedString("setGLSLString success" + static_cast<ostringstream*>(&(ostringstream() << mFragmentShaders.size() - 1))->str());
-		// check that uniforms exist before setting the constant uniforms
-		auto map = mFragmentShaders[mFragmentShaders.size() - 1].prog->getActiveUniformTypes();
+			// searching first index of not running shader
+			if (mFragmentShaders.size() < mParameterBag->MAX)
+			{
+				mFragmentShaders.push_back(newShada);
+			}
+			else
+			{
+				// load the new shader
+				mFragmentShaders[mFragmentShaders.size() - 1] = newShada;
+			}
+			//preview the new loaded shader
+			mParameterBag->mCurrentShadaFboIndex = mFragmentShaders.size() - 1;
+			log->logTimedString("setGLSLString success, mFragmentShaders size " + static_cast<ostringstream*>(&(ostringstream() << mFragmentShaders.size() - 1))->str());
+			// check that uniforms exist before setting the constant uniforms
+			auto map = mFragmentShaders[mFragmentShaders.size() - 1].prog->getActiveUniformTypes();
 
-		log->logTimedString("Found uniforms for " + fileName);
-		for (const auto &pair : map)
-		{
-			log->logTimedString(pair.first);
-		}
-		console() << endl;
-		if (map.find("iResolution") != map.end())
-		{
-			mFragmentShaders[mFragmentShaders.size() - 1].prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			log->logTimedString("Found uniforms for " + fileName);
+			for (const auto &pair : map)
+			{
+				log->logTimedString(pair.first);
+			}
+			console() << endl;
+			if (map.find("iResolution") != map.end())
+			{
+				mFragmentShaders[mFragmentShaders.size() - 1].prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			}
+
 		}
 		mError = "";
 		validFrag = true;

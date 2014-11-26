@@ -1,8 +1,8 @@
-#version 130
+#version 150
 
-void main()
+in vec4		ciPosition;
+
+void main( void )
 {
-	gl_FrontColor = gl_Color;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
-	gl_Position = ftransform();
+	gl_Position	= ciPosition;
 }

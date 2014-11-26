@@ -7,7 +7,7 @@ SpoutWrapper::SpoutWrapper(ParameterBagRef aParameterBag, TexturesRef aTextures)
 	mParameterBag = aParameterBag;
 	mTextures = aTextures;
 	// instanciate the logger class
-	log = Logger::create("SpoutWrapperLog.txt");
+	log = Logger::create("SpoutLog.txt");
 	log->logTimedString("SpoutWrapper constructor");
 
 	bInitialized = false;
