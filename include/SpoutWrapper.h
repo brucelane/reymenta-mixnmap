@@ -44,13 +44,15 @@ namespace Reymenta
 
 		// -------- SPOUT -------------
 		static const int			MAX = 8;
-		SpoutReceiver mSpoutReceivers[MAX];				// Create a Spout receiver array
-		bool bInitialized;								// true if a sender initializes OK
-		unsigned int mNewWidth, mNewHeight;				// size of the texture being sent out
-		char mNewSenderName[256];						// new sender name 
-
-		int MaxSize = 256;
-		int nSenders;
-		int nReceivers;
+		SpoutReceiver				mSpoutReceivers[MAX];				// Create a Spout receiver array
+		bool						bInitialized;						// true if a sender initializes OK
+		unsigned int				mNewWidth, mNewHeight;				// size of the texture being sent out
+		char						mNewSenderName[256];				// new sender name 
+		vector<int>					receiverIndexes;
+		int							MaxSize = 256;
+		int							nSenders;
+		int							nReceivers;
+		// keep track of sender names
+		char						SenderNames[MAX][256];
 	};
 }

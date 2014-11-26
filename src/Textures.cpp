@@ -105,16 +105,6 @@ WarpInput Textures::setInput(int index, bool left)
 	return warpInputs[index];
 };
 
-ci::gl::TextureRef Textures::getSenderTexture(int index)
-{
-	return inputTextures[checkedIndex(index)].texture;
-}
-void Textures::setSenderTextureSize(int index, int width, int height)
-{
-	inputTextures[checkedIndex(index)].width = width;
-	inputTextures[checkedIndex(index)].height = height;
-	inputTextures[checkedIndex(index)].texture = gl::Texture::create(width, height);
-}
 int Textures::addShadaFbo()
 {
 	// add a ShadaFbo
@@ -124,6 +114,19 @@ int Textures::addShadaFbo()
 	sFbo.shadaIndex = mShadaFbos.size();
 	mShadaFbos.push_back(sFbo);
 	return mShadaFbos.size() - 1;
+}
+
+int Textures::createSpoutTexture(char name[256], unsigned int width, unsigned int height)
+{
+	Sender newTexture;
+	// create new texture
+	memcpy(&newTexture.SenderName[0], name, strlen(name) + 1);
+	newTexture.width = width;
+	newTexture.height = height;
+	newTexture.texture = gl::Texture::create(width, height);
+	//! add to the inputTextures vector
+	inputTextures.push_back(newTexture);
+	return inputTextures.size() - 1;
 }
 
 int Textures::createTexture(char name[256], unsigned int width, unsigned int height, gl::TextureRef texture)
@@ -141,6 +144,16 @@ int Textures::createTexture(char name[256], unsigned int width, unsigned int hei
 char* Textures::getSenderName(int index) 
 { 
 	return &inputTextures[checkedIndex(index)].SenderName[0];
+}
+ci::gl::TextureRef Textures::getSenderTexture(int index)
+{
+	return inputTextures[checkedIndex(index)].texture;
+}
+void Textures::setSenderTextureSize(int index, int width, int height)
+{
+	inputTextures[checkedIndex(index)].width = width;
+	inputTextures[checkedIndex(index)].height = height;
+	inputTextures[checkedIndex(index)].texture = gl::Texture::create(width, height);
 }
 
 void Textures::setAudioTexture(int audioTextureIndex, unsigned char *signal)

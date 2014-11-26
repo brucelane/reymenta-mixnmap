@@ -77,6 +77,7 @@ namespace Reymenta
 		int							getInputTexturesCount() { return inputTextures.size(); };
 		ci::gl::TextureRef			getSenderTexture(int index);
 		int							createTexture(char name[256], unsigned int width, unsigned int height, gl::TextureRef texture);
+		int							createSpoutTexture(char name[256], unsigned int width, unsigned int height);
 		// from audio
 		void						setAudioTexture(int audioTextureIndex, unsigned char *signal);
 

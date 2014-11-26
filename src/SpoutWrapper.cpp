@@ -33,18 +33,20 @@ void SpoutWrapper::update()
 		for (int i = 0; i < nSenders; i++)
 		{
 			mSpoutReceivers[0].GetSenderName(i, &mNewSenderName[0], MaxSize);
-			memcpy(mTextures->getSenderName(i), mNewSenderName, strlen(mNewSenderName) + 1);
+			memcpy(&SenderNames[i][0], mNewSenderName, strlen(mNewSenderName) + 1);
 			// fix for old beta of Spout, should not be set to "true"
 			mSpoutReceivers[i].SetDX9(mParameterBag->mUseDX9);
 			log->logTimedString("DX9:" + toString(mParameterBag->mUseDX9));
 
-			if (mSpoutReceivers[i].CreateReceiver(mTextures->getSenderName(i), mNewWidth, mNewHeight))
+			if (mSpoutReceivers[i].CreateReceiver(&SenderNames[i][0], mNewWidth, mNewHeight))
 			{
 				bInitialized = true;
-				mTextures->setSenderTextureSize(i, mNewWidth, mNewHeight);
-
-				log->logTimedString("create receiver name:");
-				log->logTimedString(mTextures->getSenderName(i));
+				//mTextures->setSenderTextureSize(i, mNewWidth, mNewHeight);
+				if (i > int(receiverIndexes.size()) - 1)
+				{
+					receiverIndexes.push_back(mTextures->createSpoutTexture(&SenderNames[i][0], mNewWidth, mNewHeight));
+				}
+				log->logTimedString("create receiver");
 				nReceivers++;
 				log->logTimedString("new receiver count:");
 				log->logTimedString(toString(nReceivers));
@@ -68,11 +70,9 @@ void SpoutWrapper::draw()
 	{
 		for (int i = 0; i < nReceivers; i++)
 		{
-			if (mSpoutReceivers[i].ReceiveTexture(mTextures->getSenderName(i), width, height, mTextures->getSenderTexture(i)->getId(), mTextures->getSenderTexture(i)->getTarget()))
+			if (mSpoutReceivers[i].ReceiveTexture(&SenderNames[i][0], width, height, mTextures->getSenderTexture(receiverIndexes[i])->getId(), mTextures->getSenderTexture(receiverIndexes[i])->getTarget()))
 			{
-				mTextures->setSenderTextureSize(i, width, height);
-				//senders[i].width = width;
-				//senders[i].height = height;
+				mTextures->setSenderTextureSize(receiverIndexes[i], width, height);
 				actualReceivers++;
 			}
 			else
