@@ -66,7 +66,7 @@ void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 {
 	WarpInput wi = mTextures->setInput(aIndex, true);
 	buttonLeft[aIndex]->setName(toString( wi.leftIndex));
-	if (wi.leftMode = 0)
+	if (wi.leftMode == 0)
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
 	}
@@ -74,12 +74,13 @@ void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
 	}
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 }
 void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 {
 	WarpInput wi = mTextures->setInput(aIndex, false);
 	buttonRight[aIndex]->setName(toString(wi.rightIndex));
-	if (wi.rightMode = 0)
+	if (wi.rightMode == 0)
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
 	}
@@ -87,7 +88,7 @@ void LibraryPanel::setRightInput(const int &aIndex, const bool &pressed)
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
 	}
-
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 }
 void LibraryPanel::update()
 {

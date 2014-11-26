@@ -53,6 +53,18 @@ void Textures::createWarpInput()
 	//mixTextures.push_back(startupImage);
 	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
 }
+void Textures::setShadaIndex(int index) 
+{ 
+	currentMode = 1; 
+	log->logTimedString("setShadaIndex:" + toString(index)); 
+	selectedShada = index; 
+}
+void Textures::setInputTextureIndex(int index) 
+{ 
+	currentMode = 0; 
+	log->logTimedString("setInputTextureIndex:" + toString(index)); 
+	selectedInputTexture = index; 
+}
 
 WarpInput Textures::setInput(int index, bool left)
 { 

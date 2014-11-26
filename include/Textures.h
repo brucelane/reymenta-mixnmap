@@ -93,8 +93,8 @@ namespace Reymenta
 		void						renderShadersToFbo();
 		void						renderMixesToFbo();
 		void						saveThumb();
-		void						setShadaIndex(int index) { log->logTimedString("setShadaIndex:" + toString( index)); selectedShada = index; currentMode = 1; };
-		void						setInputTextureIndex(int index) { log->logTimedString("setInputTextureIndex:" + toString(index)); selectedInputTexture = index; currentMode = 0;};
+		void						setShadaIndex(int index);
+		void						setInputTextureIndex(int index);
 		int							getInputTextureIndex() { return selectedInputTexture; };
 		WarpInput					setInput(int index, bool left);
 		int							getShadaFbosSize() { return mShadaFbos.size(); };
