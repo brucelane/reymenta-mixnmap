@@ -42,12 +42,12 @@ Textures::Textures(ParameterBagRef aParameterBag, ShadersRef aShadersRef)
 }
 void Textures::createWarpInput()
 {
-	iCrossfade.push_back(0.0);
 	WarpInput newWarpInput;
 	newWarpInput.leftIndex = 0;
 	newWarpInput.leftMode = 0;
 	newWarpInput.rightIndex = 0;
 	newWarpInput.rightMode = 0;
+	newWarpInput.iCrossfade = 0.5;
 	warpInputs.push_back(newWarpInput);
 	// init mixTextures
 	//mixTextures.push_back(startupImage);
@@ -258,8 +258,8 @@ void Textures::renderMixesToFbo()
 		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
 		gl::ScopedFramebuffer fbScp(mFbo);
 		// clear out the FBO with black
-		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
-
+		gl::clear(ColorA(0.3f, 0.3f, 0.0f, 0.0f));
+		gl::color(ColorA(0.8f, 0.8f, 0.0f, 1.0f));
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0.0), mFbo->getSize());
 
@@ -284,9 +284,33 @@ void Textures::renderMixesToFbo()
 			// 1 for shader
 			getFboTexture(warpInputs[i].rightIndex)->bind(1);
 		}
+		mShaders->getMixShader()->uniform("iCrossfade", warpInputs[i].iCrossfade);
+		mShaders->getMixShader()->uniform("iChannel0", 0);
+		mShaders->getMixShader()->uniform("iChannel1", 1);
+		warpInputs[i].iCrossfade += 0.1;
+		if (warpInputs[i].iCrossfade > 1.0) warpInputs[i].iCrossfade = 0.0;
+		if (warpInputs[i].iCrossfade < 0.3)
+		{
+			gl::draw(getSenderTexture(warpInputs[i].leftIndex));
 
-		// draw our screen rectangle
-		gl::draw(mMesh);
+		}
+		else if (warpInputs[i].iCrossfade > 0.7)
+		{
+			gl::draw(getFboTexture(warpInputs[i].rightIndex));
+		}
+		else
+		{
+			// draw our screen rectangle
+			if (warpInputs[i].iCrossfade == 0.6)
+			{
+				gl::draw(mMesh);
+			}
+			else
+			{
+				gl::drawSphere(vec3(0.0), 30.0, 12);
+			}
+			
+		}
 		i++;
 	}
 }

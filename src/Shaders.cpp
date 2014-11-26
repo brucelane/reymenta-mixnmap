@@ -111,48 +111,7 @@ void Shaders::resize()
 	}
 
 }
-void Shaders::update()
-{
-	// get the current time with second-level accuracy
-	auto now = boost::posix_time::second_clock::local_time();
-	auto date = now.date();
-	auto time = now.time_of_day();
-	// set each uniform if it exists in the shader program
-	// when compiled, only uniforms that are used remain in the program
-	for (auto &shader : mFragmentShaders)
-	{
-		auto map = shader.prog->getActiveUniformTypes();
-		if (map.find("iGlobalTime") != map.end())
-		{
-			shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
-		}
-		if (map.find("iDate") != map.end())
-		{
-			shader.prog->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
-		}
-		if (map.find("iMouse") != map.end())
-		{
-			shader.prog->uniform("iMouse", mParameterBag->iMouse);
-		}
-		if (map.find("iColor") != map.end())
-		{
-			shader.prog->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
-		}
-		if (map.find("iBackgroundColor") != map.end())
-		{
-			shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
-		}
-	}
-	auto mixMap = mMixShader->getActiveUniformTypes();
-	if (mixMap.find("iCrossfade") != mixMap.end())
-	{
-		mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
-	}
-	if (mixMap.find("iAlpha") != mixMap.end())
-	{
-		mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
-	}
-}
+
 gl::GlslProgRef Shaders::getShader(int aIndex)
 {
 	if (aIndex > mFragmentShaders.size() - 1) aIndex = mFragmentShaders.size() - 1;
@@ -199,6 +158,56 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 	}
 	return rtn;
 }
+void Shaders::update()
+{
+	// get the current time with second-level accuracy
+	auto now = boost::posix_time::second_clock::local_time();
+	auto date = now.date();
+	auto time = now.time_of_day();
+	// set each uniform if it exists in the shader program
+	// when compiled, only uniforms that are used remain in the program
+	for (auto &shader : mFragmentShaders)
+	{
+		auto map = shader.prog->getActiveUniformTypes();
+		if (map.find("iGlobalTime") != map.end())
+		{
+			shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+		}
+		if (map.find("iDate") != map.end())
+		{
+			shader.prog->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
+		}
+		if (map.find("iMouse") != map.end())
+		{
+			shader.prog->uniform("iMouse", mParameterBag->iMouse);
+		}
+		if (map.find("iColor") != map.end())
+		{
+			shader.prog->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
+		}
+		if (map.find("iBackgroundColor") != map.end())
+		{
+			shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
+		}
+	}
+	auto mixMap = mMixShader->getActiveUniformTypes();
+	if (mixMap.find("iCrossfade") != mixMap.end())
+	{
+		//mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
+	}
+	if (mixMap.find("iAlpha") != mixMap.end())
+	{
+		mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
+	}
+	if (mixMap.find("iChannel0") != mixMap.end())
+	{
+		mMixShader->uniform("iChannel0", 0);
+	}
+	if (mixMap.find("iChannel1") != mixMap.end())
+	{
+		mMixShader->uniform("iChannel1", 1);
+	}
+}
 bool Shaders::setGLSLString(string pixelFrag, string fileName)
 {
 	currentFrag = pixelFrag;
@@ -224,7 +233,7 @@ bool Shaders::setGLSLString(string pixelFrag, string fileName)
 		// check that uniforms exist before setting the constant uniforms
 		auto map = mFragmentShaders[mFragmentShaders.size() - 1].prog->getActiveUniformTypes();
 
-		log->logTimedString("Found uniforms:");
+		log->logTimedString("Found uniforms for " + fileName);
 		for (const auto &pair : map)
 		{
 			log->logTimedString(pair.first);

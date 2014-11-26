@@ -1,12 +1,22 @@
-// uniforms begin
-#version 120
+// uniforms begin version was 120
+#version 150 core
 uniform vec3        iResolution;         	// viewport resolution (in pixels)
 uniform sampler2D   iChannel0;				// input channel 0
 uniform sampler2D   iChannel1;				// input channel 1 
 uniform float       iCrossfade;          	// CrossFade 2 shaders
 uniform float       iAlpha;          	  	// alpha
+uniform float     iGlobalTime;           // shader playback time (in seconds)
 
-vec3 shaderLeft(vec2 uv)
+out vec4 oColor;
+
+void main(void)
+{
+    vec2 uv = gl_FragCoord.xy / iResolution.xy;
+    vec4 left = texture2D(iChannel0, uv);
+    
+    oColor = vec4( left.r, left.g, 0.5 + 0.5 * sin(iGlobalTime), 1.0 );
+}
+/*vec3 shaderLeft(vec2 uv)
 {
 	vec4 left = texture2D(iChannel0, uv);
 	return vec3( left.r, left.g, left.b );
@@ -44,5 +54,5 @@ void main(void)
 		}
 	}
 	gl_FragColor = iAlpha * vec4( col, 1.0 );
-}
+}*/
 // main end

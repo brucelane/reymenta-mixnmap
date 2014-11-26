@@ -48,7 +48,7 @@ void LibraryPanel::addButtons()
 	buttonLeft.push_back(mParams->addButton("L", std::bind(&LibraryPanel::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c0\", \"exclusive\":true }"));
 	buttonRight.push_back(mParams->addButton("R", std::bind(&LibraryPanel::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c1\", \"exclusive\":true }"));
 	buttonSelect.push_back(mParams->addButton(toString(i), std::bind(&LibraryPanel::setPreview, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"pvw\", \"exclusive\":true }"));
-	sliderCrossfade.push_back(mParams->addSlider("xFade", &mTextures->iCrossfade[i], "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
+	sliderCrossfade.push_back(mParams->addSlider("xFade", &mParameterBag->iCrossfade, "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
 }
 
 void LibraryPanel::flipLibraryCurrentFbo(const bool &pressed)

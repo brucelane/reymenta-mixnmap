@@ -60,7 +60,8 @@ namespace Reymenta
 		int							leftIndex;
 		int							leftMode; // 0 for input texture, 1 for shader
 		int							rightIndex;
-		int							rightMode;
+		int							rightMode; // 0 for input texture, 1 for shader
+		float						iCrossfade;  // from 0 left to 1 right
 	};
 	class Textures {
 	public:		
@@ -99,7 +100,7 @@ namespace Reymenta
 		int							getShadaFbosSize() { return mShadaFbos.size(); };
 		int							addShadaFbo();
 		void						createWarpInput();
-		vector<float>				iCrossfade;
+
 	private:
 		//! Logger
 		LoggerRef					log;	

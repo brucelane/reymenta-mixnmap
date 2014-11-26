@@ -16,7 +16,7 @@ WarpPanel::WarpPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, Sh
 	setupParams();
 	// Textures index channel 1
 	warpIndex = 0;
-	mVisible = false;
+	mVisible = true;
 }
 
 WarpPanelRef WarpPanel::create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef)
