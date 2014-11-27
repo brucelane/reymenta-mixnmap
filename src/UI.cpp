@@ -27,6 +27,10 @@ UI::UI(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTextu
 	mParameterBag->iDeltaTime = 60 / mParameterBag->mTempo;
 	previousTime = 0.0f;
 	beatIndex = 0;
+	// bezier lines
+	currentPath = 0;
+	mPath.push_back(new Path2d());
+
 	//timer.start();
 }
 
@@ -53,8 +57,8 @@ void UI::setup()
 	setupTextures();
 
 	// panels
-	mWarpPanel = WarpPanel::create(mParameterBag, mTextures, mShaders);
-	mLibraryPanel = LibraryPanel::create(mParameterBag, mTextures, mShaders);
+	mWarpPanel = WarpPanel::create(mParameterBag, mTextures);
+	mLibraryPanel = LibraryPanel::create(mParameterBag, mTextures);
 
 	mSetupComplete = true;
 }
@@ -93,7 +97,7 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("optim\nUI", std::bind(&UI::toggleOptimizeUI, this, std::placeholders::_1), "{ \"clear\":false, \"width\":56, \"stateless\":false}");
 	/*
 		Panel selector
-	*/
+		*/
 	// output 
 	mMiniControl->addLabel("Rndr\nwin", "{ \"width\":48, \"clear\":false }");
 	mMiniControl->addButton("1", std::bind(&UI::createRenderWindow, this, 1, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true }");
@@ -182,7 +186,6 @@ void UI::setupGlobal()
 	mPanels.push_back(gParams);
 
 	// 2D Sliders
-	//gParams->addSlider2D( "leftRenderXY", &mParameterBag->mLeftRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString( mParameterBag->mPreviewWidth ) +" }" );
 	labelXY = gParams->addLabel("MiddleXY", "{ \"clear\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	labelPosXY = gParams->addLabel("MiddlePosXY", "{ \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 
@@ -312,6 +315,37 @@ void UI::draw()
 		if (mSlidersPanel) mSlidersPanel->draw();
 		mLibraryPanel->draw();
 	}
+	// draw the control points
+	gl::color(Color(1, 1, 0));
+	for (auto & path : mPath)
+	{
+		for (size_t p = 0; p < path->getNumPoints(); ++p)
+			gl::drawSolidCircle(path->getPoint(p), 2.5f);
+
+		// draw the precise bounding box
+		/*if (path->getNumSegments() > 1) {
+			gl::color(ColorA(0, 1, 1, 0.2f));
+			gl::drawSolidRect(path->calcPreciseBoundingBox());
+		}*/
+
+		// draw the curve itself
+		gl::color(Color(1.0f, 0.5f, 0.25f));
+		gl::draw(*path);
+
+		if (path->getNumSegments() > 1) {
+			// draw some tangents
+			gl::color(Color(0.2f, 0.9f, 0.2f));
+			for (float t = 0; t < 1; t += 0.2f)
+				gl::drawLine(path->getPosition(t), path->getPosition(t) + normalize(path->getTangent(t)) * 80.0f);
+
+			// draw circles at 1/4, 2/4 and 3/4 the length
+			gl::color(ColorA(0.2f, 0.9f, 0.9f, 0.5f));
+			for (float t = 0.25f; t < 1.0f; t += 0.25f)
+				gl::drawSolidCircle(path->getPosition(path->calcNormalizedTime(t)), 5.0f);
+		}
+
+	}
+
 	// needed because of what the ping pong fbo is doing, at least
 	gl::disableAlphaBlending();
 
@@ -621,11 +655,72 @@ void UI::resize()
 	if (mLibraryPanel) mLibraryPanel->resize();
 }
 
-void UI::mouseDown(MouseEvent &event)
+void UI::mouseDown(MouseEvent event)
 {
+	if (mPath[currentPath]->calcLength() > 2)
+	{
+		//mPath[currentPath]->clear();
+		mPath.push_back(new Path2d());
+		currentPath++;
+	}
+	if (event.isLeftDown()) { // line
+		if (mPath[currentPath]->empty()) {
+			mPath[currentPath]->moveTo(event.getPos());
+			mTrackedPoint = 0;
+		}
+		else
+			mPath[currentPath]->lineTo(event.getPos());
+	}
 }
 
-void UI::keyDown(KeyEvent &event)
+void UI::mouseUp(MouseEvent event)
+{
+	mTrackedPoint = -1;
+}
+void UI::mouseDrag(MouseEvent event)
+{
+	if (mPath[currentPath]->calcLength() > 1) {
+
+		if (mTrackedPoint >= 0) {
+			mPath[currentPath]->setPoint(mTrackedPoint, event.getPos());
+		}
+		else { // first bit of dragging, so switch our line to a cubic or a quad if Shift is down
+			// we want to preserve the end of our current line, because it will still be the end of our curve
+			vec2 endPt = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+			// and now we'll delete that line and replace it with a curve
+			mPath[currentPath]->removeSegment(mPath[currentPath]->getNumSegments() - 1);
+
+			Path2d::SegmentType prevType = (mPath[currentPath]->getNumSegments() == 0) ? Path2d::MOVETO : mPath[currentPath]->getSegmentType(mPath[currentPath]->getNumSegments() - 1);
+
+			if (event.isShiftDown() || prevType == Path2d::MOVETO) { // add a quadratic curve segment
+				mPath[currentPath]->quadTo(event.getPos(), endPt);
+			}
+			else { // add a cubic curve segment
+				vec2 tan1;
+				if (prevType == Path2d::CUBICTO) { 		// if the segment before was cubic, let's replicate and reverse its tangent
+					vec2 prevDelta = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2) - mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1) - prevDelta;
+				}
+				else if (prevType == Path2d::QUADTO) {
+					// we can figure out what the equivalent cubic tangent would be using a little math
+					vec2 quadTangent = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2);
+					vec2 quadEnd = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+					vec2 prevDelta = (quadTangent + (quadEnd - quadTangent) / 3.0f) - quadEnd;
+					tan1 = quadEnd - prevDelta;
+				}
+				else
+					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+
+				mPath[currentPath]->curveTo(tan1, event.getPos(), endPt);
+			}
+
+			// our second-to-last point is the tangent next to the end, and we'll track that
+			mTrackedPoint = mPath[currentPath]->getNumPoints() - 2;
+		}
+
+	}
+}
+void UI::keyDown(KeyEvent event)
 {
 	/*switch (event.getChar())
 	{
@@ -757,8 +852,8 @@ void UI::calculateTempo()
 }
 /*void UI::selectPreviewSize(const bool &pressed)
 {
-	mParameterBag->mPreviewLargeSize = pressed;
-	mTextures->createPreviewFbo();
+mParameterBag->mPreviewLargeSize = pressed;
+mTextures->createPreviewFbo();
 }*/
 void UI::saveSettings(const bool &pressed)
 {

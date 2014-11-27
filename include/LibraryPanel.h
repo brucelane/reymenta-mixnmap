@@ -29,8 +29,8 @@ namespace Reymenta
 	{
 
 	public:
-		LibraryPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef);
-		static LibraryPanelRef create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef);
+		LibraryPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef);
+		static LibraryPanelRef create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef);
 
 		void draw();
 		void update();
@@ -59,7 +59,6 @@ namespace Reymenta
 		bool							mVisible;
 
 		ParameterBagRef					mParameterBag;
-		ShadersRef						mShaders;
 		TexturesRef						mTextures;
 	};
 }

@@ -28,7 +28,9 @@ along with Cinder-Warping.  If not, see <http://www.gnu.org/licenses/>.
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/Timeline.h"
-
+// test for multitouch
+#include "cinder/System.h"
+// warps
 #include "WarpBilinear.h"
 #include "WarpPerspective.h"
 #include "WarpPerspectiveBilinear.h"
@@ -58,19 +60,55 @@ using namespace ph::warping;
 using namespace std;
 using namespace Reymenta;
 
+struct TouchPoint {
+	TouchPoint() {}
+	TouchPoint(const vec2 &initialPt, const Color &color) : mColor(color), mTimeOfDeath(-1.0)
+	{
+		mLine.push_back(initialPt);
+	}
+
+	void addPoint(const vec2 &pt) { mLine.push_back(pt); }
+
+	void draw() const
+	{
+		if (mTimeOfDeath > 0) // are we dying? then fade out
+			gl::color(ColorA(mColor, (mTimeOfDeath - getElapsedSeconds()) / 2.0f));
+		else
+			gl::color(mColor);
+
+		gl::draw(mLine);
+	}
+
+	void startDying() { mTimeOfDeath = getElapsedSeconds() + 2.0f; } // two seconds til dead
+
+	bool isDead() const { return getElapsedSeconds() > mTimeOfDeath; }
+
+	PolyLine<vec2>	mLine;
+	Color			mColor;
+	float			mTimeOfDeath;
+};
+
+
 class MixnMapApp : public AppNative {
 public:
-	void prepareSettings(Settings *settings);
-	void setup();
-	void shutdown();
-	void update();
-	void resize();
+	void						prepareSettings(Settings *settings);
+	void						setup();
+	void						shutdown();
+	void						update();
+	void						resize();
 
-	void mouseMove(MouseEvent event);
-	void mouseDown(MouseEvent event);
-	void mouseDrag(MouseEvent event);
-	void mouseUp(MouseEvent event);
+	// mouse events
+	void						mouseMove(MouseEvent event);
+	void						mouseDown(MouseEvent event);
+	void						mouseDrag(MouseEvent event);
+	void						mouseUp(MouseEvent event);
 
+	// touch events
+	void						touchesBegan(TouchEvent event);
+	void						touchesMoved(TouchEvent event);
+	void						touchesEnded(TouchEvent event);
+
+	// keyboard events
 	void						keyDown(KeyEvent event);
 	void						keyUp(KeyEvent event);
 	//! allow file drop of images, shaders
@@ -125,4 +163,8 @@ private:
 
 	bool						newLogMsg;
 	string						mLogMsg;
+	// touch events
+	map<uint32_t, TouchPoint>	mActivePoints;
+	list<TouchPoint>			mDyingPoints;
+
 };

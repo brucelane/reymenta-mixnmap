@@ -39,6 +39,12 @@ namespace Reymenta
 		void								draw();
 		void								update();
 		void								resize();
+
+		void								mouseDown(MouseEvent event);
+		void								mouseUp(MouseEvent event);
+		void								mouseDrag(MouseEvent event);
+		void								keyDown(KeyEvent event);
+
 		void								fullscreen(const bool &pressed);
 		void								toggleGlitch(const bool &pressed);
 		void								toggleOptimizeUI(const bool &pressed);
@@ -110,24 +116,23 @@ namespace Reymenta
 		void								hide();
 		void								shutdown();
 		LibraryPanelRef						mLibraryPanel;
+		WarpPanelRef						mWarpPanel;
 		void								addShadaControls();
 		void								addTextureControls();
 		int									getTextureButtonsCount() { return buttonTexture.size(); };
 		void								createWarp();
+
 	private:
 		void								setupGlobal();
 		void								setupMiniControl();
 		void								setupSliders();
 		void								setupTextures();
 		void								setupShaders();
-		void								mouseDown(ci::app::MouseEvent &event);
-		void								keyDown(ci::app::KeyEvent &event);
 
 		// windows mgmt
 		MinimalUI::UIControllerRef			mMiniControl, gParams, tParams, sParams;
 		// panels
 		SlidersPanelRef						mSlidersPanel;
-		WarpPanelRef						mWarpPanel;
 		vector<MinimalUI::UIControllerRef>	mPanels;
 
 		ci::app::WindowRef					mWindow;
@@ -164,5 +169,9 @@ namespace Reymenta
 		void								saveSettings(const bool &pressed = true);
 		void								restoreSettings(const bool &pressed = true);
 		void								resetSettings(const bool &pressed = true);
+		// bezier lines for nodes
+		vector<Path2d*>	mPath;
+		int		mTrackedPoint;
+		int currentPath;
 };
 }

@@ -8,20 +8,20 @@ tex: 76 57
 pvw: 156 88
 
 */
-WarpPanel::WarpPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef)
+WarpPanel::WarpPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef)
 {
 	mParameterBag = aParameterBag;
 	mTextures = aTexturesRef;
-	mShaders = aShadersRef;
+
 	setupParams();
 	// Textures index channel 1
 	warpIndex = 0;
 	mVisible = true;
 }
 
-WarpPanelRef WarpPanel::create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef)
+WarpPanelRef WarpPanel::create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef)
 {
-	return shared_ptr<WarpPanel>(new WarpPanel(aParameterBag, aTexturesRef, aShadersRef));
+	return shared_ptr<WarpPanel>(new WarpPanel(aParameterBag, aTexturesRef));
 }
 void WarpPanel::setupParams()
 {
@@ -38,11 +38,13 @@ void WarpPanel::setupParams()
 	currentIndexLabel = mParams->addLabel("Select\nWarp", "{ \"clear\":false, \"width\":48 }");
 	mParams->addButton("+", std::bind(&WarpPanel::setCurrentFboIndex, this, 1, std::placeholders::_1), "{ \"clear\":false, \"width\":36 }");
 	mParams->addButton("-", std::bind(&WarpPanel::setCurrentFboIndex, this, -1, std::placeholders::_1), "{  \"width\":36 }");
-	for (int i = 0; i < 8; i++)
-	{
-		buttonIndex[i] = mParams->addButton(toString(i), std::bind(&WarpPanel::setCurrentIndex, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"index\", \"exclusive\":true }");
-		labelFboIndex[i] = mParams->addLabel(toString(mParameterBag->iWarpFboChannels[i]), "{ \"width\":48 }");
-	}
+
+}
+void WarpPanel::addButtons()
+{
+	int i = buttonIndex.size();
+	buttonIndex.push_back(mParams->addButton(toString(i), std::bind(&WarpPanel::setCurrentIndex, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"index\", \"exclusive\":true }"));
+	labelFboIndex.push_back(mParams->addLabel(toString(mParameterBag->iWarpFboChannels[i]), "{ \"width\":48 }"));
 }
 void WarpPanel::setCurrentIndex(const int &aIndex, const bool &pressed)
 {
@@ -65,7 +67,7 @@ void WarpPanel::update()
 	if (mVisible && !mParameterBag->mOptimizeUI)
 	{
 		mParams->update();
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < buttonIndex.size(); i++)
 		{
 			buttonIndex[i]->setBackgroundTexture(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]));
 		}

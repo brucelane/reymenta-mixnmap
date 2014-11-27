@@ -2,8 +2,6 @@
 
 // parameters
 #include "ParameterBag.h"
-// shaders
-#include "Shaders.h"
 // textures
 #include "Textures.h"
 
@@ -21,25 +19,26 @@ namespace Reymenta
 
 	class WarpPanel {
 	public:
-		WarpPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef);
-		static WarpPanelRef create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef);
-		void toggleVisibility() { mVisible ? hide() : show(); }
-		void update();
-		void draw();
-		void resize();
-		void show();
-		void hide();
+		WarpPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef);
+		static WarpPanelRef					create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef);
+		void								toggleVisibility() { mVisible ? hide() : show(); }
+		void								update();
+		void								draw();
+		void								resize();
+		void								show();
+		void								hide();
+		void								addButtons();
+		int									getWarpsSize() { return buttonIndex.size(); };
 	private:
 
 		ParameterBagRef						mParameterBag;
-		ShadersRef							mShaders;
 		TexturesRef							mTextures;
 		bool								mVisible;
 		int									warpIndex;
 		void								setupParams();
 		void								setCurrentIndex(const int &aIndex, const bool &pressed);
 		void								setCurrentFboIndex(const int &aIndex, const bool &pressed);
-		MinimalUI::UIElementRef				buttonIndex[8], labelFboIndex[8];
+		vector<MinimalUI::UIElementRef>		buttonIndex, labelFboIndex;	
 		MinimalUI::UIElementRef				currentIndexLabel;
 		MinimalUI::UIControllerRef			mParams;
 	};

@@ -7,18 +7,17 @@ btn: 48 36
 tex: 76 57
 pvw: 156 88
 */
-LibraryPanel::LibraryPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef)
+LibraryPanel::LibraryPanel(ParameterBagRef aParameterBag, TexturesRef aTexturesRef)
 {
 	mParameterBag = aParameterBag;
-	mShaders = aShadersRef;
 	mTextures = aTexturesRef;
 
 	setupParams();
 }
 
-LibraryPanelRef LibraryPanel::create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef, ShadersRef aShadersRef)
+LibraryPanelRef LibraryPanel::create(ParameterBagRef aParameterBag, TexturesRef aTexturesRef)
 {
-	return shared_ptr<LibraryPanel>(new LibraryPanel(aParameterBag, aTexturesRef, aShadersRef));
+	return shared_ptr<LibraryPanel>(new LibraryPanel(aParameterBag, aTexturesRef));
 }
 
 void LibraryPanel::setupParams()

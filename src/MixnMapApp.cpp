@@ -21,6 +21,9 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	settings->setResizable(true); // allowed for a receiver
 	// set a high frame rate to disable limitation
 	settings->setFrameRate(1000.0f);
+	console() << "MT: " << System::hasMultiTouch() << " Max points: " << System::getMaxMultiTouchPoints() << std::endl;
+	if (System::hasMultiTouch()) settings->enableMultiTouch();
+
 	if (mParameterBag->mShowConsole) settings->enableConsoleWindow();
 
 }
@@ -184,6 +187,17 @@ void MixnMapApp::update()
 			mTextures->addShadaFbo();
 			mUI->addShadaControls();
 		}
+		// compare then number of warps to the number of UI warpPanel buttons
+		// in case of a new warp, add a line
+		int warpsSize = 0;
+		for (auto &warp : mWarps)
+		{
+			warpsSize++;
+		}
+		if (mUI->mWarpPanel->getWarpsSize() < warpsSize)
+		{
+			mUI->mWarpPanel->addButtons();
+		}
 		// compare then number of textures to the number of ui tParams elements
 		// in case of a new texture, create the new uiElements
 		if (mUI->getTextureButtonsCount() < mTextures->getInputTexturesCount())
@@ -243,8 +257,6 @@ void MixnMapApp::drawRender()
 	int i = 0;
 	for (auto &warp : mWarps) 
 	{
-		//warp->draw(mTextures->getTexture(i), mSrcArea);
-		//warp->draw(mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getFboTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 		warp->draw(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 		i++;
 	}
@@ -257,11 +269,30 @@ void MixnMapApp::drawMain()
 {
 	//! clear the window
 	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
+	gl::setMatricesWindow(getWindowSize());
 	//! draw Spout received textures
 	mSpout->draw();
 	mTextures->draw();
 	gl::draw(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
 	if (mParameterBag->mShowUI) mUI->draw();
+
+	//touch events only make sense on the UI
+	for (map<uint32_t, TouchPoint>::const_iterator activeIt = mActivePoints.begin(); activeIt != mActivePoints.end(); ++activeIt) {
+		activeIt->second.draw();
+	}
+
+	for (list<TouchPoint>::iterator dyingIt = mDyingPoints.begin(); dyingIt != mDyingPoints.end();) {
+		dyingIt->draw();
+		if (dyingIt->isDead())
+			dyingIt = mDyingPoints.erase(dyingIt);
+		else
+			++dyingIt;
+	}
+
+	// draw yellow circles at the active touch points
+	gl::color(Color(1, 1, 0));
+	for (vector<TouchEvent::Touch>::const_iterator touchIt = getActiveTouches().begin(); touchIt != getActiveTouches().end(); ++touchIt)
+		gl::drawStrokedCircle(touchIt->getPos(), 20.0f);
 	gl::disableAlphaBlending();
 }
 void MixnMapApp::createRenderWindow()
@@ -323,6 +354,7 @@ void MixnMapApp::mouseDown(MouseEvent event)
 	if (!Warp::handleMouseDown(mWarps, event))
 	{
 		// let your application perform its mouseDown handling here
+		mUI->mouseDown(event);
 	}
 	mParameterBag->iMouse.z = event.getX();
 	mParameterBag->iMouse.w = getWindowHeight() - event.getY();
@@ -334,7 +366,8 @@ void MixnMapApp::mouseDrag(MouseEvent event)
 	if (!Warp::handleMouseDrag(mWarps, event))
 	{
 		// let your application perform its mouseDrag handling here
-	}	
+		mUI->mouseDrag(event);
+	}
 	mParameterBag->iMouse.x =  event.getX();
 	mParameterBag->iMouse.y = getWindowHeight() - event.getY();
 	//mWarpings->mouseDrag(event);
@@ -346,8 +379,34 @@ void MixnMapApp::mouseUp(MouseEvent event)
 	if (!Warp::handleMouseUp(mWarps, event))
 	{
 		// let your application perform its mouseUp handling here
+		mUI->mouseUp(event);
 	}
 	//mWarpings->mouseUp(event);
+}
+void MixnMapApp::touchesBegan(TouchEvent event)
+{
+	console() << "Began: " << event << std::endl;
+	for (vector<TouchEvent::Touch>::const_iterator touchIt = event.getTouches().begin(); touchIt != event.getTouches().end(); ++touchIt) {
+		Color newColor(CM_HSV, Rand::randFloat(), 1, 1);
+		mActivePoints.insert(make_pair(touchIt->getId(), TouchPoint(touchIt->getPos(), newColor)));
+	}
+}
+
+void MixnMapApp::touchesMoved(TouchEvent event)
+{
+	console() << "Moved: " << event << std::endl;
+	for (vector<TouchEvent::Touch>::const_iterator touchIt = event.getTouches().begin(); touchIt != event.getTouches().end(); ++touchIt)
+		mActivePoints[touchIt->getId()].addPoint(touchIt->getPos());
+}
+
+void MixnMapApp::touchesEnded(TouchEvent event)
+{
+	console() << "Ended: " << event << std::endl;
+	for (vector<TouchEvent::Touch>::const_iterator touchIt = event.getTouches().begin(); touchIt != event.getTouches().end(); ++touchIt) {
+		mActivePoints[touchIt->getId()].startDying();
+		mDyingPoints.push_back(mActivePoints[touchIt->getId()]);
+		mActivePoints.erase(touchIt->getId());
+	}
 }
 
 void MixnMapApp::keyDown(KeyEvent event)
