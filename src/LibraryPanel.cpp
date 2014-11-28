@@ -64,7 +64,7 @@ void LibraryPanel::setCurrentFbo(const int &aIndex, const bool &pressed)
 void LibraryPanel::setLeftInput(const int &aIndex, const bool &pressed)
 {
 	WarpInput wi = mTextures->setInput(aIndex, true);
-	buttonLeft[aIndex]->setName(toString( wi.leftIndex));
+	buttonLeft[aIndex]->setName(toString(wi.leftIndex));
 	if (wi.leftMode == 0)
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
@@ -96,16 +96,13 @@ void LibraryPanel::update()
 	{
 		mParams->update();
 
-		if (!mParameterBag->mOptimizeUI)
+		if (getElapsedFrames() % (mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh) == 0)
 		{
-			if (getElapsedFrames() % (mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh) == 0)
-			{
-				//TODO buttonInput->setBackgroundTexture(mTextures->getShaderTexture());
-				sliderLeftRenderXY->setBackgroundTexture(mTextures->getMixTexture(0));
-				sliderRightRenderXY->setBackgroundTexture(mTextures->getMixTexture(1));
-				sliderMixRenderXY->setBackgroundTexture(mTextures->getMixTexture(2));
+			//TODO buttonInput->setBackgroundTexture(mTextures->getShaderTexture());
+			sliderLeftRenderXY->setBackgroundTexture(mTextures->getMixTexture(0));
+			sliderRightRenderXY->setBackgroundTexture(mTextures->getMixTexture(1));
+			sliderMixRenderXY->setBackgroundTexture(mTextures->getMixTexture(2));
 
-			}
 		}
 	}
 }

@@ -208,7 +208,7 @@ void UI::setupTextures()
 	tParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(tParams);
 	tParams->addLabel("Input textures", "{ \"width\":100 }");
-	sliderPreviewTextureXY = tParams->addSlider2D("PreviewTextureXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+	sliderPreviewTextureXY = tParams->addSlider2D("PreviewTextureXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"handleVisible\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 }
 void UI::addTextureControls()
 {
@@ -296,7 +296,7 @@ void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
 	mTextures->setInputTextureIndex(aTextureIndex);
 	mParameterBag->iChannels[0] = aTextureIndex;
-	
+
 	//buttonTexture[aTextureIndex]->setActive(true);
 	if (mPath[currentPath]->calcLength() > 2)
 	{
@@ -437,219 +437,223 @@ string UI::formatNumber(float f)
 }
 void UI::update()
 {
-	// check this line position: can't remember
-	currentTime = timer.getSeconds();
-
-	int time = (currentTime - startTime)*1000000.0;
-	int elapsed = mParameterBag->iDeltaTime*1000000.0;
-	if (elapsed > 0)
+	if (mParameterBag->mOptimizeUI)
 	{
-		double modulo = (time % elapsed) / 1000000.0;
-		mParameterBag->iTempoTime = (float)modulo;
-		if (mParameterBag->iTempoTime < previousTime)
-		{
-			beatIndex++;
-			if (beatIndex > 3) beatIndex = 0;
-		}
-		previousTime = mParameterBag->iTempoTime;
 
-		(modulo < 0.1) ? tempoMvg->setNameColor(ColorA::white()) : tempoMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
-		// exposure
-		if (mSlidersPanel->tExposure)
-		{
-			mParameterBag->controlValues[14] = (modulo < 0.1) ? mSlidersPanel->maxExposure : mSlidersPanel->minExposure;
-		}
-		else
-		{
-			mParameterBag->controlValues[14] = mSlidersPanel->autoExposure ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minExposure, mSlidersPanel->maxExposure) : mParameterBag->controlValues[14];
-			//mParameterBag->controlValues[14] = mSlidersPanel->autoExposure ? (sin(getElapsedFrames() / (mParameterBag->controlValues[12] + 1.0))) : mParameterBag->controlValues[14];
-		}
-		// zoom
-		if (mSlidersPanel->tZoom)
-		{
-			mParameterBag->controlValues[13] = (modulo < 0.1) ? mSlidersPanel->maxZoom : mSlidersPanel->minZoom;
-		}
-		else
-		{
-			mParameterBag->controlValues[13] = mSlidersPanel->autoZoom ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minZoom, mSlidersPanel->maxZoom) : mParameterBag->controlValues[13];
-		}
-		// ratio
-		if (mSlidersPanel->tRatio)
-		{
-			mParameterBag->controlValues[11] = (modulo < 0.1) ? mSlidersPanel->maxRatio : mSlidersPanel->minRatio;
-		}
-		else
-		{
-			mParameterBag->controlValues[11] = mSlidersPanel->autoRatio ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minRatio, mSlidersPanel->maxRatio) : mParameterBag->controlValues[11];
-		}
-		// RotationSpeed
-		if (mSlidersPanel->tRotationSpeed)
-		{
-			mParameterBag->controlValues[19] = (modulo < 0.1) ? mSlidersPanel->maxRotationSpeed : mSlidersPanel->minRotationSpeed;
-		}
-		else
-		{
-			mParameterBag->controlValues[19] = mSlidersPanel->autoRotationSpeed ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minRotationSpeed, mSlidersPanel->maxRotationSpeed) : mParameterBag->controlValues[19];
-		}
-		// Front Red
-		if (mParameterBag->tFR)
-		{
-			mParameterBag->controlValues[1] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[1] = mParameterBag->mLockFR ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[1];
-		}
-		// Front Green
-		if (mParameterBag->tFG)
-		{
-			mParameterBag->controlValues[2] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[2] = mParameterBag->mLockFG ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[2];
-		}
-		// front blue
-		if (mParameterBag->tFB)
-		{
-			mParameterBag->controlValues[3] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[3] = mParameterBag->mLockFB ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[3];
-		}
-		// front alpha
-		if (mParameterBag->tFA)
-		{
-			mParameterBag->controlValues[4] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[4] = mParameterBag->mLockFA ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[4];
-		}
-		// 
-		if (mParameterBag->tBR)
-		{
-			mParameterBag->controlValues[5] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[5] = mParameterBag->mLockBR ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[5];
-		}
-		// 
-		if (mParameterBag->tBG)
-		{
-			mParameterBag->controlValues[6] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[6] = mParameterBag->mLockBG ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[6];
-		}
-		// 
-		if (mParameterBag->tBB)
-		{
-			mParameterBag->controlValues[7] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[7] = mParameterBag->mLockBB ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[7];
-		}
-		// 
-		if (mParameterBag->tBA)
-		{
-			mParameterBag->controlValues[8] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			mParameterBag->controlValues[8] = mParameterBag->mLockBA ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[8];
-		}
-	}
+		// check this line position: can't remember
+		currentTime = timer.getSeconds();
 
-	for (auto & panel : mPanels) panel->update();
-	if (mWarpPanel) mWarpPanel->update();
-	if (mSlidersPanel) mSlidersPanel->update();
-	if (mLibraryPanel) mLibraryPanel->update();
-
-	if (getElapsedFrames() % mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh == 0)
-	{
-		if (mVisible)
+		int time = (currentTime - startTime)*1000000.0;
+		int elapsed = mParameterBag->iDeltaTime*1000000.0;
+		if (elapsed > 0)
 		{
-			if (!mParameterBag->mOptimizeUI)
+			double modulo = (time % elapsed) / 1000000.0;
+			mParameterBag->iTempoTime = (float)modulo;
+			if (mParameterBag->iTempoTime < previousTime)
 			{
-				tempoMvg->setName(toString(floor(mParameterBag->mTempo)) + "bpm\n" + toString(floor(mParameterBag->iDeltaTime * 1000)) + "ms " + formatNumber(mParameterBag->iTempoTime));
-				//audio
-				if (mParameterBag->maxVolume < 0.1)
+				beatIndex++;
+				if (beatIndex > 3) beatIndex = 0;
+			}
+			previousTime = mParameterBag->iTempoTime;
+
+			(modulo < 0.1) ? tempoMvg->setNameColor(ColorA::white()) : tempoMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
+			// exposure
+			if (mSlidersPanel->tExposure)
+			{
+				mParameterBag->controlValues[14] = (modulo < 0.1) ? mSlidersPanel->maxExposure : mSlidersPanel->minExposure;
+			}
+			else
+			{
+				mParameterBag->controlValues[14] = mSlidersPanel->autoExposure ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minExposure, mSlidersPanel->maxExposure) : mParameterBag->controlValues[14];
+				//mParameterBag->controlValues[14] = mSlidersPanel->autoExposure ? (sin(getElapsedFrames() / (mParameterBag->controlValues[12] + 1.0))) : mParameterBag->controlValues[14];
+			}
+			// zoom
+			if (mSlidersPanel->tZoom)
+			{
+				mParameterBag->controlValues[13] = (modulo < 0.1) ? mSlidersPanel->maxZoom : mSlidersPanel->minZoom;
+			}
+			else
+			{
+				mParameterBag->controlValues[13] = mSlidersPanel->autoZoom ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minZoom, mSlidersPanel->maxZoom) : mParameterBag->controlValues[13];
+			}
+			// ratio
+			if (mSlidersPanel->tRatio)
+			{
+				mParameterBag->controlValues[11] = (modulo < 0.1) ? mSlidersPanel->maxRatio : mSlidersPanel->minRatio;
+			}
+			else
+			{
+				mParameterBag->controlValues[11] = mSlidersPanel->autoRatio ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minRatio, mSlidersPanel->maxRatio) : mParameterBag->controlValues[11];
+			}
+			// RotationSpeed
+			if (mSlidersPanel->tRotationSpeed)
+			{
+				mParameterBag->controlValues[19] = (modulo < 0.1) ? mSlidersPanel->maxRotationSpeed : mSlidersPanel->minRotationSpeed;
+			}
+			else
+			{
+				mParameterBag->controlValues[19] = mSlidersPanel->autoRotationSpeed ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, mSlidersPanel->minRotationSpeed, mSlidersPanel->maxRotationSpeed) : mParameterBag->controlValues[19];
+			}
+			// Front Red
+			if (mParameterBag->tFR)
+			{
+				mParameterBag->controlValues[1] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[1] = mParameterBag->mLockFR ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[1];
+			}
+			// Front Green
+			if (mParameterBag->tFG)
+			{
+				mParameterBag->controlValues[2] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[2] = mParameterBag->mLockFG ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[2];
+			}
+			// front blue
+			if (mParameterBag->tFB)
+			{
+				mParameterBag->controlValues[3] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[3] = mParameterBag->mLockFB ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[3];
+			}
+			// front alpha
+			if (mParameterBag->tFA)
+			{
+				mParameterBag->controlValues[4] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[4] = mParameterBag->mLockFA ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[4];
+			}
+			// 
+			if (mParameterBag->tBR)
+			{
+				mParameterBag->controlValues[5] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[5] = mParameterBag->mLockBR ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[5];
+			}
+			// 
+			if (mParameterBag->tBG)
+			{
+				mParameterBag->controlValues[6] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[6] = mParameterBag->mLockBG ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[6];
+			}
+			// 
+			if (mParameterBag->tBB)
+			{
+				mParameterBag->controlValues[7] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[7] = mParameterBag->mLockBB ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[7];
+			}
+			// 
+			if (mParameterBag->tBA)
+			{
+				mParameterBag->controlValues[8] = (modulo < 0.1) ? 1.0 : 0.0;
+			}
+			else
+			{
+				mParameterBag->controlValues[8] = mParameterBag->mLockBA ? lmap<float>(mParameterBag->iTempoTime, 0.00001, mParameterBag->iDeltaTime, 0.0, 1.0) : mParameterBag->controlValues[8];
+			}
+		}
+
+		for (auto & panel : mPanels) panel->update();
+		if (mWarpPanel) mWarpPanel->update();
+		if (mSlidersPanel) mSlidersPanel->update();
+		if (mLibraryPanel) mLibraryPanel->update();
+
+		if (getElapsedFrames() % mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh == 0)
+		{
+			if (mVisible)
+			{
+				if (!mParameterBag->mOptimizeUI)
 				{
-					volMvg->setName("audio in");
-				}
-				else
-				{
-					if (mParameterBag->maxVolume < 200.0)
+					tempoMvg->setName(toString(floor(mParameterBag->mTempo)) + "bpm\n" + toString(floor(mParameterBag->iDeltaTime * 1000)) + "ms " + formatNumber(mParameterBag->iTempoTime));
+					//audio
+					if (mParameterBag->maxVolume < 0.1)
 					{
-						volMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
+						volMvg->setName("audio in");
 					}
 					else
 					{
-						volMvg->setNameColor(mParameterBag->ColorRed);
+						if (mParameterBag->maxVolume < 200.0)
+						{
+							volMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
+						}
+						else
+						{
+							volMvg->setNameColor(mParameterBag->ColorRed);
+						}
+						if (mParameterBag->mUseLineIn)
+						{
+							volMvg->setName("LineIn\n" + toString(floor(mParameterBag->maxVolume)));
+						}
+						else
+						{
+							volMvg->setName("Wave\n" + toString(floor(mParameterBag->maxVolume)));
+						}
+						volMvg->setName(toString(floor(mParameterBag->maxVolume)));
 					}
-					if (mParameterBag->mUseLineIn)
+					sliderAudioMul->setName(formatNumber(mParameterBag->mAudioMultFactor));
+					if (mParameterBag->iFps > 12.0)
 					{
-						volMvg->setName("LineIn\n" + toString(floor(mParameterBag->maxVolume)));
+						mParameterBag->FPSColor = UIController::DEFAULT_NAME_COLOR;
 					}
 					else
 					{
-						volMvg->setName("Wave\n" + toString(floor(mParameterBag->maxVolume)));
+						mParameterBag->FPSColor = mParameterBag->ColorRed;
 					}
-					volMvg->setName(toString(floor(mParameterBag->maxVolume)));
+					fpsMvg->setNameColor(mParameterBag->FPSColor);
+
 				}
-				sliderAudioMul->setName(formatNumber(mParameterBag->mAudioMultFactor));
-				if (mParameterBag->iFps > 12.0)
+				if (mParameterBag->controlValues[12] == 0.0) mParameterBag->controlValues[12] = 0.01;
+
+				// iColor slider
+				sliderRed->setBackgroundColor(ColorA(mParameterBag->controlValues[1], 0, 0));
+				sliderGreen->setBackgroundColor(ColorA(0, mParameterBag->controlValues[2], 0));
+				sliderBlue->setBackgroundColor(ColorA(0, 0, mParameterBag->controlValues[3]));
+				sliderAlpha->setBackgroundColor(ColorA(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3], mParameterBag->controlValues[4]));
+				// iBackColor sliders
+				sliderBackgroundRed->setBackgroundColor(ColorA(mParameterBag->controlValues[5], 0, 0));
+				sliderBackgroundGreen->setBackgroundColor(ColorA(0, mParameterBag->controlValues[6], 0));
+				sliderBackgroundBlue->setBackgroundColor(ColorA(0, 0, mParameterBag->controlValues[7]));
+				sliderBackgroundAlpha->setBackgroundColor(ColorA(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7], mParameterBag->controlValues[8]));
+
+				// other sliders
+				labelXY->setName(toString(int(mParameterBag->mRenderXY.x * 100) / 100) + "x" + toString(int(mParameterBag->mRenderXY.y * 100) / 100));
+				labelPosXY->setName("mouse " + toString(floor(mParameterBag->mRenderPosXY.x)) + "x" + toString(floor(mParameterBag->mRenderPosXY.y)));
+
+				// fps
+				fpsMvg->setName(toString(floor(mParameterBag->iFps)) + " fps");
+
+				labelOSC->setName(mParameterBag->OSCMsg);
+				labelInfo->setName(mParameterBag->InfoMsg);
+				labelError->setName(mShaders->getFragError());
+
+				for (int i = 0; i < buttonShada.size(); i++)
 				{
-					mParameterBag->FPSColor = UIController::DEFAULT_NAME_COLOR;
+					buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
+					labelShada[i]->setName(mShaders->getShaderName(i));
 				}
-				else
+				sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
+				for (int i = 0; i < buttonTexture.size(); i++)
 				{
-					mParameterBag->FPSColor = mParameterBag->ColorRed;
+					buttonTexture[i]->setBackgroundTexture(mTextures->getTexture(i));
+					labelTexture[i]->setName(mTextures->getSenderName(i));
 				}
-				fpsMvg->setNameColor(mParameterBag->FPSColor);
-
+				sliderPreviewTextureXY->setBackgroundTexture(mTextures->getTexture(mTextures->getInputTextureIndex()));
 			}
-			if (mParameterBag->controlValues[12] == 0.0) mParameterBag->controlValues[12] = 0.01;
-
-			// iColor slider
-			sliderRed->setBackgroundColor(ColorA(mParameterBag->controlValues[1], 0, 0));
-			sliderGreen->setBackgroundColor(ColorA(0, mParameterBag->controlValues[2], 0));
-			sliderBlue->setBackgroundColor(ColorA(0, 0, mParameterBag->controlValues[3]));
-			sliderAlpha->setBackgroundColor(ColorA(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3], mParameterBag->controlValues[4]));
-			// iBackColor sliders
-			sliderBackgroundRed->setBackgroundColor(ColorA(mParameterBag->controlValues[5], 0, 0));
-			sliderBackgroundGreen->setBackgroundColor(ColorA(0, mParameterBag->controlValues[6], 0));
-			sliderBackgroundBlue->setBackgroundColor(ColorA(0, 0, mParameterBag->controlValues[7]));
-			sliderBackgroundAlpha->setBackgroundColor(ColorA(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7], mParameterBag->controlValues[8]));
-
-			// other sliders
-			labelXY->setName(toString(int(mParameterBag->mRenderXY.x * 100) / 100) + "x" + toString(int(mParameterBag->mRenderXY.y * 100) / 100));
-			labelPosXY->setName("mouse " + toString(floor(mParameterBag->mRenderPosXY.x)) + "x" + toString(floor(mParameterBag->mRenderPosXY.y)));
-
-			// fps
-			fpsMvg->setName(toString(floor(mParameterBag->iFps)) + " fps");
-
-			labelOSC->setName(mParameterBag->OSCMsg);
-			labelInfo->setName(mParameterBag->InfoMsg);
-			labelError->setName(mShaders->getFragError());
-
-			for (int i = 0; i < buttonShada.size(); i++)
-			{
-				buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
-				labelShada[i]->setName(mShaders->getShaderName(i));
-			}
-			sliderPreviewShadaXY->setBackgroundTexture(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
-			for (int i = 0; i < buttonTexture.size(); i++)
-			{
-				buttonTexture[i]->setBackgroundTexture(mTextures->getTexture(i));
-				labelTexture[i]->setName(mTextures->getSenderName(i));
-			}
-			sliderPreviewTextureXY->setBackgroundTexture(mTextures->getTexture(mTextures->getInputTextureIndex()));
 		}
 	}
 }
