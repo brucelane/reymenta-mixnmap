@@ -170,8 +170,10 @@ namespace Reymenta
 		void								restoreSettings(const bool &pressed = true);
 		void								resetSettings(const bool &pressed = true);
 		// bezier lines for nodes
-		vector<Path2d*>	mPath;
-		int		mTrackedPoint;
-		int currentPath;
+		vector<Path2d*>						mPath;
+		int									mTrackedPoint;
+		int									currentPath;
+		// mouse position
+		vec2								mMousePos;
 };
 }

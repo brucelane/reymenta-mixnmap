@@ -296,11 +296,90 @@ void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
 	mTextures->setInputTextureIndex(aTextureIndex);
 	mParameterBag->iChannels[0] = aTextureIndex;
+	
+	//buttonTexture[aTextureIndex]->setActive(true);
+	if (mPath[currentPath]->calcLength() > 2)
+	{
+		//mPath[currentPath]->clear();
+		mPath.push_back(new Path2d());
+		currentPath++;
+	}
+	if (mPath[currentPath]->empty()) {
+		mPath[currentPath]->moveTo(mMousePos);
+		mTrackedPoint = 0;
+	}
+	else
+		mPath[currentPath]->lineTo(mMousePos);
+
 }
 void UI::setShadaIndex(const int &aShadaIndex, const bool &pressed)
 {
 	mParameterBag->mCurrentShadaFboIndex = aShadaIndex;
 	mTextures->setShadaIndex(aShadaIndex);
+}
+
+void UI::mouseDown(MouseEvent event)
+{
+	mMousePos = vec2(event.getX(), event.getY());
+
+}
+
+void UI::mouseUp(MouseEvent event)
+{
+	mTrackedPoint = -1;
+}
+void UI::mouseDrag(MouseEvent event)
+{
+	if (mPath[currentPath]->calcLength() > 1) {
+
+		if (mTrackedPoint >= 0) {
+			mPath[currentPath]->setPoint(mTrackedPoint, event.getPos());
+		}
+		else { // first bit of dragging, so switch our line to a cubic or a quad if Shift is down
+			// we want to preserve the end of our current line, because it will still be the end of our curve
+			vec2 endPt = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+			// and now we'll delete that line and replace it with a curve
+			mPath[currentPath]->removeSegment(mPath[currentPath]->getNumSegments() - 1);
+
+			Path2d::SegmentType prevType = (mPath[currentPath]->getNumSegments() == 0) ? Path2d::MOVETO : mPath[currentPath]->getSegmentType(mPath[currentPath]->getNumSegments() - 1);
+
+			if (event.isShiftDown() || prevType == Path2d::MOVETO) { // add a quadratic curve segment
+				mPath[currentPath]->quadTo(event.getPos(), endPt);
+			}
+			else { // add a cubic curve segment
+				vec2 tan1;
+				if (prevType == Path2d::CUBICTO) { 		// if the segment before was cubic, let's replicate and reverse its tangent
+					vec2 prevDelta = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2) - mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1) - prevDelta;
+				}
+				else if (prevType == Path2d::QUADTO) {
+					// we can figure out what the equivalent cubic tangent would be using a little math
+					vec2 quadTangent = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2);
+					vec2 quadEnd = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+					vec2 prevDelta = (quadTangent + (quadEnd - quadTangent) / 3.0f) - quadEnd;
+					tan1 = quadEnd - prevDelta;
+				}
+				else
+					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
+
+				mPath[currentPath]->curveTo(tan1, event.getPos(), endPt);
+			}
+
+			// our second-to-last point is the tangent next to the end, and we'll track that
+			mTrackedPoint = mPath[currentPath]->getNumPoints() - 2;
+		}
+
+	}
+}
+void UI::keyDown(KeyEvent event)
+{
+	/*switch (event.getChar())
+	{
+	// toggle params & mouse
+	case 'h':
+	toggleVisibility();
+	break;
+	}*/
 }
 
 void UI::draw()
@@ -326,7 +405,7 @@ void UI::draw()
 		/*if (path->getNumSegments() > 1) {
 			gl::color(ColorA(0, 1, 1, 0.2f));
 			gl::drawSolidRect(path->calcPreciseBoundingBox());
-		}*/
+			}*/
 
 		// draw the curve itself
 		gl::color(Color(1.0f, 0.5f, 0.25f));
@@ -653,82 +732,6 @@ void UI::resize()
 	if (mWarpPanel) mWarpPanel->resize();
 	if (mSlidersPanel) mSlidersPanel->resize();
 	if (mLibraryPanel) mLibraryPanel->resize();
-}
-
-void UI::mouseDown(MouseEvent event)
-{
-	if (mPath[currentPath]->calcLength() > 2)
-	{
-		//mPath[currentPath]->clear();
-		mPath.push_back(new Path2d());
-		currentPath++;
-	}
-	if (event.isLeftDown()) { // line
-		if (mPath[currentPath]->empty()) {
-			mPath[currentPath]->moveTo(event.getPos());
-			mTrackedPoint = 0;
-		}
-		else
-			mPath[currentPath]->lineTo(event.getPos());
-	}
-}
-
-void UI::mouseUp(MouseEvent event)
-{
-	mTrackedPoint = -1;
-}
-void UI::mouseDrag(MouseEvent event)
-{
-	if (mPath[currentPath]->calcLength() > 1) {
-
-		if (mTrackedPoint >= 0) {
-			mPath[currentPath]->setPoint(mTrackedPoint, event.getPos());
-		}
-		else { // first bit of dragging, so switch our line to a cubic or a quad if Shift is down
-			// we want to preserve the end of our current line, because it will still be the end of our curve
-			vec2 endPt = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-			// and now we'll delete that line and replace it with a curve
-			mPath[currentPath]->removeSegment(mPath[currentPath]->getNumSegments() - 1);
-
-			Path2d::SegmentType prevType = (mPath[currentPath]->getNumSegments() == 0) ? Path2d::MOVETO : mPath[currentPath]->getSegmentType(mPath[currentPath]->getNumSegments() - 1);
-
-			if (event.isShiftDown() || prevType == Path2d::MOVETO) { // add a quadratic curve segment
-				mPath[currentPath]->quadTo(event.getPos(), endPt);
-			}
-			else { // add a cubic curve segment
-				vec2 tan1;
-				if (prevType == Path2d::CUBICTO) { 		// if the segment before was cubic, let's replicate and reverse its tangent
-					vec2 prevDelta = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2) - mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1) - prevDelta;
-				}
-				else if (prevType == Path2d::QUADTO) {
-					// we can figure out what the equivalent cubic tangent would be using a little math
-					vec2 quadTangent = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2);
-					vec2 quadEnd = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					vec2 prevDelta = (quadTangent + (quadEnd - quadTangent) / 3.0f) - quadEnd;
-					tan1 = quadEnd - prevDelta;
-				}
-				else
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-
-				mPath[currentPath]->curveTo(tan1, event.getPos(), endPt);
-			}
-
-			// our second-to-last point is the tangent next to the end, and we'll track that
-			mTrackedPoint = mPath[currentPath]->getNumPoints() - 2;
-		}
-
-	}
-}
-void UI::keyDown(KeyEvent event)
-{
-	/*switch (event.getChar())
-	{
-	// toggle params & mouse
-	case 'h':
-	toggleVisibility();
-	break;
-	}*/
 }
 
 void UI::show()
