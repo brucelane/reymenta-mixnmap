@@ -18,4 +18,4 @@ Follow me on https://www.facebook.com/reymentavisuals
 
 <b>If you wish to make a donation, my paypal is bruce at batchass dot fr</b>
 
-![screenshot 1](https://raw.githubusercontent.com/brucelane/reymenta-mixnmap/master/documentation/documentation/images/screencapture.jpg?raw=true)
+![screenshot 1](https://raw.githubusercontent.com/brucelane/reymenta-mixnmap/master/documentation/images/screencapture.jpg?raw=true)
