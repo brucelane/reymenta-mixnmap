@@ -105,64 +105,22 @@ void Shaders::update()
 	for (auto &shader : mFragmentShaders)
 	{
 		auto map = shader.prog->getActiveUniformTypes();
-		if (map.find("iGlobalTime") != map.end())
-		{
-			shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
-		}
-		if (map.find("iZoom") != map.end())
-		{
-			shader.prog->uniform("iZoom", mParameterBag->controlValues[13]);
-		}
-		if (map.find("iSteps") != map.end())
-		{
-			shader.prog->uniform("iSteps", (int)mParameterBag->controlValues[16]);
-		}
-		if (map.find("iDate") != map.end())
-		{
-			shader.prog->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
-		}
-		if (map.find("iMouse") != map.end())
-		{
-			shader.prog->uniform("iMouse", mParameterBag->iMouse);
-		}
-		if (map.find("iColor") != map.end())
-		{
-			shader.prog->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
-		}
-		if (map.find("iBackgroundColor") != map.end())
-		{
-			shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
-		}
-		if (map.find("iChannel0") != map.end())
-		{
-			shader.prog->uniform("iChannel0", 0);
-		}
-		if (map.find("iChannel1") != map.end())
-		{
-			shader.prog->uniform("iChannel1", 1);
-		}
+		if (map.find("iGlobalTime") != map.end())		shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+		if (map.find("iZoom") != map.end())				shader.prog->uniform("iZoom", mParameterBag->controlValues[13]);
+		if (map.find("iSteps") != map.end())			shader.prog->uniform("iSteps", (int)mParameterBag->controlValues[16]);
+		if (map.find("iDate") != map.end())				shader.prog->uniform("iDate", vec4(date.year(), date.month(), date.day_number(), time.total_seconds()));
+		if (map.find("iMouse") != map.end())			shader.prog->uniform("iMouse", mParameterBag->iMouse);
+		if (map.find("iColor") != map.end())			shader.prog->uniform("iColor", vec3(mParameterBag->controlValues[1], mParameterBag->controlValues[2], mParameterBag->controlValues[3]));
+		if (map.find("iBackgroundColor") != map.end())	shader.prog->uniform("iBackgroundColor", vec3(mParameterBag->controlValues[5], mParameterBag->controlValues[6], mParameterBag->controlValues[7]));
+		if (map.find("iChannel0") != map.end())			shader.prog->uniform("iChannel0", 0);
+		if (map.find("iChannel1") != map.end())			shader.prog->uniform("iChannel1", 1);
 	}
 	auto mixMap = mMixShader->getActiveUniformTypes();
-	if (mixMap.find("iGlobalTime") != mixMap.end())
-	{
-		mMixShader->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
-	}
-	if (mixMap.find("iCrossfade") != mixMap.end())
-	{
-		//mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
-	}
-	if (mixMap.find("iAlpha") != mixMap.end())
-	{
-		mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
-	}
-	if (mixMap.find("iChannel0") != mixMap.end())
-	{
-		mMixShader->uniform("iChannel0", 0);
-	}
-	if (mixMap.find("iChannel1") != mixMap.end())
-	{
-		mMixShader->uniform("iChannel1", 1);
-	}
+	if (mixMap.find("iGlobalTime") != mixMap.end())		mMixShader->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+	if (mixMap.find("iCrossfade") != mixMap.end())		mMixShader->uniform("iCrossfade", mParameterBag->controlValues[15]);//TODO a crossfader for each warp
+	if (mixMap.find("iAlpha") != mixMap.end())			mMixShader->uniform("iAlpha", mParameterBag->controlValues[4]);
+	if (mixMap.find("iChannel0") != mixMap.end())		mMixShader->uniform("iChannel0", 0);
+	if (mixMap.find("iChannel1") != mixMap.end())		mMixShader->uniform("iChannel1", 1);
 }
 bool Shaders::setGLSLString(string pixelFrag, string fileName)
 {

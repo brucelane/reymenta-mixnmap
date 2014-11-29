@@ -269,10 +269,16 @@ void MixnMapApp::drawMain()
 	//! draw Spout received textures
 	mSpout->draw();
 	mTextures->draw();
+	//! draw current shader in the background	
+	gl::pushMatrices();
+	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight);
 	gl::draw(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
+	gl::popViewport();
+	gl::popMatrices();
+	//! draw UI
 	if (mParameterBag->mShowUI) mUI->draw();
 
-	//touch events only make sense on the UI
+	//! touch events only make sense on the UI
 	for (map<uint32_t, TouchPoint>::const_iterator activeIt = mActivePoints.begin(); activeIt != mActivePoints.end(); ++activeIt) {
 		activeIt->second.draw();
 	}
@@ -285,7 +291,7 @@ void MixnMapApp::drawMain()
 			++dyingIt;
 	}
 
-	// draw yellow circles at the active touch points
+	//! draw yellow circles at the active touch points
 	gl::color(Color(1, 1, 0));
 	for (vector<TouchEvent::Touch>::const_iterator touchIt = getActiveTouches().begin(); touchIt != getActiveTouches().end(); ++touchIt)
 		gl::drawStrokedCircle(touchIt->getPos(), 20.0f);
