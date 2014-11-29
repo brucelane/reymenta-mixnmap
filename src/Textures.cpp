@@ -196,12 +196,6 @@ void Textures::setTextureFromFile(string fileName)
 	}
 }
 
-void Textures::flipMixFbo(bool flip)
-{
-	//mFbos[0].getTexture(0).setFlipped(flip);
-	//mixTextures[0].setFlipped(flip);
-	mParameterBag->mOriginUpperLeft = flip;
-}
 void Textures::saveThumb()
 {
 	string filename = mShaders->getFragFileName() + ".jpg";

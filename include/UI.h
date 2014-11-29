@@ -51,13 +51,11 @@ namespace Reymenta
 		void								toggleOptimizeUI(const bool &pressed);
 		void								toggleAudioReactive(const bool &pressed);
 		void								toggleVignette(const bool &pressed);
-		void								toggleRepeat(const bool &pressed);
 		void								toggleInvert(const bool &pressed);
 		void								toggleLight(const bool &pressed);
 		void								toggleLightAuto(const bool &pressed);
 		void								toggleFade(const bool &pressed);
 		void								toggleGreyScale(const bool &pressed);
-		void								toggleOriginUpperLeft(const bool &pressed);
 		void								InstantBlack(const bool &pressed);
 		void								debug(const bool &pressed);
 		void								showFps(const bool &pressed);
@@ -105,7 +103,7 @@ namespace Reymenta
 		MinimalUI::UIElementRef				labelXY, labelPosXY;
 		MinimalUI::UIElementRef				sliderRenderXY, sliderRenderPosXY, sliderXSpeed, sliderYSpeed, sliderPreviewTextureXY, sliderPreviewShadaXY;
 
-		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer, labelInfo;
+		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer;
 		MinimalUI::UIElementRef				buttonChannels;
 		vector<MinimalUI::UIElementRef>		buttonShada, buttonTexture, labelTexture, labelShada;
 		
@@ -176,14 +174,12 @@ namespace Reymenta
 		void								resetSettings(const bool &pressed = true);
 
 		// library panel
-		void								flipLibraryCurrentFbo(const bool &pressed);
-
 		void								setLeftInput(const int &aIndex, const bool &pressed);
 		void								setRightInput(const int &aIndex, const bool &pressed);
 		void								setPreview(const int &aIndex, const bool &pressed);
 
 		vector<MinimalUI::UIElementRef>		buttonSelect, buttonLeft, buttonRight, sliderCrossfade;
-		MinimalUI::UIElementRef				flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
+		MinimalUI::UIElementRef				sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
 
 };
 }

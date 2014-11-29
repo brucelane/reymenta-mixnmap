@@ -66,7 +66,7 @@ void UI::createWarp()
 
 void UI::setupMiniControl()
 {
-	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":948, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
+	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":960, \"height\":144, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mMiniControl->setFont("icon", mParameterBag->mIconFont);
@@ -157,19 +157,17 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("light", std::bind(&UI::toggleLight, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("manual light", std::bind(&UI::toggleLightAuto, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 
-	mMiniControl->addButton("origin\nupper left", std::bind(&UI::toggleOriginUpperLeft, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
-	mMiniControl->addButton("repeat", std::bind(&UI::toggleRepeat, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("45 glitch", std::bind(&UI::toggleGlitch, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("46 toggle", std::bind(&UI::toggleAudioReactive, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("47 vignette", std::bind(&UI::toggleVignette, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("48 invert", std::bind(&UI::toggleInvert, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 
-	labelOSC = mMiniControl->addLabel("OSC", "{ \"clear\":false, \"width\":100 }");
-	labelInfo = mMiniControl->addLabel("Info", "{ \"width\":100 }");
+	labelOSC = mMiniControl->addLabel("OSC", "{ \"width\":370 }");
+	labelError = mMiniControl->addLabel("", "{ \"width\":960 }");
 }
 void UI::setupGlobal()
 {
-	gParams = UIController::create("{ \"x\":960, \"y\":0, \"depth\":280, \"width\":340, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	gParams = UIController::create("{ \"x\":964, \"y\":0, \"depth\":280, \"width\":332, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	gParams->setFont("icon", mParameterBag->mIconFont);
@@ -186,8 +184,6 @@ void UI::setupGlobal()
 
 	string posXY = toString(mParameterBag->mRenderWidth * 3) + ", \"minY\":" + toString(mParameterBag->mRenderHeight) + ", \"maxY\":0.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }";
 	sliderRenderPosXY = gParams->addSlider2D("renderPosXY", &mParameterBag->mRenderPosXY, "{ \"minX\":0.0, \"maxX\":" + posXY);
-
-	labelError = gParams->addLabel("no error", "{ \"clear\":false, \"width\":370, \"nameColor\":\"0xFFAA0000\" }");
 }
 void UI::setupTextures()
 {
@@ -233,16 +229,11 @@ void UI::setupLibrary()
 	mixParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(mixParams);
 	mixParams->addLabel("Texture mixing", "{ \"clear\":false, \"width\":64 }");
-	flipButton = mixParams->addButton("Flip", std::bind(&UI::flipLibraryCurrentFbo, this, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"pressed\":true }");
 	sliderLeftRenderXY = mixParams->addSlider2D("LeftXY", &mParameterBag->mLeftRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	sliderRightRenderXY = mixParams->addSlider2D("RightXY", &mParameterBag->mRightRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	sliderMixRenderXY = mixParams->addSlider2D("MixXY", &mParameterBag->mPreviewRenderXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	mixParams->addSlider("LZoom", &mParameterBag->iZoomLeft, "{ \"clear\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
 	mixParams->addSlider("RZoom", &mParameterBag->iZoomRight, "{ \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
-}
-void UI::flipLibraryCurrentFbo(const bool &pressed)
-{
-	mTextures->flipMixFbo(pressed);
 }
 
 void UI::setPreview(const int &aIndex, const bool &pressed)
@@ -612,7 +603,6 @@ void UI::update()
 				fpsMvg->setName(toString(floor(mParameterBag->iFps)) + " fps");
 
 				labelOSC->setName(mParameterBag->OSCMsg);
-				labelInfo->setName(mParameterBag->InfoMsg);
 				labelError->setName(mShaders->getFragError());
 
 				for (int i = 0; i < buttonShada.size(); i++)
@@ -760,10 +750,6 @@ void UI::toggleOptimizeUI(const bool &pressed)
 {
 	mParameterBag->mOptimizeUI = pressed;
 }
-void UI::toggleRepeat(const bool &pressed)
-{
-	mParameterBag->iRepeat = pressed;
-}
 void UI::toggleLight(const bool &pressed)
 {
 	mParameterBag->iLight = pressed;
@@ -781,10 +767,6 @@ void UI::toggleGreyScale(const bool &pressed)
 		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
 	}
 
-}
-void UI::toggleOriginUpperLeft(const bool &pressed)
-{
-	mParameterBag->mOriginUpperLeft = pressed;
 }
 void UI::useLineIn(const bool &pressed)
 {

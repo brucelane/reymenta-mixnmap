@@ -245,6 +245,7 @@ void MixnMapApp::drawRender()
 	//! clear the window
 	gl::clear();
 	gl::pushMatrices();
+	// origin upper left set to false for warps
 	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight, false);
 	gl::pushViewport(0, 0, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	
@@ -265,7 +266,6 @@ void MixnMapApp::drawMain()
 {
 	//! clear the window
 	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
-	//gl::setMatricesWindow(getWindowSize());
 	//! draw Spout received textures
 	mSpout->draw();
 	mTextures->draw();
@@ -313,7 +313,7 @@ void MixnMapApp::createRenderWindow()
 
 #ifdef _DEBUG
 	// debug mode
-	mRenderWindow->setPos(mParameterBag->mRenderX, 20);	
+	mRenderWindow->setPos(mParameterBag->mRenderX, 40);	
 #else
 	mRenderWindow->setBorderless();
 	mRenderWindow->setPos(mParameterBag->mRenderX, 0);
@@ -446,11 +446,6 @@ void MixnMapApp::keyDown(KeyEvent event)
 	case KeyEvent::KEY_s:
 		showCursor();
 		mParameterBag->mShowUI = true;
-		break;
-	case KeyEvent::KEY_p:
-		// flip fbo
-		mParameterBag->mFlipFbo = !mParameterBag->mFlipFbo;
-		mTextures->flipMixFbo(mParameterBag->mFlipFbo);
 		break;
 	case KeyEvent::KEY_SPACE:
 		// save warp settings

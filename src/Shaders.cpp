@@ -28,7 +28,7 @@ Shaders::Shaders(ParameterBagRef aParameterBag)
 	localFile = getAssetPath("") / "shaders" / fileName;
 	loadPixelFragmentShader(localFile.string());
 	//! init some shaders
-	for (size_t m = 0; m < 3; m++)
+	for (size_t m = 0; m < 8; m++)
 	{
 		fileName = toString(m) + ".glsl";
 		localFile = getAssetPath("") / "shaders" / fileName;
@@ -74,7 +74,6 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 		if (mFile.find_last_of("\\") != std::string::npos) mFragFileName = mFile.substr(mFile.find_last_of("\\") + 1);
 		if (fs::exists(fragment_path))
 		{
-			//validFrag = false;
 			std::string fs = header + loadString(loadFile(fragment_path));
 			rtn = setGLSLString(fs, mFragFileName);
 		}
@@ -93,12 +92,6 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 		mError = string(e.what());
 		log->logTimedString(mFile + " unable to load shader:" + string(e.what()));
 	}
-	if (!rtn)
-	{
-		// error load default fragment shader
-		std::string fs = header + defaultFragmentShader;
-		rtn = setGLSLString(fs, "default.glsl");
-	}
 	return rtn;
 }
 void Shaders::update()
@@ -115,6 +108,14 @@ void Shaders::update()
 		if (map.find("iGlobalTime") != map.end())
 		{
 			shader.prog->uniform("iGlobalTime", static_cast<float>(getElapsedSeconds()));
+		}
+		if (map.find("iZoom") != map.end())
+		{
+			shader.prog->uniform("iZoom", mParameterBag->controlValues[13]);
+		}
+		if (map.find("iSteps") != map.end())
+		{
+			shader.prog->uniform("iSteps", (int)mParameterBag->controlValues[16]);
 		}
 		if (map.find("iDate") != map.end())
 		{

@@ -89,7 +89,6 @@ namespace Reymenta
 		void						update();
 		void						shutdown();
 		void						setSenderTextureSize(int index, int width, int height);
-		void						flipMixFbo(bool flip);
 		char*						getSenderName(int index);
 		void						renderShadersToFbo();
 		void						renderMixesToFbo();

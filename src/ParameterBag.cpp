@@ -166,12 +166,10 @@ void ParameterBag::reset()
 
 
 	// fbo
-	mFlipFbo = false;
 	mFboWidth = 640;
 	mFboHeight = 360;
 	mPreviewWidth = 156;
 	mPreviewHeight = 88;
-	mOriginUpperLeft = false;
 	mCurrentShadaFboIndex = 0;
 	mMixFboIndex = 1;
 	mLeftFboIndex = 2;
@@ -183,7 +181,6 @@ void ParameterBag::reset()
 	mOSCDestinationPort = 7000;
 	mOSCReceiverPort = 9000;
 	OSCMsg = "OSC listening on port 9000";
-	InfoMsg = "";
 	// colors
 	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
 	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;

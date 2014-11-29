@@ -20,7 +20,7 @@ Spaghetti::Spaghetti(ParameterBagRef aParameterBag, TexturesRef aTextures)
 void Spaghetti::drawPath()
 {
 	// draw bezier
-	if (mPath[currentPath]->calcLength() > 2)
+	/*if (mPath[currentPath]->calcLength() > 2)
 	{
 		//mPath[currentPath]->clear();
 		mPath.push_back(new Path2d());
@@ -32,7 +32,7 @@ void Spaghetti::drawPath()
 	}
 	else
 		mPath[currentPath]->lineTo(mMousePos);
-
+	*/
 }
 void Spaghetti::mouseDown(MouseEvent event)
 {

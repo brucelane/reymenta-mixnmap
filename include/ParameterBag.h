@@ -33,13 +33,13 @@ namespace Reymenta {
 	{
 	public:
 		ParameterBag();
-		static ParameterBagRef create();
+		static ParameterBagRef		create();
 
-		bool save();
-		bool restore();
-		void reset();
+		bool						save();
+		bool						restore();
+		void						reset();
 		// fonts
-		ci::Font mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
+		ci::Font					mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
 
 		// params
 		std::string					mOSCDestinationHost;
@@ -47,7 +47,6 @@ namespace Reymenta {
 		int							mOSCReceiverPort;
 		std::string					OSCMsg;
 		int							mPreviewWidth, mPreviewHeight;
-		std::string					InfoMsg;
 		// render windows
 		int							mRenderWidth;
 		int							mRenderHeight;
@@ -71,8 +70,8 @@ namespace Reymenta {
 		ColorA						FPSColor;
 		ColorA						ColorGreen;
 		ColorA						ColorRed;
-		//! maximum bound for fbos, shaders, textures
-		static const int			MAX = 8;
+		//! maximum number of fbos, shaders, textures
+		static const int			MAX = 16;
 		// audio
 		float						*mData;
 		float						maxVolume;
@@ -80,8 +79,6 @@ namespace Reymenta {
 		float						mAudioMultFactor;
 		float						iFreqs[4];
 		int							mAudioTextureIndex;
-		// Textures
-		bool						mOriginUpperLeft;
 
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;
@@ -91,7 +88,6 @@ namespace Reymenta {
 		map<int, int>				iWarpFboChannels;
 		// fbos
 		int							mFboWidth, mFboHeight;
-		bool						mFlipFbo;
 		int							mWarpCount;
 		int							mCurrentShadaFboIndex;
 		int							mMixFboIndex;
