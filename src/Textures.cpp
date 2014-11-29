@@ -50,7 +50,6 @@ void Textures::createWarpInput()
 	newWarpInput.iCrossfade = 0.5;
 	warpInputs.push_back(newWarpInput);
 	// init mixTextures
-	//mixTextures.push_back(startupImage);
 	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
 }
 void Textures::setShadaIndex(int index) 

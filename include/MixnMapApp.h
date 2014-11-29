@@ -153,10 +153,8 @@ private:
 	// osc
 	OSCRef						mOSC;
 	// warps
-	//WarpWrapperRef				mWarpings;
 	const string				warpsFileName = "MixnMapWarps.xml";
 	WarpList					mWarps;
-	Area						mSrcArea;
 
 	// audio
 	AudioWrapperRef				mAudio;

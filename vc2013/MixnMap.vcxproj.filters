@@ -243,16 +243,10 @@
     <ClCompile Include="..\src\UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\LibraryPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\SlidersPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\WarpPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\WarpWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\AudioWrapper.cpp">
@@ -296,16 +290,10 @@
     <ClInclude Include="..\include\WindowMngr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\LibraryPanel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\WarpPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SlidersPanel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\WarpWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\AudioWrapper.h">

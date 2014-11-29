@@ -44,13 +44,13 @@ void Shaders::resize()
 		auto map = shader.prog->getActiveUniformTypes();
 		if (map.find("iResolution") != map.end())
 		{
-			shader.prog->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+			shader.prog->uniform("iResolution", vec3(mParameterBag->mFboWidth, mParameterBag->mFboHeight, 0.0f));
 		}
 	}
 	auto mixMap = mMixShader->getActiveUniformTypes();
 	if (mixMap.find("iResolution") != mixMap.end())
 	{
-		mMixShader->uniform("iResolution", vec3(getWindowWidth(), getWindowHeight(), 0.0f));
+		mMixShader->uniform("iResolution", vec3(mParameterBag->mFboWidth, mParameterBag->mFboHeight, 0.0f));
 	}
 
 }

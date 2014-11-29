@@ -85,7 +85,7 @@ void UI::setupMiniControl()
 
 	fpsMvg = mMiniControl->addMovingGraphButton("fps", &mParameterBag->iFps, std::bind(&UI::showFps, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"width\":76, \"min\":0.0, \"max\":120.0 }");
 	// ui refresh
-	for (int i = 1; i < 13; i=i+2)
+	for (int i = 1; i < 19; i=i+3)
 	{
 		mMiniControl->addButton(toString(i), std::bind(&UI::setUIRefresh, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":9, \"stateless\":false, \"group\":\"timefactor\", \"exclusive\":true }");
 	}
@@ -416,7 +416,6 @@ string UI::formatNumber(float f)
 }
 void UI::update()
 {
-		// check this line position: can't remember
 		currentTime = timer.getSeconds();
 
 		int time = (currentTime - startTime)*1000000.0;

@@ -117,7 +117,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-MinimalUI\include\ControllerManager.h" />
     <ClInclude Include="..\include\AudioWrapper.h" />
-    <ClInclude Include="..\include\LibraryPanel.h" />
     <ClInclude Include="..\include\Logger.h" />
     <ClInclude Include="..\include\MixnMapApp.h" />
     <ClInclude Include="..\include\OSCWrapper.h" />
@@ -160,13 +159,11 @@
     <ClInclude Include="..\include\Textures.h" />
     <ClInclude Include="..\include\UI.h" />
     <ClInclude Include="..\include\WarpPanel.h" />
-    <ClInclude Include="..\include\WarpWrapper.h" />
     <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\ControllerManager.cpp" />
     <ClCompile Include="..\src\AudioWrapper.cpp" />
-    <ClCompile Include="..\src\LibraryPanel.cpp" />
     <ClCompile Include="..\src\Logger.cpp" />
     <ClCompile Include="..\src\MixnMapApp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\Button.cpp" />
@@ -200,7 +197,6 @@
     <ClCompile Include="..\src\Textures.cpp" />
     <ClCompile Include="..\src\UI.cpp" />
     <ClCompile Include="..\src\WarpPanel.cpp" />
-    <ClCompile Include="..\src\WarpWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
