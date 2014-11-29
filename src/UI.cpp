@@ -67,7 +67,6 @@ void UI::createWarp()
 void UI::setupMiniControl()
 {
 	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":948, \"height\":134, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
-	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 12;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mMiniControl->setFont("icon", mParameterBag->mIconFont);
@@ -86,7 +85,7 @@ void UI::setupMiniControl()
 
 	fpsMvg = mMiniControl->addMovingGraphButton("fps", &mParameterBag->iFps, std::bind(&UI::showFps, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"width\":76, \"min\":0.0, \"max\":120.0 }");
 	// ui refresh
-	for (int i = 1; i < 6; i++)
+	for (int i = 1; i < 13; i=i+2)
 	{
 		mMiniControl->addButton(toString(i), std::bind(&UI::setUIRefresh, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":9, \"stateless\":false, \"group\":\"timefactor\", \"exclusive\":true }");
 	}
@@ -171,7 +170,6 @@ void UI::setupMiniControl()
 void UI::setupGlobal()
 {
 	gParams = UIController::create("{ \"x\":960, \"y\":0, \"depth\":280, \"width\":340, \"height\":146, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
-	gParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	gParams->setFont("label", mParameterBag->mLabelFont);
 	gParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	gParams->setFont("icon", mParameterBag->mIconFont);
@@ -194,7 +192,6 @@ void UI::setupGlobal()
 void UI::setupTextures()
 {
 	tParams = UIController::create("{ \"x\":0, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
-	tParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	tParams->setFont("icon", mParameterBag->mIconFont);
@@ -215,7 +212,6 @@ void UI::addTextureControls()
 void UI::setupShaders()
 {
 	sParams = UIController::create("{ \"x\":178, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
-	sParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	sParams->setFont("label", mParameterBag->mLabelFont);
 	sParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	sParams->setFont("icon", mParameterBag->mIconFont);
@@ -229,7 +225,6 @@ void UI::setupShaders()
 void UI::setupLibrary()
 {
 	mixParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":500, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
-	mixParams->DEFAULT_UPDATE_FREQUENCY = 12;
 	mixParams->setFont("label", mParameterBag->mLabelFont);
 	mixParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mixParams->setFont("icon", mParameterBag->mIconFont);
@@ -237,7 +232,7 @@ void UI::setupLibrary()
 	mixParams->setFont("body", mParameterBag->mBodyFont);
 	mixParams->setFont("footer", mParameterBag->mFooterFont);
 	mPanels.push_back(mixParams);
-	mixParams->addLabel("Texture mixing", "{ \"width\":64 }");
+	mixParams->addLabel("Texture mixing", "{ \"clear\":false, \"width\":64 }");
 	flipButton = mixParams->addButton("Flip", std::bind(&UI::flipLibraryCurrentFbo, this, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"pressed\":true }");
 	sliderLeftRenderXY = mixParams->addSlider2D("LeftXY", &mParameterBag->mLeftRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 	sliderRightRenderXY = mixParams->addSlider2D("RightXY", &mParameterBag->mRightRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
@@ -249,36 +244,7 @@ void UI::flipLibraryCurrentFbo(const bool &pressed)
 {
 	mTextures->flipMixFbo(pressed);
 }
-void UI::setLeftInput(const int &aIndex, const bool &pressed)
-{
-	WarpInput wi = mTextures->setInput(aIndex, true);
-	buttonLeft[aIndex]->setName(toString(wi.leftIndex));
-	if (wi.leftMode == 0)
-	{
-		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
-	}
-	else
-	{
-		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
-	}
-	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
-	// add path
-	mSpaghetti->drawPath();
-}
-void UI::setRightInput(const int &aIndex, const bool &pressed)
-{
-	WarpInput wi = mTextures->setInput(aIndex, false);
-	buttonRight[aIndex]->setName(toString(wi.rightIndex));
-	if (wi.rightMode == 0)
-	{
-		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
-	}
-	else
-	{
-		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
-	}
-	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
-}
+
 void UI::setPreview(const int &aIndex, const bool &pressed)
 {
 
@@ -306,11 +272,11 @@ void UI::setupSliders()
 void UI::setUIRefresh(const int &aFrames, const bool &pressed)
 {
 	mParameterBag->mUIRefresh = aFrames;
-	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
-	gParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
-	tParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
-	mixParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
-
+	mMiniControl->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
+	gParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
+	tParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
+	mixParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
+	sParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 }
 
 void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
@@ -353,7 +319,38 @@ void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
 		}
 	}
 }
-
+void UI::setLeftInput(const int &aIndex, const bool &pressed)
+{
+	WarpInput wi = mTextures->setInput(aIndex, true);
+	buttonLeft[aIndex]->setName(toString(wi.leftIndex));
+	if (wi.leftMode == 0)
+	{
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
+	}
+	else
+	{
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
+	}
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
+	// add path
+	mSpaghetti->drawPath();
+}
+void UI::setRightInput(const int &aIndex, const bool &pressed)
+{
+	WarpInput wi = mTextures->setInput(aIndex, false);
+	buttonRight[aIndex]->setName(toString(wi.rightIndex));
+	if (wi.rightMode == 0)
+	{
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
+	}
+	else
+	{
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
+	}
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
+	// add path
+	mSpaghetti->drawPath();
+}
 void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
 	mTextures->setInputTextureIndex(aTextureIndex);

@@ -50,7 +50,9 @@ void Spaghetti::mouseDrag(MouseEvent event)
 		if (mTrackedPoint >= 0) {
 			mPath[currentPath]->setPoint(mTrackedPoint, event.getPos());
 		}
-		else { // first bit of dragging, so switch our line to a cubic or a quad if Shift is down
+		else 
+		{ 
+			// first bit of dragging, so switch our line to a cubic or a quad if Shift is down
 			// we want to preserve the end of our current line, because it will still be the end of our curve
 			vec2 endPt = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
 			// and now we'll delete that line and replace it with a curve
@@ -60,24 +62,6 @@ void Spaghetti::mouseDrag(MouseEvent event)
 
 			if (event.isShiftDown() || prevType == Path2d::MOVETO) { // add a quadratic curve segment
 				mPath[currentPath]->quadTo(event.getPos(), endPt);
-			}
-			else { // add a cubic curve segment
-				vec2 tan1;
-				if (prevType == Path2d::CUBICTO) { 		// if the segment before was cubic, let's replicate and reverse its tangent
-					vec2 prevDelta = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2) - mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1) - prevDelta;
-				}
-				else if (prevType == Path2d::QUADTO) {
-					// we can figure out what the equivalent cubic tangent would be using a little math
-					vec2 quadTangent = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2);
-					vec2 quadEnd = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					vec2 prevDelta = (quadTangent + (quadEnd - quadTangent) / 3.0f) - quadEnd;
-					tan1 = quadEnd - prevDelta;
-				}
-				else
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-
-				mPath[currentPath]->curveTo(tan1, event.getPos(), endPt);
 			}
 
 			// our second-to-last point is the tangent next to the end, and we'll track that
@@ -94,12 +78,6 @@ void Spaghetti::draw()
 	{
 		for (size_t p = 0; p < path->getNumPoints(); ++p)
 			gl::drawSolidCircle(path->getPoint(p), 2.5f);
-
-		// draw the precise bounding box
-		/*if (path->getNumSegments() > 1) {
-		gl::color(ColorA(0, 1, 1, 0.2f));
-		gl::drawSolidRect(path->calcPreciseBoundingBox());
-		}*/
 
 		// draw the curve itself
 		gl::color(Color(1.0f, 0.5f, 0.25f));
