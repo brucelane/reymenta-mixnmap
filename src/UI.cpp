@@ -27,10 +27,7 @@ UI::UI(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTextu
 	mParameterBag->iDeltaTime = 60 / mParameterBag->mTempo;
 	previousTime = 0.0f;
 	beatIndex = 0;
-	// bezier lines
-	currentPath = 0;
-	mPath.push_back(new Path2d());
-
+	mSpaghetti = Spaghetti::create(mParameterBag, mTextures);
 	//timer.start();
 }
 
@@ -55,17 +52,16 @@ void UI::setup()
 	setupSliders();
 	setupShaders();
 	setupTextures();
-
+	setupLibrary();
 	// panels
 	mWarpPanel = WarpPanel::create(mParameterBag, mTextures);
-	mLibraryPanel = LibraryPanel::create(mParameterBag, mTextures);
 
 	mSetupComplete = true;
 }
 void UI::createWarp()
 {
 	mTextures->createWarpInput();
-	mLibraryPanel->addButtons();
+	addMixControls();
 }
 
 void UI::setupMiniControl()
@@ -156,7 +152,6 @@ void UI::setupMiniControl()
 	mMiniControl->addButton("greyScale", std::bind(&UI::toggleGreyScale, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
 	mMiniControl->addButton("Black", std::bind(&UI::InstantBlack, this, std::placeholders::_1), "{ \"width\":72 }");
 	// Simple Buttons
-	mMiniControl->addButton("lib", std::bind(&UI::toggleLibPanel, this, std::placeholders::_1), "{ \"clear\":false, \"width\":48 }");
 	mMiniControl->addButton("wrp", std::bind(&UI::toggleWarpPanel, this, std::placeholders::_1), "{ \"clear\":false, \"width\":48 }");
 
 	mMiniControl->addButton("fade\ncamera", std::bind(&UI::toggleFade, this, std::placeholders::_1), "{ \"clear\":false, \"width\":72, \"stateless\":false }");
@@ -231,6 +226,71 @@ void UI::setupShaders()
 	sParams->addLabel("Shaders", "{ \"width\":100 }");
 	sliderPreviewShadaXY = sParams->addSlider2D("PreviewFragXY", &mParameterBag->mPreviewFragXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
 }
+void UI::setupLibrary()
+{
+	mixParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":500, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
+	mixParams->DEFAULT_UPDATE_FREQUENCY = 12;
+	mixParams->setFont("label", mParameterBag->mLabelFont);
+	mixParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
+	mixParams->setFont("icon", mParameterBag->mIconFont);
+	mixParams->setFont("header", mParameterBag->mHeaderFont);
+	mixParams->setFont("body", mParameterBag->mBodyFont);
+	mixParams->setFont("footer", mParameterBag->mFooterFont);
+	mPanels.push_back(mixParams);
+	mixParams->addLabel("Texture mixing", "{ \"width\":64 }");
+	flipButton = mixParams->addButton("Flip", std::bind(&UI::flipLibraryCurrentFbo, this, std::placeholders::_1), "{ \"width\":48, \"stateless\":false, \"pressed\":true }");
+	sliderLeftRenderXY = mixParams->addSlider2D("LeftXY", &mParameterBag->mLeftRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+	sliderRightRenderXY = mixParams->addSlider2D("RightXY", &mParameterBag->mRightRenderXY, "{ \"clear\":false, \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+	sliderMixRenderXY = mixParams->addSlider2D("MixXY", &mParameterBag->mPreviewRenderXY, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0, \"width\":" + toString(mParameterBag->mPreviewWidth) + " }");
+	mixParams->addSlider("LZoom", &mParameterBag->iZoomLeft, "{ \"clear\":false, \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
+	mixParams->addSlider("RZoom", &mParameterBag->iZoomRight, "{ \"width\":" + toString(mParameterBag->mPreviewWidth) + ", \"min\":0.1, \"max\":5.0 }");
+}
+void UI::flipLibraryCurrentFbo(const bool &pressed)
+{
+	mTextures->flipMixFbo(pressed);
+}
+void UI::setLeftInput(const int &aIndex, const bool &pressed)
+{
+	WarpInput wi = mTextures->setInput(aIndex, true);
+	buttonLeft[aIndex]->setName(toString(wi.leftIndex));
+	if (wi.leftMode == 0)
+	{
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
+	}
+	else
+	{
+		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
+	}
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
+	// add path
+	mSpaghetti->drawPath();
+}
+void UI::setRightInput(const int &aIndex, const bool &pressed)
+{
+	WarpInput wi = mTextures->setInput(aIndex, false);
+	buttonRight[aIndex]->setName(toString(wi.rightIndex));
+	if (wi.rightMode == 0)
+	{
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
+	}
+	else
+	{
+		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
+	}
+	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
+}
+void UI::setPreview(const int &aIndex, const bool &pressed)
+{
+
+}
+void UI::addMixControls()
+{
+	int i = buttonLeft.size();
+	buttonLeft.push_back(mixParams->addButton("L", std::bind(&UI::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c0\", \"exclusive\":true }"));
+	buttonRight.push_back(mixParams->addButton("R", std::bind(&UI::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c1\", \"exclusive\":true }"));
+	buttonSelect.push_back(mixParams->addButton(toString(i), std::bind(&UI::setPreview, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"pvw\", \"exclusive\":true }"));
+	sliderCrossfade.push_back(mixParams->addSlider("xFade", &mParameterBag->iCrossfade, "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
+}
 void UI::addShadaControls()
 {
 	// Shaders select
@@ -249,7 +309,8 @@ void UI::setUIRefresh(const int &aFrames, const bool &pressed)
 	mMiniControl->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
 	gParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
 	tParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
-	mLibraryPanel->setUpdateFrequency();
+	mixParams->DEFAULT_UPDATE_FREQUENCY = 4 * mParameterBag->mUIRefresh;
+
 }
 
 void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
@@ -292,25 +353,14 @@ void UI::setTimeFactor(const int &aTimeFactor, const bool &pressed)
 		}
 	}
 }
+
 void UI::setTextureIndex(const int &aTextureIndex, const bool &pressed)
 {
 	mTextures->setInputTextureIndex(aTextureIndex);
 	mParameterBag->iChannels[0] = aTextureIndex;
 
-	//buttonTexture[aTextureIndex]->setActive(true);
-	if (mPath[currentPath]->calcLength() > 2)
-	{
-		//mPath[currentPath]->clear();
-		mPath.push_back(new Path2d());
-		currentPath++;
-	}
-	if (mPath[currentPath]->empty()) {
-		mPath[currentPath]->moveTo(mMousePos);
-		mTrackedPoint = 0;
-	}
-	else
-		mPath[currentPath]->lineTo(mMousePos);
-
+	// add path
+	mSpaghetti->drawPath();
 }
 void UI::setShadaIndex(const int &aShadaIndex, const bool &pressed)
 {
@@ -320,56 +370,16 @@ void UI::setShadaIndex(const int &aShadaIndex, const bool &pressed)
 
 void UI::mouseDown(MouseEvent event)
 {
-	mMousePos = vec2(event.getX(), event.getY());
-
+	mSpaghetti->mouseDown(event);
 }
 
 void UI::mouseUp(MouseEvent event)
 {
-	mTrackedPoint = -1;
+	mSpaghetti->mouseUp(event);
 }
 void UI::mouseDrag(MouseEvent event)
 {
-	if (mPath[currentPath]->calcLength() > 1) {
-
-		if (mTrackedPoint >= 0) {
-			mPath[currentPath]->setPoint(mTrackedPoint, event.getPos());
-		}
-		else { // first bit of dragging, so switch our line to a cubic or a quad if Shift is down
-			// we want to preserve the end of our current line, because it will still be the end of our curve
-			vec2 endPt = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-			// and now we'll delete that line and replace it with a curve
-			mPath[currentPath]->removeSegment(mPath[currentPath]->getNumSegments() - 1);
-
-			Path2d::SegmentType prevType = (mPath[currentPath]->getNumSegments() == 0) ? Path2d::MOVETO : mPath[currentPath]->getSegmentType(mPath[currentPath]->getNumSegments() - 1);
-
-			if (event.isShiftDown() || prevType == Path2d::MOVETO) { // add a quadratic curve segment
-				mPath[currentPath]->quadTo(event.getPos(), endPt);
-			}
-			else { // add a cubic curve segment
-				vec2 tan1;
-				if (prevType == Path2d::CUBICTO) { 		// if the segment before was cubic, let's replicate and reverse its tangent
-					vec2 prevDelta = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2) - mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1) - prevDelta;
-				}
-				else if (prevType == Path2d::QUADTO) {
-					// we can figure out what the equivalent cubic tangent would be using a little math
-					vec2 quadTangent = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 2);
-					vec2 quadEnd = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-					vec2 prevDelta = (quadTangent + (quadEnd - quadTangent) / 3.0f) - quadEnd;
-					tan1 = quadEnd - prevDelta;
-				}
-				else
-					tan1 = mPath[currentPath]->getPoint(mPath[currentPath]->getNumPoints() - 1);
-
-				mPath[currentPath]->curveTo(tan1, event.getPos(), endPt);
-			}
-
-			// our second-to-last point is the tangent next to the end, and we'll track that
-			mTrackedPoint = mPath[currentPath]->getNumPoints() - 2;
-		}
-
-	}
+	mSpaghetti->mouseDrag(event);
 }
 void UI::keyDown(KeyEvent event)
 {
@@ -392,38 +402,10 @@ void UI::draw()
 		for (auto & panel : mPanels) panel->draw();
 		mWarpPanel->draw();
 		if (mSlidersPanel) mSlidersPanel->draw();
-		mLibraryPanel->draw();
 	}
 	// draw the control points
-	gl::color(Color(1, 1, 0));
-	for (auto & path : mPath)
-	{
-		for (size_t p = 0; p < path->getNumPoints(); ++p)
-			gl::drawSolidCircle(path->getPoint(p), 2.5f);
+	mSpaghetti->draw();
 
-		// draw the precise bounding box
-		/*if (path->getNumSegments() > 1) {
-			gl::color(ColorA(0, 1, 1, 0.2f));
-			gl::drawSolidRect(path->calcPreciseBoundingBox());
-			}*/
-
-		// draw the curve itself
-		gl::color(Color(1.0f, 0.5f, 0.25f));
-		gl::draw(*path);
-
-		if (path->getNumSegments() > 1) {
-			// draw some tangents
-			gl::color(Color(0.2f, 0.9f, 0.2f));
-			for (float t = 0; t < 1; t += 0.2f)
-				gl::drawLine(path->getPosition(t), path->getPosition(t) + normalize(path->getTangent(t)) * 80.0f);
-
-			// draw circles at 1/4, 2/4 and 3/4 the length
-			gl::color(ColorA(0.2f, 0.9f, 0.9f, 0.5f));
-			for (float t = 0.25f; t < 1.0f; t += 0.25f)
-				gl::drawSolidCircle(path->getPosition(path->calcNormalizedTime(t)), 5.0f);
-		}
-
-	}
 
 	// needed because of what the ping pong fbo is doing, at least
 	gl::disableAlphaBlending();
@@ -437,9 +419,6 @@ string UI::formatNumber(float f)
 }
 void UI::update()
 {
-	if (mParameterBag->mOptimizeUI)
-	{
-
 		// check this line position: can't remember
 		currentTime = timer.getSeconds();
 
@@ -571,7 +550,6 @@ void UI::update()
 		for (auto & panel : mPanels) panel->update();
 		if (mWarpPanel) mWarpPanel->update();
 		if (mSlidersPanel) mSlidersPanel->update();
-		if (mLibraryPanel) mLibraryPanel->update();
 
 		if (getElapsedFrames() % mParameterBag->mUIRefresh * mParameterBag->mUIRefresh * mParameterBag->mUIRefresh == 0)
 		{
@@ -653,9 +631,13 @@ void UI::update()
 					labelTexture[i]->setName(mTextures->getSenderName(i));
 				}
 				sliderPreviewTextureXY->setBackgroundTexture(mTextures->getTexture(mTextures->getInputTextureIndex()));
+				sliderLeftRenderXY->setBackgroundTexture(mTextures->getMixTexture(0));
+				sliderRightRenderXY->setBackgroundTexture(mTextures->getMixTexture(1));
+				sliderMixRenderXY->setBackgroundTexture(mTextures->getMixTexture(2));
+
 			}
 		}
-	}
+	
 }
 void UI::tempoFR(const bool &pressed)
 {
@@ -735,7 +717,6 @@ void UI::resize()
 	for (auto & panel : mPanels) panel->resize();
 	if (mWarpPanel) mWarpPanel->resize();
 	if (mSlidersPanel) mSlidersPanel->resize();
-	if (mLibraryPanel) mLibraryPanel->resize();
 }
 
 void UI::show()

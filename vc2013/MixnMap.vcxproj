@@ -155,6 +155,7 @@
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
     <ClInclude Include="..\include\Shaders.h" />
     <ClInclude Include="..\include\SlidersPanel.h" />
+    <ClInclude Include="..\include\Spaghetti.h" />
     <ClInclude Include="..\include\SpoutWrapper.h" />
     <ClInclude Include="..\include\Textures.h" />
     <ClInclude Include="..\include\UI.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\src\ParameterBag.cpp" />
     <ClCompile Include="..\src\Shaders.cpp" />
     <ClCompile Include="..\src\SlidersPanel.cpp" />
+    <ClCompile Include="..\src\Spaghetti.cpp" />
     <ClCompile Include="..\src\SpoutWrapper.cpp" />
     <ClCompile Include="..\src\Textures.cpp" />
     <ClCompile Include="..\src\UI.cpp" />

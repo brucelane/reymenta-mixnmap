@@ -13,10 +13,11 @@
 #include "Shaders.h"
 // textures
 #include "Textures.h"
+// Spaghetti
+#include "Spaghetti.h"
 // panels
 #include "SlidersPanel.h"
 #include "WarpPanel.h"
-#include "LibraryPanel.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -63,7 +64,6 @@ namespace Reymenta
 		void								toggleUseTimeWithTempo(const bool &pressed);
 		// panels
 		void								useLineIn(const bool &pressed);
-		void								toggleLibPanel(const bool &pressed) { mLibraryPanel->toggleVisibility(); };
 		void								toggleWarpPanel(const bool &pressed) { mWarpPanel->toggleVisibility(); };
 		void								setTimeFactor(const int &aTimeFactor, const bool &pressed);
 		void								setUIRefresh(const int &aFrames, const bool &pressed);
@@ -115,10 +115,12 @@ namespace Reymenta
 		void								show();
 		void								hide();
 		void								shutdown();
-		LibraryPanelRef						mLibraryPanel;
+		//LibraryPanelRef						mLibraryPanel;
 		WarpPanelRef						mWarpPanel;
 		void								addShadaControls();
 		void								addTextureControls();
+		void								addMixControls();
+
 		int									getTextureButtonsCount() { return buttonTexture.size(); };
 		void								createWarp();
 
@@ -128,9 +130,10 @@ namespace Reymenta
 		void								setupSliders();
 		void								setupTextures();
 		void								setupShaders();
+		void								setupLibrary();
 
 		// windows mgmt
-		MinimalUI::UIControllerRef			mMiniControl, gParams, tParams, sParams;
+		MinimalUI::UIControllerRef			mMiniControl, gParams, tParams, sParams, mixParams;
 		// panels
 		SlidersPanelRef						mSlidersPanel;
 		vector<MinimalUI::UIControllerRef>	mPanels;
@@ -147,6 +150,8 @@ namespace Reymenta
 		ShadersRef							mShaders;
 		// Textures
 		TexturesRef							mTextures;
+		// Spaghetti
+		SpaghettiRef						mSpaghetti;
 
 		Anim<float>							mTimer;
 
@@ -169,11 +174,16 @@ namespace Reymenta
 		void								saveSettings(const bool &pressed = true);
 		void								restoreSettings(const bool &pressed = true);
 		void								resetSettings(const bool &pressed = true);
-		// bezier lines for nodes
-		vector<Path2d*>						mPath;
-		int									mTrackedPoint;
-		int									currentPath;
-		// mouse position
-		vec2								mMousePos;
+
+		// library panel
+		void								flipLibraryCurrentFbo(const bool &pressed);
+
+		void								setLeftInput(const int &aIndex, const bool &pressed);
+		void								setRightInput(const int &aIndex, const bool &pressed);
+		void								setPreview(const int &aIndex, const bool &pressed);
+
+		vector<MinimalUI::UIElementRef>		buttonSelect, buttonLeft, buttonRight, sliderCrossfade;
+		MinimalUI::UIElementRef				flipButton, sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
+
 };
 }
