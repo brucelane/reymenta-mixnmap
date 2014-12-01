@@ -100,6 +100,8 @@ namespace Reymenta
 		int							getShadaFbosSize() { return mShadaFbos.size(); };
 		int							addShadaFbo();
 		void						createWarpInput();
+		//! warpInputs: vector of warp input textures/shader fbo texture
+		vector<WarpInput>			warpInputs;
 
 	private:
 		//! Logger
@@ -128,8 +130,6 @@ namespace Reymenta
 		int							selectedInputTexture;
 		//! select mode for routing from texture or shader to the mixing (0 for input texture, 1 for shader)
 		unsigned int				currentMode;
-		//! warpInputs: vector of warp input textures/shader fbo texture
-		vector<WarpInput>			warpInputs;
 		//! mesh for shader drawing
 		gl::VboMeshRef				mMesh;
 
