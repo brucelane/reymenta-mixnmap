@@ -53,7 +53,7 @@ namespace Reymenta
 		void lockRotationSpeed(const bool &pressed) { autoRotationSpeed = pressed; };
 
 		MinimalUI::UIElementRef	sliderExposure, sliderRatio, sliderBlendmode, sliderZoom, sliderSpeed;
-		MinimalUI::UIElementRef	sliderZPos, sliderRotationSpeed, sliderSteps, sliderCrossfade, sliderPreviewCrossfade, sliderPixelate;
+		MinimalUI::UIElementRef	sliderZPos, sliderRotationSpeed, sliderSteps, sliderPixelate;
 		// exposure
 		float						defaultExposure;
 		float						minExposure;

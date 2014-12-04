@@ -243,10 +243,11 @@ void UI::setPreview(const int &aIndex, const bool &pressed)
 void UI::addMixControls()
 {
 	int i = buttonLeft.size();
+	iCrossfade.push_back(0.5);
 	buttonLeft.push_back(mixParams->addButton("L", std::bind(&UI::setLeftInput, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c0\", \"exclusive\":true }"));
 	buttonRight.push_back(mixParams->addButton("R", std::bind(&UI::setRightInput, this, i, std::placeholders::_1), "{  \"clear\":false, \"width\":48, \"stateless\":true, \"group\":\"c1\", \"exclusive\":true }"));
 	buttonSelect.push_back(mixParams->addButton(toString(i), std::bind(&UI::setPreview, this, i, std::placeholders::_1), "{ \"clear\":false, \"width\":48, \"stateless\":false, \"group\":\"pvw\", \"exclusive\":true }"));
-	sliderCrossfade.push_back(mixParams->addSlider("xFade", &mTextures->warpInputs[i].iCrossfade, "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
+	sliderCrossfade.push_back(mixParams->addSlider("xFade", &iCrossfade[i], "{ \"min\":0.0, \"max\":1.0, \"width\":96 }"));
 }
 void UI::addShadaControls()
 {
@@ -407,6 +408,7 @@ string UI::formatNumber(float f)
 }
 void UI::update()
 {
+	for (int i = 0; i < buttonLeft.size();i++)	mTextures->warpInputs[i].iCrossfade = iCrossfade[i];
 		currentTime = timer.getSeconds();
 
 		int time = (currentTime - startTime)*1000000.0;

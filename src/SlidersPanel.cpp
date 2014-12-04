@@ -87,9 +87,6 @@ void SlidersPanel::setupParams()
 	sliderBlendmode = mParams->addSlider("blendmode", &mParameterBag->controlValues[15], "{ \"min\":0.0, \"max\":27.0 }");
 	sliderSteps = mParams->addSlider("steps", &mParameterBag->controlValues[16], "{ \"min\":1.0, \"max\":128.0, \"nameColor\":\"0xFFFFFFFF\" }");
 	sliderPixelate = mParams->addSlider("pixelate", &mParameterBag->controlValues[18], "{ \"min\":0.01, \"max\":1.0 }");
-	sliderPreviewCrossfade = mParams->addSlider("PreviewXFade", &mParameterBag->iPreviewCrossfade, "{ \"min\":0.0, \"max\":1.0 }");
-	sliderCrossfade = mParams->addSlider("xFade", &mParameterBag->iCrossfade, "{ \"min\":0.0, \"max\":1.0 }");
-
 
 }
 
@@ -104,10 +101,6 @@ void SlidersPanel::update()
 		sliderExposure->setName("14 exposure:" + toString(floor(mParameterBag->controlValues[14])) + "\n" + toString(floor(minExposure)) + "-" + toString(floor(maxExposure)));
 		sliderBlendmode->setName("15 blendmode:" + toString(floor(mParameterBag->controlValues[15])));
 		sliderSteps->setName("16 steps:" + toString(floor(mParameterBag->controlValues[16])));
-		// crossfade
-		sliderPreviewCrossfade->setBackgroundColor(Color::gray(mParameterBag->iPreviewCrossfade/2.0));
-		sliderPreviewCrossfade->setName("Pvw xFade:" + formatNumber(mParameterBag->iPreviewCrossfade));
-		sliderCrossfade->setName("17 xFade:" + formatNumber(mParameterBag->iCrossfade));
 		sliderPixelate->setName("18 pixelate:" + toString(floor(mParameterBag->controlValues[18])));
 		sliderRotationSpeed->setName("19 rotation speed:" + toString(floor(mParameterBag->controlValues[19])));
 		mParams->update();

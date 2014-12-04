@@ -152,7 +152,6 @@ void ParameterBag::reset()
 	{
 		iChannelResolution[i] = vec3(mRenderWidth, mRenderHeight, 1.0);
 	}
-	iCrossfade = iPreviewCrossfade = 0.5;
 	iDebug = iFade = iLight = iLightAuto = iRepeat = false;
 	iFps = 60.0;
 	iShowFps = true;

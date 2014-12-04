@@ -306,8 +306,8 @@ void Textures::renderMixesToFbo()
 			getFboTexture(warpInputs[i].rightIndex)->bind(1);
 		}
 		mShaders->getMixShader()->uniform("iCrossfade", warpInputs[i].iCrossfade);
-		warpInputs[i].iCrossfade += 0.1;
-		if (warpInputs[i].iCrossfade > 1.0) warpInputs[i].iCrossfade = 0.0;
+		//warpInputs[i].iCrossfade += 0.1;
+		//if (warpInputs[i].iCrossfade > 1.0) warpInputs[i].iCrossfade = 0.0;
 		gl::draw(mMesh);
 			
 		i++;

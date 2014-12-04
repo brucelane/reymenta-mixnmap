@@ -180,6 +180,6 @@ namespace Reymenta
 
 		vector<MinimalUI::UIElementRef>		buttonSelect, buttonLeft, buttonRight, sliderCrossfade;
 		MinimalUI::UIElementRef				sliderLeftRenderXY, sliderRightRenderXY, sliderMixRenderXY;
-
+		vector<float>						iCrossfade;  // from 0 left to 1 right
 };
 }
