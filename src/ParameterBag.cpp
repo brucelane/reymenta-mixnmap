@@ -177,7 +177,7 @@ void ParameterBag::reset()
 	mWarpCount = 3;
 	// OSC
 	mOSCDestinationHost = "127.0.0.1";
-	mOSCDestinationPort = 7000;
+	mOSCDestinationPort = 5005;
 	mOSCReceiverPort = 9000;
 	OSCMsg = "OSC listening on port 9000";
 	// colors

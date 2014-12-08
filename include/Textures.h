@@ -109,7 +109,7 @@ namespace Reymenta
 		//! startup image
 		gl::TextureRef				startupImage;
 		//! fboFormat
-		gl::Fbo::Format				format;
+		gl::Fbo::Format				fboFormat;
 		//! mixTextures: mix of 2 textures from sTextures or shaders
 		//vector<ci::gl::TextureRef>	mixTextures;
 		//! check if valid index

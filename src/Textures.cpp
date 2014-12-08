@@ -50,7 +50,7 @@ void Textures::createWarpInput()
 	newWarpInput.iCrossfade = 0.5;
 	warpInputs.push_back(newWarpInput);
 	// init mixTextures
-	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture()));//640x360 or 480?
+	mMixesFbos.push_back(gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, fboFormat.depthTexture()));//640x360 or 480?
 }
 void Textures::setShadaIndex(int index) 
 { 
@@ -109,7 +109,7 @@ int Textures::addShadaFbo()
 	// add a ShadaFbo
 	ShadaFbo sFbo;
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, format.depthTexture());
+	sFbo.fbo = gl::Fbo::create(mParameterBag->mFboWidth, mParameterBag->mFboHeight, fboFormat.depthTexture());
 	sFbo.shadaIndex = mShadaFbos.size();
 	mShadaFbos.push_back(sFbo);
 	return mShadaFbos.size() - 1;
