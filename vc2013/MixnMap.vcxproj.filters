@@ -252,9 +252,6 @@
     <ClCompile Include="..\src\AudioWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\ControllerManager.cpp">
-      <Filter>Blocks\MinimalUI\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Spaghetti.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -298,9 +295,6 @@
     </ClInclude>
     <ClInclude Include="..\include\AudioWrapper.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MinimalUI\include\ControllerManager.h">
-      <Filter>Blocks\MinimalUI\include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Spaghetti.h">
       <Filter>Header Files</Filter>
