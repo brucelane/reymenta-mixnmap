@@ -115,7 +115,6 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\blocks\Cinder-MinimalUI\include\ControllerManager.h" />
     <ClInclude Include="..\include\AudioWrapper.h" />
     <ClInclude Include="..\include\Logger.h" />
     <ClInclude Include="..\include\MixnMapApp.h" />
@@ -162,7 +161,6 @@
     <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\blocks\Cinder-MinimalUI\src\ControllerManager.cpp" />
     <ClCompile Include="..\src\AudioWrapper.cpp" />
     <ClCompile Include="..\src\Logger.cpp" />
     <ClCompile Include="..\src\MixnMapApp.cpp" />
