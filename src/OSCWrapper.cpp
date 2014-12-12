@@ -6,7 +6,7 @@ OSC::OSC( ParameterBagRef aParameterBag )
 {
 	mParameterBag = aParameterBag;
 	// OSC sender
-	//mOSCSender.setup(mParameterBag->mOSCDestinationHost, mParameterBag->mOSCDestinationPort);
+	mOSCSender.setup(mParameterBag->mOSCDestinationHost, mParameterBag->mOSCDestinationPort);
 	// OSC receiver
 	mOSCReceiver.setup(mParameterBag->mOSCReceiverPort);
 }
@@ -87,4 +87,14 @@ void OSC::update()
 		string oscString = "osc from:" + message.getRemoteIp() + " adr:" + oscAddress + " 0: " + oscArg0 + " 1: " + oscArg1;
 		mParameterBag->OSCMsg = oscString;
 	}	
+}
+void OSC::sendOSCMessage(string controlType, int controlName, float x, float y, float z)
+{
+	osc::Message m;
+	m.setAddress(controlType);
+	m.addIntArg(controlName);
+	m.addFloatArg(x);
+	m.addFloatArg(y);
+	m.addFloatArg(z);
+	mOSCSender.sendMessage(m);
 }

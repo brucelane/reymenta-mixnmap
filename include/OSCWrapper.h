@@ -20,12 +20,13 @@ namespace Reymenta
 
 	public:
 		OSC( ParameterBagRef aParameterBag );
-		static	OSCRef create( ParameterBagRef aParameterBag );
+		static	OSCRef				create( ParameterBagRef aParameterBag );
+		void						sendOSCMessage(string controlType, int controlName, float x, float y, float z);
 
 		void	update();
 	private:
 		// parameters
-		ParameterBagRef mParameterBag;
+		ParameterBagRef				mParameterBag;
 		osc::Listener 				mOSCReceiver;
 		osc::Sender					mOSCSender;
 	};

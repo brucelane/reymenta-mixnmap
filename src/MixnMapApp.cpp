@@ -70,7 +70,7 @@ void MixnMapApp::setup()
 	mAudio = AudioWrapper::create(mParameterBag, mTextures);
 	windowManagement();
 	// Setup the MinimalUI user interface
-	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow);
+	mUI = UI::create(mParameterBag, mShaders, mTextures, mMainWindow, mOSC);
 	mUI->setup();
 
 	// initialize warps

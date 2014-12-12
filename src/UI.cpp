@@ -7,12 +7,13 @@ using namespace Reymenta;
 	tex: 76 57
 	pvw: 156 88
 	*/
-UI::UI(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, WindowRef aWindow)
+UI::UI(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, WindowRef aWindow, OSCRef aOscRef)
 {
 	mParameterBag = aParameterBag;
 	mShaders = aShadersRef;
 	mTextures = aTexturesRef;
 	mWindow = aWindow;
+	mOSC = aOscRef;
 
 	mCbMouseDown = mWindow->getSignalMouseDown().connect(0, std::bind(&UI::mouseDown, this, std::placeholders::_1));
 	mCbKeyDown = mWindow->getSignalKeyDown().connect(0, std::bind(&UI::keyDown, this, std::placeholders::_1));
@@ -31,9 +32,9 @@ UI::UI(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTextu
 	//timer.start();
 }
 
-UIRef UI::create(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, app::WindowRef aWindow)
+UIRef UI::create(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, app::WindowRef aWindow, OSCRef aOscRef)
 {
-	return shared_ptr<UI>(new UI(aParameterBag, aShadersRef, aTexturesRef, aWindow));
+	return shared_ptr<UI>(new UI(aParameterBag, aShadersRef, aTexturesRef, aWindow, aOscRef));
 }
 
 void UI::setup()
@@ -318,10 +319,12 @@ void UI::setLeftInput(const int &aIndex, const bool &pressed)
 	if (wi.leftMode == 0)
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
+		mOSC->sendOSCMessage("", 100, aIndex, wi.leftMode, wi.leftIndex);
 	}
 	else
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
+		mOSC->sendOSCMessage("", 101, aIndex, wi.leftMode, wi.leftIndex);
 	}
 	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 	// add path
@@ -334,10 +337,12 @@ void UI::setRightInput(const int &aIndex, const bool &pressed)
 	if (wi.rightMode == 0)
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
+		mOSC->sendOSCMessage("", 102, aIndex, wi.rightMode, wi.rightIndex);
 	}
 	else
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
+		mOSC->sendOSCMessage("", 103, aIndex, wi.rightMode, wi.rightIndex);
 	}
 	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 	// add path

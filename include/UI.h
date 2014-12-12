@@ -15,6 +15,8 @@
 #include "Textures.h"
 // Spaghetti
 #include "Spaghetti.h"
+// OSC
+#include "OSCWrapper.h"
 // panels
 #include "SlidersPanel.h"
 #include "WarpPanel.h"
@@ -33,8 +35,8 @@ namespace Reymenta
 	{
 
 	public:
-		UI( ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, ci::app::WindowRef aWindow );
-		static UIRef						create( ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, ci::app::WindowRef aWindow );
+		UI( ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, ci::app::WindowRef aWindow, OSCRef aOscRef );
+		static UIRef						create(ParameterBagRef aParameterBag, ShadersRef aShadersRef, TexturesRef aTexturesRef, ci::app::WindowRef aWindow, OSCRef aOscRef);
 
 		void								setup();
 		void								draw();
@@ -148,6 +150,9 @@ namespace Reymenta
 		ShadersRef							mShaders;
 		// Textures
 		TexturesRef							mTextures;
+		// osc
+		OSCRef								mOSC;
+
 		// Spaghetti
 		SpaghettiRef						mSpaghetti;
 

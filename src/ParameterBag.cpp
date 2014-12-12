@@ -177,9 +177,9 @@ void ParameterBag::reset()
 	mWarpCount = 3;
 	// OSC
 	mOSCDestinationHost = "127.0.0.1";
-	mOSCDestinationPort = 5005;
-	mOSCReceiverPort = 9000;
-	OSCMsg = "OSC listening on port 9000";
+	mOSCDestinationPort = 9009;
+	mOSCReceiverPort = 5005;
+	OSCMsg = "OSC listening on port 5005";
 	// colors
 	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
 	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
