@@ -10,9 +10,11 @@
 
 using namespace Reymenta;
 
-Shaders::Shaders(ParameterBagRef aParameterBag)
+Shaders::Shaders(ParameterBagRef aParameterBag, OSCRef aOscRef)
 {
 	mParameterBag = aParameterBag;
+	mOSC = aOscRef;
+
 	//! instanciate the logger class
 	log = Logger::create("ShadersLog.txt");
 	log->logTimedString("Shaders constructor");
@@ -74,8 +76,15 @@ bool Shaders::loadPixelFragmentShader(const fs::path &fragment_path)
 		if (mFile.find_last_of("\\") != std::string::npos) mFragFileName = mFile.substr(mFile.find_last_of("\\") + 1);
 		if (fs::exists(fragment_path))
 		{
-			std::string fs = header + loadString(loadFile(fragment_path));
+			std::string fragString = loadString(loadFile(fragment_path));
+			std::string fs = header + fragString;
 			rtn = setGLSLString(fs, mFragFileName);
+			// if load and compile successful, and it's not mix.frag, send it to the standalone mixnmap renderer
+			if (rtn && mFragFileName != "mix.glsl")
+			{
+				//mOSC->sendOSCStringMessage("/fs", mParameterBag->mCurrentShadaFboIndex, fragString);
+				mOSC->sendOSCStringMessage("/fspath", mParameterBag->mCurrentShadaFboIndex, mFile);
+			}
 		}
 		else
 		{

@@ -22,6 +22,7 @@ namespace Reymenta
 		OSC( ParameterBagRef aParameterBag );
 		static	OSCRef				create( ParameterBagRef aParameterBag );
 		void						sendOSCMessage(string controlType, int controlName, float x, float y, float z);
+		void						sendOSCStringMessage(string controlType, int index, string s);
 
 		void	update();
 	private:

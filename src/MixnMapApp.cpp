@@ -12,7 +12,7 @@ void MixnMapApp::prepareSettings(Settings *settings)
 #ifdef _DEBUG
 	// debug mode
 	settings->setWindowSize(mParameterBag->mMainDisplayWidth-300, mParameterBag->mMainDisplayHeight - 200);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth +300, mParameterBag->mRenderY + 50));
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth +250, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mMainDisplayWidth*2/3, mParameterBag->mMainDisplayHeight - 200);
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY + 50));
@@ -58,14 +58,14 @@ void MixnMapApp::setup()
 	log->logTimedString("setup");
 	// in multi-window mode prevent shutdown to be executed twice
 	mIsShutDown = false;
+	// instanciate the OSC class
+	mOSC = OSC::create(mParameterBag);
 	// instanciate the Shaders class, must not be in prepareSettings
-	mShaders = Shaders::create(mParameterBag);
+	mShaders = Shaders::create(mParameterBag, mOSC);
 	// instanciate the textures class
 	mTextures = Textures::create(mParameterBag, mShaders);
 	// instanciate the spout class
 	mSpout = SpoutWrapper::create(mParameterBag, mTextures);
-	// instanciate the OSC class
-	mOSC = OSC::create(mParameterBag);
 	// instanciate the audio class
 	mAudio = AudioWrapper::create(mParameterBag, mTextures);
 	windowManagement();
@@ -91,6 +91,7 @@ void MixnMapApp::setup()
 	{
 		mUI->createWarp();
 	}
+	mOSC->sendOSCMessage("/createwarps", mWarps.size(),0,0,0);
 	// adjust the content size of the warps
 	Warp::setSize(mWarps, ivec2(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//mTextures->getTexture(0)->getSize());
 	log->logTimedString("Warps count " + toString(mWarps.size()));
@@ -131,6 +132,8 @@ void MixnMapApp::shutdown()
 		// save warp settings
 		fs::path settings = getAssetPath("") / warpsFileName;
 		Warp::writeSettings(mWarps, writeFile(settings));
+		// save params
+		mParameterBag->save();
 
 		// close ui and save settings
 		mSpout->shutdown();

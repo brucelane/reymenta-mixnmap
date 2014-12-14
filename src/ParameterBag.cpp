@@ -63,6 +63,18 @@ bool ParameterBag::save()
 	FboHeight.setAttribute("value", toString(mFboHeight));
 	settings.push_back(FboHeight);
 
+	XmlTree OSCReceiverPort("OSCReceiverPort", "");
+	OSCReceiverPort.setAttribute("value", toString(mOSCReceiverPort));
+	settings.push_back(OSCReceiverPort);
+
+	XmlTree OSCDestinationPort("OSCDestinationPort", "");
+	OSCDestinationPort.setAttribute("value", toString(mOSCDestinationPort));
+	settings.push_back(OSCDestinationPort);
+
+	XmlTree OSCDestinationHost("OSCDestinationHost", "");
+	OSCDestinationHost.setAttribute("value", toString(mOSCDestinationHost));
+	settings.push_back(OSCDestinationHost);
+
 	// TODO: test for successful writing of XML
 	settings.write(writeFile(path));
 
@@ -102,6 +114,18 @@ bool ParameterBag::restore()
 			if (settings.hasChild("FboHeight")) {
 				XmlTree FboHeight = settings.getChild("FboHeight");
 				mFboHeight = FboHeight.getAttributeValue<int>("value");
+			}
+			if (settings.hasChild("OSCReceiverPort")) {
+				XmlTree OSCReceiverPort = settings.getChild("OSCReceiverPort");
+				mOSCReceiverPort = OSCReceiverPort.getAttributeValue<int>("value");
+			}
+			if (settings.hasChild("OSCDestinationPort")) {
+				XmlTree OSCDestinationPort = settings.getChild("OSCDestinationPort");
+				mOSCDestinationPort = OSCDestinationPort.getAttributeValue<int>("value");
+			}
+			if (settings.hasChild("OSCDestinationHost")) {
+				XmlTree OSCDestinationHost = settings.getChild("OSCDestinationHost");
+				mOSCDestinationHost = OSCDestinationHost.getAttributeValue<string>("value");
 			}
 
 			return true;

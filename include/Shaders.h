@@ -19,6 +19,8 @@
 #include "Logger.h"
 // parameters
 #include "ParameterBag.h"
+// OSC
+#include "OSCWrapper.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -35,11 +37,11 @@ namespace Reymenta
 	};
 	class Shaders {
 	public:		
-		Shaders( ParameterBagRef aParameterBag );
+		Shaders(ParameterBagRef aParameterBag, OSCRef aOscRef);
 		virtual						~Shaders();
-		static ShadersRef	create( ParameterBagRef aParameterBag )
+		static ShadersRef	create(ParameterBagRef aParameterBag, OSCRef aOscRef)
 		{
-			return shared_ptr<Shaders>( new Shaders( aParameterBag ) );
+			return shared_ptr<Shaders>(new Shaders(aParameterBag, aOscRef));
 		}
 		void						update();
 		void						resize();
@@ -71,6 +73,9 @@ namespace Reymenta
 		bool						validFrag;
 		//! parameters
 		ParameterBagRef				mParameterBag;
+		// osc
+		OSCRef						mOSC;
+
 		//! mix shader
 		gl::GlslProgRef				mMixShader;
 	};

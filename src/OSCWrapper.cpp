@@ -98,3 +98,11 @@ void OSC::sendOSCMessage(string controlType, int controlName, float x, float y, 
 	m.addFloatArg(z);
 	mOSCSender.sendMessage(m);
 }
+void OSC::sendOSCStringMessage(string controlType, int index, string s)
+{
+	osc::Message m;
+	m.setAddress(controlType);
+	m.addIntArg(index);
+	m.addStringArg(s);
+	mOSCSender.sendMessage(m);
+}

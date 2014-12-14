@@ -319,13 +319,12 @@ void UI::setLeftInput(const int &aIndex, const bool &pressed)
 	if (wi.leftMode == 0)
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.leftIndex));
-		mOSC->sendOSCMessage("", 100, aIndex, wi.leftMode, wi.leftIndex);
 	}
 	else
 	{
 		buttonLeft[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.leftIndex));
-		mOSC->sendOSCMessage("", 101, aIndex, wi.leftMode, wi.leftIndex);
 	}
+	mOSC->sendOSCMessage("/texture", aIndex, true, wi.leftMode, wi.leftIndex);
 	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 	// add path
 	mSpaghetti->drawPath();
@@ -337,13 +336,12 @@ void UI::setRightInput(const int &aIndex, const bool &pressed)
 	if (wi.rightMode == 0)
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getTexture(wi.rightIndex));
-		mOSC->sendOSCMessage("", 102, aIndex, wi.rightMode, wi.rightIndex);
 	}
 	else
 	{
 		buttonRight[aIndex]->setBackgroundTexture(mTextures->getFboTexture(wi.rightIndex));
-		mOSC->sendOSCMessage("", 103, aIndex, wi.rightMode, wi.rightIndex);
 	}
+	mOSC->sendOSCMessage("/texture", aIndex, false, wi.rightMode, wi.rightIndex);
 	buttonSelect[aIndex]->setBackgroundTexture(mTextures->getMixTexture(aIndex));
 	// add path
 	mSpaghetti->drawPath();
