@@ -55,6 +55,14 @@ bool ParameterBag::save()
 	ShowUI.setAttribute("value", toString(mShowUI));
 	settings.push_back(ShowUI);
 
+	XmlTree FboWidth("FboWidth", "");
+	FboWidth.setAttribute("value", toString(mFboWidth));
+	settings.push_back(FboWidth);
+
+	XmlTree FboHeight("FboHeight", "");
+	FboHeight.setAttribute("value", toString(mFboHeight));
+	settings.push_back(FboHeight);
+
 	// TODO: test for successful writing of XML
 	settings.write(writeFile(path));
 
@@ -86,6 +94,14 @@ bool ParameterBag::restore()
 			if (settings.hasChild("ShowUI")) {
 				XmlTree ShowUI = settings.getChild("ShowUI");
 				mShowUI = ShowUI.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("FboWidth")) {
+				XmlTree FboWidth = settings.getChild("FboWidth");
+				mFboWidth = FboWidth.getAttributeValue<int>("value");
+			}
+			if (settings.hasChild("FboHeight")) {
+				XmlTree FboHeight = settings.getChild("FboHeight");
+				mFboHeight = FboHeight.getAttributeValue<int>("value");
 			}
 
 			return true;
