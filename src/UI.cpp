@@ -57,6 +57,7 @@ void UI::createWarp()
 void UI::setupMiniControl()
 {
 	mMiniControl = UIController::create("{ \"x\":0, \"y\":0, \"depth\":100, \"width\":960, \"height\":144, \"fboNumSamples\":0, \"panelColor\":\"0x44402828\" }");
+	mMiniControl->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 	mMiniControl->setFont("label", mParameterBag->mLabelFont);
 	mMiniControl->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mMiniControl->setFont("icon", mParameterBag->mIconFont);
@@ -78,6 +79,7 @@ void UI::setupMiniControl()
 void UI::setupWarps()
 {
 	wParams = UIController::create("{ \"visible\":true, \"x\":766, \"y\":150, \"width\":140, \"height\":530, \"depth\":207, \"panelColor\":\"0x44284828\" }", mWindow);
+	wParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 	wParams->setFont("label", mParameterBag->mLabelFont);
 	wParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	wParams->setFont("icon", mParameterBag->mIconFont);
@@ -115,6 +117,7 @@ void UI::setCurrentFboIndex(const int &aIndex, const bool &pressed)
 void UI::setupTextures()
 {
 	tParams = UIController::create("{ \"x\":0, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	tParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 	tParams->setFont("label", mParameterBag->mLabelFont);
 	tParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	tParams->setFont("icon", mParameterBag->mIconFont);
@@ -134,6 +137,7 @@ void UI::addTextureControls()
 void UI::setupShaders()
 {
 	sParams = UIController::create("{ \"x\":178, \"y\":150, \"depth\":300, \"width\":176, \"height\":530, \"marginLarge\":2, \"fboNumSamples\":0, \"panelColor\":\"0x44282828\", \"defaultBackgroundColor\":\"0xFF0d0d0d\", \"defaultNameColor\":\"0xFF90a5b6\", \"defaultStrokeColor\":\"0xFF282828\", \"activeStrokeColor\":\"0xFF919ea7\" }", mWindow);
+	sParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 	sParams->setFont("label", mParameterBag->mLabelFont);
 	sParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	sParams->setFont("icon", mParameterBag->mIconFont);
@@ -146,6 +150,7 @@ void UI::setupShaders()
 void UI::setupLibrary()
 {
 	mixParams = UIController::create("{ \"visible\":true, \"x\":356, \"y\":150, \"width\":400, \"height\":530, \"depth\":203, \"panelColor\":\"0x44482828\" }");
+	mixParams->DEFAULT_UPDATE_FREQUENCY = mParameterBag->mUIRefresh;
 	mixParams->setFont("label", mParameterBag->mLabelFont);
 	mixParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);
 	mixParams->setFont("icon", mParameterBag->mIconFont);
@@ -287,7 +292,7 @@ void UI::update()
 
 		labelOSC->setName(mParameterBag->OSCMsg);
 		labelError->setName(mShaders->getFragError());
-/*
+
 		for (int i = 0; i < buttonShada.size(); i++)
 		{
 			buttonShada[i]->setBackgroundTexture(mTextures->getFboTexture(i));
@@ -301,7 +306,7 @@ void UI::update()
 		for (int i = 0; i < buttonIndex.size(); i++)
 		{
 			buttonIndex[i]->setBackgroundTexture(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]));
-		}*/
+		}
 	}
 }
 void UI::resize()

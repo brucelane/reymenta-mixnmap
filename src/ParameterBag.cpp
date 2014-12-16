@@ -153,7 +153,7 @@ void ParameterBag::reset()
 	mUseDX9 = false;
 
 	mMultiTouchEnabled = false;
-	mUIRefresh = 0;
+	mUIRefresh = 12;
 	mOptimizeUI = false;
 	mShowUI = true;
 	mShowConsole = false;
