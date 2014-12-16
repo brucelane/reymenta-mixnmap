@@ -11,8 +11,8 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	getWindowsResolution();
 #ifdef _DEBUG
 	// debug mode
-	settings->setWindowSize(mParameterBag->mMainDisplayWidth-300, mParameterBag->mMainDisplayHeight - 200);
-	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth +250, mParameterBag->mRenderY + 50));
+	settings->setWindowSize(mParameterBag->mMainDisplayWidth - 300, mParameterBag->mMainDisplayHeight - 200);
+	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth + 250, mParameterBag->mRenderY + 50));
 #else
 	settings->setWindowSize(mParameterBag->mMainDisplayWidth*2/3, mParameterBag->mMainDisplayHeight - 200);
 	settings->setWindowPos(ivec2(mParameterBag->mRenderX - mParameterBag->mMainDisplayWidth, mParameterBag->mRenderY + 50));
@@ -22,8 +22,11 @@ void MixnMapApp::prepareSettings(Settings *settings)
 	// set a high frame rate to disable limitation
 	settings->setFrameRate(1000.0f);
 	console() << "MT: " << System::hasMultiTouch() << " Max points: " << System::getMaxMultiTouchPoints() << std::endl;
-	if (System::hasMultiTouch()) settings->enableMultiTouch();
-
+	if (System::hasMultiTouch())
+	{
+		settings->enableMultiTouch(); 
+		mParameterBag->mMultiTouchEnabled = true;
+	}
 	if (mParameterBag->mShowConsole) settings->enableConsoleWindow();
 
 }
@@ -91,7 +94,7 @@ void MixnMapApp::setup()
 	{
 		mUI->createWarp();
 	}
-	mOSC->sendOSCMessage("/createwarps", mWarps.size(),0,0,0);
+	mOSC->sendOSCMessage("/createwarps", mWarps.size(), 0, 0, 0);
 	// adjust the content size of the warps
 	Warp::setSize(mWarps, ivec2(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//mTextures->getTexture(0)->getSize());
 	log->logTimedString("Warps count " + toString(mWarps.size()));
@@ -99,7 +102,6 @@ void MixnMapApp::setup()
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
 	mTimer = 0.0f;
-	mUI->tapTempo(true);
 
 #ifdef _DEBUG
 	// debug mode
@@ -193,9 +195,9 @@ void MixnMapApp::update()
 		{
 			warpsSize++;
 		}
-		if (mUI->mWarpPanel->getWarpsSize() < warpsSize)
+		if (mUI->getWarpsSize() < warpsSize)
 		{
-			mUI->mWarpPanel->addButtons();
+			mUI->addButtons();
 		}
 		// compare then number of textures to the number of ui tParams elements
 		// in case of a new texture, create the new uiElements
@@ -251,11 +253,11 @@ void MixnMapApp::drawRender()
 	// origin upper left set to false for warps
 	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight, false);
 	gl::pushViewport(0, 0, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	
+
 	gl::enableAlphaBlending();
 	// iterate over the warps and draw their content
 	int i = 0;
-	for (auto &warp : mWarps) 
+	for (auto &warp : mWarps)
 	{
 		warp->draw(mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i]), mTextures->getMixTexture(mParameterBag->iWarpFboChannels[i])->getBounds());
 		i++;
@@ -273,32 +275,34 @@ void MixnMapApp::drawMain()
 	mSpout->draw();
 	mTextures->draw();
 	//! draw current shader in the background	
-	gl::pushMatrices();
+	//gl::pushMatrices();
 	gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight);
 	gl::draw(mTextures->getFboTexture(mParameterBag->mCurrentShadaFboIndex));
-	gl::popViewport();
-	gl::popMatrices();
+	//gl::popViewport();
+	//gl::popMatrices();
 	//! draw UI
 	if (mParameterBag->mShowUI) mUI->draw();
 
 	//! touch events only make sense on the UI
-	for (map<uint32_t, TouchPoint>::const_iterator activeIt = mActivePoints.begin(); activeIt != mActivePoints.end(); ++activeIt) {
-		activeIt->second.draw();
-	}
+	if (mParameterBag->mMultiTouchEnabled)
+	{
+		for (map<uint32_t, TouchPoint>::const_iterator activeIt = mActivePoints.begin(); activeIt != mActivePoints.end(); ++activeIt) {
+			activeIt->second.draw();
+		}
 
-	for (list<TouchPoint>::iterator dyingIt = mDyingPoints.begin(); dyingIt != mDyingPoints.end();) {
-		dyingIt->draw();
-		if (dyingIt->isDead())
-			dyingIt = mDyingPoints.erase(dyingIt);
-		else
-			++dyingIt;
+		for (list<TouchPoint>::iterator dyingIt = mDyingPoints.begin(); dyingIt != mDyingPoints.end();) {
+			dyingIt->draw();
+			if (dyingIt->isDead())
+				dyingIt = mDyingPoints.erase(dyingIt);
+			else
+				++dyingIt;
+		}
+		//! draw yellow circles at the active touch points
+		//gl::color(Color(1, 1, 0));
+		for (vector<TouchEvent::Touch>::const_iterator touchIt = getActiveTouches().begin(); touchIt != getActiveTouches().end(); ++touchIt)
+			gl::drawStrokedCircle(touchIt->getPos(), 20.0f);
 	}
-
-	//! draw yellow circles at the active touch points
-	gl::color(Color(1, 1, 0));
-	for (vector<TouchEvent::Touch>::const_iterator touchIt = getActiveTouches().begin(); touchIt != getActiveTouches().end(); ++touchIt)
-		gl::drawStrokedCircle(touchIt->getPos(), 20.0f);
-	gl::disableAlphaBlending();
+	//gl::disableAlphaBlending();
 }
 void MixnMapApp::createRenderWindow()
 {
@@ -348,7 +352,7 @@ void MixnMapApp::mouseMove(MouseEvent event)
 	if (!Warp::handleMouseMove(mWarps, event))
 	{
 		// let your application perform its mouseMove handling here
-	}	
+	}
 }
 
 void MixnMapApp::mouseDown(MouseEvent event)
@@ -371,7 +375,7 @@ void MixnMapApp::mouseDrag(MouseEvent event)
 		// let your application perform its mouseDrag handling here
 		mUI->mouseDrag(event);
 	}
-	mParameterBag->iMouse.x =  event.getX();
+	mParameterBag->iMouse.x = event.getX();
 	mParameterBag->iMouse.y = getWindowHeight() - event.getY();
 }
 
@@ -475,7 +479,8 @@ void MixnMapApp::keyUp(KeyEvent event)
 
 void MixnMapApp::updateWindowTitle()
 {
-	getWindow()->setTitle("(" + toString(floor(getAverageFps())) + " fps) Reymenta mix-n-map");
+	mParameterBag->iFps = getAverageFps();
+	getWindow()->setTitle("(" + toString(floor(mParameterBag->iFps)) + " fps) Reymenta mix-n-map");
 }
 
 CINDER_APP_NATIVE(MixnMapApp, RendererGl)

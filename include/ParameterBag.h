@@ -66,6 +66,7 @@ namespace Reymenta {
 		int							mDisplayCount;
 		int							mWindowToCreate;
 		bool						mOptimizeUI;
+		bool						mMultiTouchEnabled;
 		int							mUIRefresh;
 		ColorA						FPSColor;
 		ColorA						ColorGreen;

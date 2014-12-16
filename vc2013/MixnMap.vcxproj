@@ -157,7 +157,6 @@
     <ClInclude Include="..\include\SpoutWrapper.h" />
     <ClInclude Include="..\include\Textures.h" />
     <ClInclude Include="..\include\UI.h" />
-    <ClInclude Include="..\include\WarpPanel.h" />
     <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +193,6 @@
     <ClCompile Include="..\src\SpoutWrapper.cpp" />
     <ClCompile Include="..\src\Textures.cpp" />
     <ClCompile Include="..\src\UI.cpp" />
-    <ClCompile Include="..\src\WarpPanel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

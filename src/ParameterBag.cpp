@@ -152,7 +152,8 @@ void ParameterBag::reset()
 	mMemoryMode = false;
 	mUseDX9 = false;
 
-	mUIRefresh = 1;
+	mMultiTouchEnabled = false;
+	mUIRefresh = 0;
 	mOptimizeUI = false;
 	mShowUI = true;
 	mShowConsole = false;
@@ -203,10 +204,9 @@ void ParameterBag::reset()
 	iAnim = 0.0;
 	mTransitionDuration = 1.0f;
 
-
 	// fbo
 	mFboWidth = 640;
-	mFboHeight = 360;
+	mFboHeight = 480;
 	mPreviewWidth = 156;
 	mPreviewHeight = 88;
 	mCurrentShadaFboIndex = 0;

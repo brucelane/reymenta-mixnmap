@@ -34,10 +34,10 @@ namespace Reymenta
 		ParameterBagRef						mParameterBag;
 		TexturesRef							mTextures;
 		bool								mVisible;
-		int									warpIndex;
 		void								setupParams();
 		void								setCurrentIndex(const int &aIndex, const bool &pressed);
 		void								setCurrentFboIndex(const int &aIndex, const bool &pressed);
+		int									warpIndex;
 		vector<MinimalUI::UIElementRef>		buttonIndex, labelFboIndex;	
 		MinimalUI::UIElementRef				currentIndexLabel;
 		MinimalUI::UIControllerRef			mParams;

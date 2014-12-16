@@ -246,9 +246,6 @@
     <ClCompile Include="..\src\SlidersPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\WarpPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\AudioWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -285,9 +282,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\WindowMngr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\WarpPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SlidersPanel.h">

@@ -25,7 +25,7 @@ WarpPanelRef WarpPanel::create(ParameterBagRef aParameterBag, TexturesRef aTextu
 }
 void WarpPanel::setupParams()
 {
-	mParams = UIController::create("{ \"visible\":true, \"x\":866, \"y\":150, \"width\":140, \"height\":530, \"depth\":207, \"panelColor\":\"0x44284828\" }");
+	mParams = UIController::create("{ \"visible\":true, \"x\":766, \"y\":150, \"width\":140, \"height\":530, \"depth\":207, \"panelColor\":\"0x44284828\" }");
 	// set custom fonts for a UIController
 	mParams->setFont("label", mParameterBag->mLabelFont);
 	mParams->setFont("smallLabel", mParameterBag->mSmallLabelFont);

@@ -72,7 +72,6 @@ void Spaghetti::mouseDrag(MouseEvent event)
 }
 void Spaghetti::draw()
 {
-
 	gl::color(Color(1, 1, 0));
 	for (auto & path : mPath)
 	{
