@@ -60,35 +60,6 @@ using namespace ph::warping;
 using namespace std;
 using namespace Reymenta;
 
-struct TouchPoint {
-	TouchPoint() {}
-	TouchPoint(const vec2 &initialPt, const Color &color) : mColor(color), mTimeOfDeath(-1.0)
-	{
-		mLine.push_back(initialPt);
-	}
-
-	void addPoint(const vec2 &pt) { mLine.push_back(pt); }
-
-	void draw() const
-	{
-		if (mTimeOfDeath > 0) // are we dying? then fade out
-			gl::color(ColorA(mColor, (mTimeOfDeath - getElapsedSeconds()) / 2.0f));
-		else
-			gl::color(mColor);
-
-		gl::draw(mLine);
-	}
-
-	void startDying() { mTimeOfDeath = getElapsedSeconds() + 2.0f; } // two seconds til dead
-
-	bool isDead() const { return getElapsedSeconds() > mTimeOfDeath; }
-
-	PolyLine<vec2>	mLine;
-	Color			mColor;
-	float			mTimeOfDeath;
-};
-
-
 class MixnMapApp : public AppNative {
 public:
 	void						prepareSettings(Settings *settings);
@@ -102,11 +73,6 @@ public:
 	void						mouseDown(MouseEvent event);
 	void						mouseDrag(MouseEvent event);
 	void						mouseUp(MouseEvent event);
-
-	// touch events
-	void						touchesBegan(TouchEvent event);
-	void						touchesMoved(TouchEvent event);
-	void						touchesEnded(TouchEvent event);
 
 	// keyboard events
 	void						keyDown(KeyEvent event);
@@ -161,8 +127,4 @@ private:
 
 	bool						newLogMsg;
 	string						mLogMsg;
-	// touch events
-	map<uint32_t, TouchPoint>	mActivePoints;
-	list<TouchPoint>			mDyingPoints;
-
 };
