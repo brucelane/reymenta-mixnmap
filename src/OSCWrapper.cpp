@@ -7,15 +7,17 @@ OSC::OSC( ParameterBagRef aParameterBag )
 	mParameterBag = aParameterBag;
 	// OSC sender
 	mOSCSender.setup(mParameterBag->mOSCDestinationHost, mParameterBag->mOSCDestinationPort);
-	// OSC receiver
-	mOSCReceiver.setup(mParameterBag->mOSCReceiverPort);
 }
 
 OSCRef OSC::create( ParameterBagRef aParameterBag )
 {
 	return shared_ptr<OSC>( new OSC( aParameterBag ) );
 }
-
+void OSC::setupReceiver()
+{
+	// OSC receiver
+	mOSCReceiver.setup(mParameterBag->mOSCReceiverPort);
+}
 void OSC::update()
 {
 	// osc

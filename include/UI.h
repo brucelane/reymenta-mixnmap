@@ -53,6 +53,7 @@ namespace Reymenta
 		void								setShadaIndex(const int &aShadaIndex, const bool &pressed);
 		void								createRenderWindow(const int &aIndex, const bool &pressed) { mParameterBag->mWindowToCreate = aIndex; }
 		void								deleteRenderWindows(const bool &pressed) { mParameterBag->mWindowToCreate = 2; };
+		void								setupOSCReceiver(const bool &pressed) { mOSC->setupReceiver(); };
 
 		MinimalUI::UIElementRef				labelOSC, labelError, labelLayer;
 		MinimalUI::UIElementRef				buttonChannels;

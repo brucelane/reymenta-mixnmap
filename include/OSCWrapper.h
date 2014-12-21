@@ -23,8 +23,8 @@ namespace Reymenta
 		static	OSCRef				create( ParameterBagRef aParameterBag );
 		void						sendOSCMessage(string controlType, int controlName, float x, float y, float z);
 		void						sendOSCStringMessage(string controlType, int index, string s);
-
-		void	update();
+		void						setupReceiver();
+		void						update();
 	private:
 		// parameters
 		ParameterBagRef				mParameterBag;

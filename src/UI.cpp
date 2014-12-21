@@ -71,8 +71,9 @@ void UI::setupMiniControl()
 	// output 
 	mMiniControl->addLabel("Rndr\nwin", "{ \"width\":48, \"clear\":false }");
 	mMiniControl->addButton("1", std::bind(&UI::createRenderWindow, this, 1, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true }");
-	mMiniControl->addButton("x", std::bind(&UI::deleteRenderWindows, this, std::placeholders::_1), "{ \"stateless\":false, \"group\":\"render\", \"exclusive\":true, \"pressed\":true }");
+	mMiniControl->addButton("x", std::bind(&UI::deleteRenderWindows, this, std::placeholders::_1), "{ \"clear\":false, \"stateless\":false, \"group\":\"render\", \"exclusive\":true, \"pressed\":true }");
 
+	mMiniControl->addButton("OSC\nRcv", std::bind(&UI::setupOSCReceiver, this, std::placeholders::_1), "{ }");
 	labelOSC = mMiniControl->addLabel("OSC", "{ \"width\":960 }");
 	labelError = mMiniControl->addLabel("", "{ \"width\":960 }");
 }
