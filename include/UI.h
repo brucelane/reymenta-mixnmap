@@ -68,10 +68,12 @@ namespace Reymenta
 		void								addTextureControls();
 		void								addMixControls();
 		void								addButtons();
-		int									getWarpsSize() { return buttonIndex.size(); };
 
 		int									getTextureButtonsCount() { return buttonTexture.size(); };
+		// warps
 		void								createWarp();
+		void								setCurrentIndex(const int &aIndex, const bool &pressed);
+		int									getWarpsSize() { return buttonIndex.size(); };
 
 	private:
 		void								setupMiniControl();
@@ -116,7 +118,6 @@ namespace Reymenta
 		void								setRightInput(const int &aIndex, const bool &pressed);
 		void								setPreview(const int &aIndex, const bool &pressed);
 		// warps
-		void								setCurrentIndex(const int &aIndex, const bool &pressed);
 		void								setCurrentFboIndex(const int &aIndex, const bool &pressed);
 		int									warpIndex;
 		vector<MinimalUI::UIElementRef>		buttonIndex, labelFboIndex;

@@ -95,6 +95,7 @@ void MixnMapApp::setup()
 		mUI->createWarp();
 	}
 	mOSC->sendOSCMessage("/createwarps", mWarps.size(), 0, 0, 0);
+	setSelectedWarp(0);
 	// adjust the content size of the warps
 	Warp::setSize(mWarps, ivec2(mParameterBag->mFboWidth, mParameterBag->mFboHeight));//mTextures->getTexture(0)->getSize());
 	log->logTimedString("Warps count " + toString(mWarps.size()));
@@ -109,6 +110,12 @@ void MixnMapApp::setup()
 	hideCursor();
 #endif  // _DEBUG	
 	log->logTimedString("setup done");
+}
+void MixnMapApp::setSelectedWarp(int index) 
+{ 
+	int selectedWarp = min((int)mWarps.size(), index); 
+	mUI->setCurrentIndex(selectedWarp, true);
+	mOSC->sendOSCMessage("/select", index, 0, 0, 0); 
 }
 
 void MixnMapApp::windowManagement()
@@ -386,7 +393,42 @@ void MixnMapApp::keyDown(KeyEvent event)
 		// toggle warp edit mode
 		Warp::enableEditMode(!Warp::isEditModeEnabled());
 		break;
-
+	case KeyEvent::KEY_0:
+		// select warp
+		setSelectedWarp(0);
+		break;
+	case KeyEvent::KEY_1:
+		// select warp
+		setSelectedWarp(1);
+		break;
+	case KeyEvent::KEY_2:
+		// select warp
+		setSelectedWarp(2);
+		break;
+	case KeyEvent::KEY_3:
+		// select warp
+		setSelectedWarp(3);
+		break;
+	case KeyEvent::KEY_4:
+		// select warp
+		setSelectedWarp(4);
+		break;
+	case KeyEvent::KEY_5:
+		// select warp
+		setSelectedWarp(5);
+		break;
+	case KeyEvent::KEY_6:
+		// select warp
+		setSelectedWarp(6);
+		break;
+	case KeyEvent::KEY_7:
+		// select warp
+		setSelectedWarp(7);
+		break;
+	case KeyEvent::KEY_8:
+		// select warp
+		setSelectedWarp(8);
+		break;
 	case KeyEvent::KEY_m:
 		// toggle memoryMode
 		mParameterBag->mMemoryMode = !mParameterBag->mMemoryMode;

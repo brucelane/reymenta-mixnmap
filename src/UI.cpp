@@ -105,6 +105,7 @@ void UI::setCurrentIndex(const int &aIndex, const bool &pressed)
 	if (pressed)
 	{
 		warpIndex = aIndex;
+		mOSC->sendOSCMessage("/select", aIndex,0,0,0);
 		currentIndexLabel->setName("Warp\n" + toString(aIndex));
 	}
 }

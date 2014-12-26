@@ -81,6 +81,7 @@ public:
 	void						fileDrop(FileDropEvent event);
 
 	void						updateWindowTitle();
+	void						setSelectedWarp(int index);
 
 private:
 	// windows
