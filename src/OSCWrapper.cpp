@@ -90,7 +90,7 @@ void OSC::update()
 		mParameterBag->OSCMsg = oscString;
 	}	
 }
-void OSC::sendOSCMessage(string controlType, int controlName, float x, float y, float z)
+void OSC::sendOSCFloatMessage(string controlType, int controlName, float x, float y, float z)
 {
 	osc::Message m;
 	m.setAddress(controlType);
@@ -98,6 +98,16 @@ void OSC::sendOSCMessage(string controlType, int controlName, float x, float y, 
 	m.addFloatArg(x);
 	m.addFloatArg(y);
 	m.addFloatArg(z);
+	mOSCSender.sendMessage(m);
+}
+void OSC::sendOSCMessage(string controlType, int arg0, int arg1, int arg2, int arg3)
+{
+	osc::Message m;
+	m.setAddress(controlType);
+	m.addIntArg(arg0);
+	m.addIntArg(arg1);
+	m.addIntArg(arg2);
+	m.addIntArg(arg3);
 	mOSCSender.sendMessage(m);
 }
 void OSC::sendOSCStringMessage(string controlType, int index, string s)

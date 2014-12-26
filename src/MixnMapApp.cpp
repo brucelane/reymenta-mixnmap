@@ -114,8 +114,8 @@ void MixnMapApp::setup()
 void MixnMapApp::setSelectedWarp(int index) 
 { 
 	int selectedWarp = min((int)mWarps.size(), index); 
+	// set warpIndex and send OSC msg
 	mUI->setCurrentIndex(selectedWarp, true);
-	mOSC->sendOSCMessage("/select", index, 0, 0, 0); 
 }
 
 void MixnMapApp::windowManagement()

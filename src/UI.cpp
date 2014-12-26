@@ -115,6 +115,7 @@ void UI::setCurrentFboIndex(const int &aIndex, const bool &pressed)
 	if (mParameterBag->iWarpFboChannels[warpIndex] > 7) mParameterBag->iWarpFboChannels[warpIndex] = 0;
 	if (mParameterBag->iWarpFboChannels[warpIndex] < 0) mParameterBag->iWarpFboChannels[warpIndex] = 7;
 	labelFboIndex[warpIndex]->setName(toString(mParameterBag->iWarpFboChannels[warpIndex]));
+	mOSC->sendOSCMessage("/channel", mParameterBag->iWarpFboChannels[warpIndex], 0, 0, 0);
 }
 void UI::setupTextures()
 {
