@@ -124,6 +124,6 @@ namespace Reymenta
 		MinimalUI::UIElementRef				currentIndexLabel;
 
 		vector<MinimalUI::UIElementRef>		buttonSelect, buttonLeft, buttonRight, sliderCrossfade;
-		vector<float>						iCrossfade;  // from 0 left to 1 right
+		//vector<float>						iCrossfade;  // from 0 left to 1 right
 };
 }
