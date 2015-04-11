@@ -16,6 +16,8 @@ Compile
 
 Follow me on https://www.facebook.com/reymentavisuals
 
+[![Patreon](assets/patreon.png)](http://www.patreon.com/reymenta) 
+
 If you wish to make a donation, my paypal is bruce at batchass dot fr
 
 ![screenshot 1](https://raw.githubusercontent.com/brucelane/reymenta-mixnmap/master/documentation/images/screencapture.jpg?raw=true)
