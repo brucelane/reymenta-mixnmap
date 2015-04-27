@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "OscListener.h"
 #include "OSCSender.h"
 #include "Resources.h"

@@ -476,8 +476,8 @@ void MixnMapApp::keyUp(KeyEvent event)
 
 void MixnMapApp::updateWindowTitle()
 {
-	mParameterBag->iFps = getAverageFps();
+	//mParameterBag->iFps = getAverageFps();
 	getWindow()->setTitle("(" + toString(floor(mParameterBag->iFps)) + " fps) Reymenta mix-n-map");
 }
 
-CINDER_APP_NATIVE(MixnMapApp, RendererGl)
+CINDER_APP(MixnMapApp, RendererGl)

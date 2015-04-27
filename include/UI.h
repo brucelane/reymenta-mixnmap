@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "cinder/Timeline.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/GlslProg.h"

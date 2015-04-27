@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "cinder/Cinder.h"
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "Logger.h"
 
 // parameters
