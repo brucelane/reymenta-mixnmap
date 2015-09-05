@@ -1,6 +1,4 @@
-#version 150 core
-
-// Shader Inputs
+#version 130
 uniform vec3        iResolution;         	// viewport resolution (in pixels)
 uniform float       iChannelTime[4];     	// channel playback time (in seconds)
 uniform vec3        iChannelResolution[4];	// channel resolution (in pixels)
@@ -48,4 +46,5 @@ uniform float       iFps;          			// frames per second
 uniform float       iTempoTime;
 uniform vec4		iDate;					// (year, month, day, time in seconds)
 uniform int         iGlitch;           		// 1 for glitch
-const 	float 		PI = 3.14159265;
+uniform int         iBeat;					// measure from ableton
+uniform float       iSeed;              	// random 
