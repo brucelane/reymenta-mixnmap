@@ -14,6 +14,7 @@ AppConsole::AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass, Web
 	Commands.push_back("CLEAR");
 	Commands.push_back("DEBUG");
 	Commands.push_back("WARPCREATE");
+	Commands.push_back("WARPF");
 	Commands.push_back("MODEMIX");
 	Commands.push_back("MODEAUDIO");
 	Commands.push_back("MODEWARP");
@@ -55,12 +56,12 @@ void AppConsole::Run(const char* title, bool* opened)
 	// TODO: display from bottom
 	// TODO: clip manually
 
-	if (ImGui::SmallButton("Help")) 
+	if (ImGui::SmallButton("Help"))
 	{
 		AddLog("Commands:");
 		for (size_t i = 0; i < Commands.size(); i++)
 			AddLog("- %s", Commands[i]);
-	} 
+	}
 	ImGui::SameLine();
 	if (ImGui::SmallButton("Clear")) ClearLog();
 
@@ -150,16 +151,17 @@ void AppConsole::ExecCommand(const char* command_line)
 	}
 	else if (ui::ImStricmp(command_line, "WARPCREATE") == 0)
 	{
-		mBatchass->createWarp(); 
+		mBatchass->createWarp();
 	}
 	else if (ui::ImStrnicmp(command_line, "WARPF", 5) == 0)
 	{
-		// for instance WARPF04
-		if (strlen(command_line) > 6)
-		{			
-			int index = command_line[5];
-			int fbo = command_line[6];
-			mBatchass->assignFboToWarp(index-48, fbo-48);			
+		// for instance WARPF 0 4
+		if (strlen(command_line) > 8)
+		{
+			int index = command_line[6];
+			int fbo = command_line[8];
+
+			mBatchass->assignFboToWarp(index - 48, fbo - 48);
 		}
 	}
 	else if (ui::ImStricmp(command_line, "MODEMIX") == 0)

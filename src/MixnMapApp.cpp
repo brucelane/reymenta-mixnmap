@@ -1650,69 +1650,124 @@ void MixNMapApp::mouseWheel(MouseEvent event)
 }
 void MixNMapApp::keyDown(KeyEvent event)
 {
+	int textureIndex = mParameterBag->iChannels[mParameterBag->selectedChannel];
+	int keyCode = event.getCode();
+	bool handled = false;
 	mBatchass->getWarpsRef()->keyDown(event);
-	switch (event.getCode())
+	if (!handled && (keyCode > 255 && keyCode < 265))
 	{
-	case ci::app::KeyEvent::KEY_c:
-		mBatchass->createWarp();
-		break;
-
-	case ci::app::KeyEvent::KEY_s:
-		if (event.isControlDown())
-		{
-			// save warp settings
-			mBatchass->getWarpsRef()->save("warps2.xml");
-			// save params
-			mParameterBag->save();
-		}
-
-		break;
-	case ci::app::KeyEvent::KEY_r:
-		mParameterBag->controlValues[1] += 0.2;
-		if (mParameterBag->controlValues[1] > 0.9) mParameterBag->controlValues[1] = 0.0;
-		break;
-	case ci::app::KeyEvent::KEY_g:
-		mParameterBag->controlValues[2] += 0.2;
-		if (mParameterBag->controlValues[2] > 0.9) mParameterBag->controlValues[2] = 0.0;
-		break;
-	case ci::app::KeyEvent::KEY_b:
-		mParameterBag->controlValues[3] += 0.2;
-		if (mParameterBag->controlValues[3] > 0.9) mParameterBag->controlValues[3] = 0.0;
-		break;
-	case ci::app::KeyEvent::KEY_p:
-		mParameterBag->mPreviewEnabled = !mParameterBag->mPreviewEnabled;
-		break;
-	case ci::app::KeyEvent::KEY_v:
-		mParameterBag->controlValues[48] = !mParameterBag->controlValues[48];
-		break;
-	case ci::app::KeyEvent::KEY_f:
-		break;
-	case ci::app::KeyEvent::KEY_h:
-		if (mParameterBag->mCursorVisible)
-		{
-			removeUI = true;
-			hideCursor();
-		}
-		else
-		{
-			removeUI = false;
-			showCursor();
-		}
-		mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
-		break;
-	case ci::app::KeyEvent::KEY_ESCAPE:
-		mParameterBag->save();
-		ui::Shutdown();
-		mMidiIn0.closePort();
-		mMidiIn1.closePort();
-		mMidiIn2.closePort();
-		quit();
-		break;
-
-	default:
-		break;
+		handled = true;
+		mParameterBag->selectedChannel = keyCode - 256;
 	}
+	if (!handled)
+	{
+		switch (keyCode)
+		{
+		case ci::app::KeyEvent::KEY_c:
+			mBatchass->createWarp();
+			break;
 
+		case ci::app::KeyEvent::KEY_s:
+			if (event.isControlDown())
+			{
+				// save warp settings
+				mBatchass->getWarpsRef()->save("warps2.xml");
+				// save params
+				mParameterBag->save();
+			}
+
+			break;
+		case ci::app::KeyEvent::KEY_r:
+			mParameterBag->controlValues[1] += 0.2;
+			if (mParameterBag->controlValues[1] > 0.9) mParameterBag->controlValues[1] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_g:
+			mParameterBag->controlValues[2] += 0.2;
+			if (mParameterBag->controlValues[2] > 0.9) mParameterBag->controlValues[2] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_b:
+			mParameterBag->controlValues[3] += 0.2;
+			if (mParameterBag->controlValues[3] > 0.9) mParameterBag->controlValues[3] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_p:
+			mParameterBag->mPreviewEnabled = !mParameterBag->mPreviewEnabled;
+			break;
+		case ci::app::KeyEvent::KEY_v:
+			mParameterBag->controlValues[48] = !mParameterBag->controlValues[48];
+			break;
+		case ci::app::KeyEvent::KEY_f:
+			break;
+		case ci::app::KeyEvent::KEY_h:
+			if (mParameterBag->mCursorVisible)
+			{
+				removeUI = true;
+				hideCursor();
+			}
+			else
+			{
+				removeUI = false;
+				showCursor();
+			}
+			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
+			break;
+		case ci::app::KeyEvent::KEY_ESCAPE:
+			mParameterBag->save();
+			ui::Shutdown();
+			mMidiIn0.closePort();
+			mMidiIn1.closePort();
+			mMidiIn2.closePort();
+			quit();
+			break;
+		case ci::app::KeyEvent::KEY_0:
+		case 256:
+			mParameterBag->selectedChannel = 0;
+			break;
+		case ci::app::KeyEvent::KEY_1:
+		case 257:
+			mParameterBag->selectedChannel = 1;
+			break;
+		case ci::app::KeyEvent::KEY_2:
+		case 258:
+			mParameterBag->selectedChannel = 2;
+			break;
+		case ci::app::KeyEvent::KEY_3:
+		case 259:
+			mParameterBag->selectedChannel = 3;
+			break;
+		case ci::app::KeyEvent::KEY_4:
+		case 260:
+			mParameterBag->selectedChannel = 4;
+			break;
+		case ci::app::KeyEvent::KEY_5:
+		case 261:
+			mParameterBag->selectedChannel = 5;
+			break;
+		case ci::app::KeyEvent::KEY_6:
+		case 262:
+			mParameterBag->selectedChannel = 6;
+			break;
+		case ci::app::KeyEvent::KEY_7:
+		case 263:
+			mParameterBag->selectedChannel = 7;
+			break;
+		case ci::app::KeyEvent::KEY_8:
+		case 264:
+			mParameterBag->selectedChannel = 8;
+			break;
+		case ci::app::KeyEvent::KEY_PLUS:
+		case 270:
+			textureIndex++;
+			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
+			break;
+		case ci::app::KeyEvent::KEY_MINUS:
+		case 269:
+			textureIndex--;
+			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 // From imgui by Omar Cornut

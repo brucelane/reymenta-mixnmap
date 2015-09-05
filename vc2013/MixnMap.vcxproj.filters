@@ -79,9 +79,6 @@
     <Filter Include="Blocks\OSC\src\ip\win32">
       <UniqueIdentifier>{0DBB2E5F-65A5-4709-AC1B-F775D1E70356}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\Cinder-MeshHelper">
-      <UniqueIdentifier>{d947c661-c93a-4c0e-9b94-fbe51e96be62}</UniqueIdentifier>
-    </Filter>
     <Filter Include="assets">
       <UniqueIdentifier>{3e45864a-66d1-4947-ac6c-7db2d27842ab}</UniqueIdentifier>
     </Filter>
@@ -327,9 +324,6 @@
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp">
       <Filter>Blocks\OSC\src\ip\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-MeshHelper\src\MeshHelper.cpp">
-      <Filter>Blocks\Cinder-MeshHelper</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp">
       <Filter>Blocks\imGui\src</Filter>
     </ClCompile>
@@ -352,9 +346,6 @@
     </ClInclude>
     <ClInclude Include="..\include\WindowMngr.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MeshHelper\src\MeshHelper.h">
-      <Filter>Blocks\Cinder-MeshHelper</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h">
       <Filter>Blocks\imGui\src</Filter>
