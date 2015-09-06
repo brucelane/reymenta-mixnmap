@@ -62,8 +62,6 @@ void MixNMapApp::setup()
 	// setup shaders and textures
 	mBatchass->setup();
 
-	// MessageRouter
-	mMessageRouter = MessageRouter::create(mParameterBag);
 	mParameterBag->mMode = MODE_WARP;
 	// setup the main window and associated draw function
 	mMainWindow = getWindow();
@@ -836,7 +834,7 @@ void MixNMapApp::draw()
 			string strAParams = aParams.str();
 			if (strAParams.length() > 60)
 			{
-				mMessageRouter->sendJSON(strAParams);
+				mBatchass->sendJSON(strAParams);
 				
 			}
 		}
@@ -859,14 +857,14 @@ void MixNMapApp::draw()
 				{
 					sParams << ",{\"name\" : " << i + 1 << ",\"value\" : " << color[i] << "}";
 					mParameterBag->controlValues[i + 1] = color[i];
-					if (mParameterBag->mOSCEnabled)
+					/*if (mParameterBag->mOSCEnabled)
 					{
 						if (i == 0) mOSC->sendOSCColorMessage("/fr", mParameterBag->controlValues[1]);
 						if (i == 1) mOSC->sendOSCColorMessage("/fg", mParameterBag->controlValues[2]);
 						if (i == 2) mOSC->sendOSCColorMessage("/fb", mParameterBag->controlValues[3]);
 						if (i == 3) mOSC->sendOSCColorMessage("/fa", mParameterBag->controlValues[4]);
 
-					}
+					}*/
 					colorChanged = true;
 				}
 			}
@@ -1405,8 +1403,6 @@ void MixNMapApp::shutdown()
 
 void MixNMapApp::update()
 {
-	mWebSockets->update();
-	if (mParameterBag->mOSCEnabled) mOSC->update();
 	mParameterBag->iFps = getAverageFps();
 	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
 	getWindow()->setTitle("(" + mParameterBag->sFps + " fps) MixNMap");

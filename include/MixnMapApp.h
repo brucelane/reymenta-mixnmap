@@ -44,8 +44,6 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "Batchass.h"
 // Console
 #include "AppConsole.h"
-// MessageRouter
-#include "MessageRouter.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -90,8 +88,6 @@ private:
 	BatchassRef					mBatchass;
 	// console
 	AppConsoleRef				mConsole;
-	// MessageRouter
-	MessageRouterRef			mMessageRouter;
 	// timeline
 	Anim<float>					mTimer;
 
