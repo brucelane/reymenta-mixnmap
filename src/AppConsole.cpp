@@ -2,11 +2,10 @@
 
 using namespace Reymenta;
 
-AppConsole::AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass, WebSocketsRef aWebSockets)
+AppConsole::AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass)
 {
 	mParameterBag = aParameterBag;
 	mBatchass = aBatchass;
-	mWebSockets = aWebSockets;
 	ClearLog();
 	HistoryPos = -1;
 	Commands.push_back("HELP");

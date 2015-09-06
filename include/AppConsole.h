@@ -7,8 +7,6 @@
 #include "ParameterBag.h"
 // Utils
 #include "Batchass.h"
-// WebSockets
-#include "WebSocketsWrapper.h"
 
 // UserInterface
 #include "CinderImGui.h"
@@ -27,10 +25,10 @@ namespace Reymenta
 	class AppConsole
 	{
 	public:
-		AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass, WebSocketsRef aWebSockets);
-		static AppConsoleRef	create(ParameterBagRef aParameterBag, BatchassRef aBatchass, WebSocketsRef aWebSockets)
+		AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass);
+		static AppConsoleRef	create(ParameterBagRef aParameterBag, BatchassRef aBatchass)
 		{
-			return shared_ptr<AppConsole>(new AppConsole(aParameterBag, aBatchass, aWebSockets));
+			return shared_ptr<AppConsole>(new AppConsole(aParameterBag, aBatchass));
 		}
 		void    ClearLog();
 		void    AddLog(const char* fmt, ...);

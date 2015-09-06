@@ -24,10 +24,8 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/GlslProg.h"
-#include "OSCSender.h"
-#include "MidiIn.h"
-#include "MidiMessage.h"
-#include "MidiConstants.h"
+//#include "OSCSender.h"
+
 #include <list>
 
 // window manager
@@ -36,12 +34,8 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "CinderImGui.h"
 // parameters
 #include "ParameterBag.h"
-// OSC
-#include "OSCWrapper.h"
 // json
 #include "JSONWrapper.h"
-// WebSockets
-#include "WebSocketsWrapper.h"
 // audio
 #include "AudioWrapper.h"
 // spout
@@ -50,6 +44,8 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "Batchass.h"
 // Console
 #include "AppConsole.h"
+// MessageRouter
+#include "MessageRouter.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -58,11 +54,7 @@ using namespace Reymenta;
 
 #define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
-struct midiInput
-{
-	string			portName;
-	bool			isConnected;
-};
+
 class MixNMapApp : public AppBasic {
 public:
 	void						prepareSettings(Settings* settings);
@@ -84,17 +76,12 @@ public:
 	void						activate();
 	//! Override to receive window deactivate events
 	void						deactivate();
-	void						updateParams(int iarg0, float farg1);
 
 private:
 	// parameters
 	ParameterBagRef				mParameterBag;
-	// osc
-	OSCRef						mOSC;
 	// json
 	JSONWrapperRef				mJson;
-	// WebSockets
-	WebSocketsRef				mWebSockets;
 	// audio
 	AudioWrapperRef				mAudio;
 	// spout
@@ -103,25 +90,11 @@ private:
 	BatchassRef					mBatchass;
 	// console
 	AppConsoleRef				mConsole;
+	// MessageRouter
+	MessageRouterRef			mMessageRouter;
 	// timeline
 	Anim<float>					mTimer;
-	// midi
-	vector<midiInput>			mMidiInputs;
-	void						setupMidi();
-	void						midiListener(midi::Message msg);
-	string						midiControlType;
-	int							midiControl;
-	int							midiPitch;
-	int							midiVelocity;
-	float						midiNormalizedValue;
-	int							midiValue;
-	int							midiChannel;
 
-	// midi inputs: couldn't make a vector
-	midi::Input					mMidiIn0;
-	midi::Input					mMidiIn1;
-	midi::Input					mMidiIn2;
-	midi::Input					mMidiIn3;
 	// misc
 	int							mSeconds;
 	// windows

@@ -18,6 +18,7 @@
 	<OSCDestinationHost value="127.0.0.1"/>
 	<OSCDestinationPort2 value="7000"/>
 	<OSCDestinationHost2 value="127.0.0.1"/>
+	<MIDIEnabled value="1"/>
 	<MIDIOpenAllInputPorts value="0"/>
 	<ShowUI value="1"/>
 	<CursorVisible value="1"/>

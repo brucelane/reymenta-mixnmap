@@ -123,6 +123,8 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
   <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MIDIWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h" />
     <ClInclude Include="..\include\AppConsole.h" />
     <ClInclude Include="..\include\MixNMapApp.h" />
@@ -178,6 +180,8 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
   <ItemGroup>
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MIDIWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
     <ClCompile Include="..\src\AppConsole.cpp" />
     <ClCompile Include="..\src\MixNMapApp.cpp" />
