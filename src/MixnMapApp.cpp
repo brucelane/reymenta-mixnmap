@@ -757,7 +757,7 @@ void MixNMapApp::draw()
 			ui::SameLine();
 			if (ui::Button("x##exposure")) { mBatchass->resetExposure(); }
 			ui::SameLine();
-			if (ui::DragFloat("exposure", &mParameterBag->controlValues[ctrl], 0.1f, mBatchass->minExposure, mBatchass->maxExposure))
+			if (ui::DragFloat("exposure", &mParameterBag->controlValues[ctrl], 0.1f, mBatchass->minExposure, mParameterBag->maxExposure))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
@@ -857,26 +857,11 @@ void MixNMapApp::draw()
 				{
 					sParams << ",{\"name\" : " << i + 1 << ",\"value\" : " << color[i] << "}";
 					mParameterBag->controlValues[i + 1] = color[i];
-					/*if (mParameterBag->mOSCEnabled)
-					{
-						if (i == 0) mOSC->sendOSCColorMessage("/fr", mParameterBag->controlValues[1]);
-						if (i == 1) mOSC->sendOSCColorMessage("/fg", mParameterBag->controlValues[2]);
-						if (i == 2) mOSC->sendOSCColorMessage("/fb", mParameterBag->controlValues[3]);
-						if (i == 3) mOSC->sendOSCColorMessage("/fa", mParameterBag->controlValues[4]);
-
-					}*/
 					colorChanged = true;
 				}
 			}
-			if (colorChanged)
-			{
-				char col[8];
-				int r = mParameterBag->controlValues[1] * 255;
-				int g = mParameterBag->controlValues[2] * 255;
-				int b = mParameterBag->controlValues[3] * 255;
-				ui::ImFormatString(col, IM_ARRAYSIZE(col), "#%02X%02X%02X", r, g, b);
-				mWebSockets->write(col);
-			}
+			if (colorChanged) mBatchass->colorWrite(); //lights4events
+
 			// background color
 			backcolor[0] = mParameterBag->controlValues[5];
 			backcolor[1] = mParameterBag->controlValues[6];
@@ -895,10 +880,10 @@ void MixNMapApp::draw()
 
 			sParams << "]}";
 			string strParams = sParams.str();
-			/*if (strParams.length() > 60)
+			if (strParams.length() > 60)
 			{
-			mWebSockets->write(strParams);
-			}*/
+				mBatchass->sendJSON(strParams);
+			}
 
 		}
 
@@ -1001,7 +986,7 @@ void MixNMapApp::draw()
 				if (ui::Button(buf))
 				{
 					sprintf_s(buf, "IMG=%d.jpg", i);
-					mWebSockets->write(buf);
+					//mBatchass->wsWrite(buf);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
 
@@ -1193,7 +1178,6 @@ void MixNMapApp::draw()
 	if (showConsole)
 	{
 		yPos += h + margin;
-		yPos += h + margin;
 		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ShowAppConsole(&showConsole);
@@ -1233,7 +1217,7 @@ void MixNMapApp::draw()
 			ui::InputText("address", str0, IM_ARRAYSIZE(str0));
 			ui::InputInt("track", &i0);
 			ui::InputFloat("clip", &f0, 0.01f, 1.0f);
-			if (ui::Button("Send")) { mOSC->sendOSCIntMessage(str0, i0); }
+			if (ui::Button("Send")) { mBatchass->sendOSCIntMessage(str0, i0); }
 		}
 		ui::End();
 		xPos += largeW + margin;

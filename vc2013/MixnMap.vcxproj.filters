@@ -144,9 +144,6 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logger.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h">
-      <Filter>Blocks\Reymenta\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Watchdog.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WebSocketsWrapper.h">
-      <Filter>Blocks\Reymenta\include</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\AudioWrapper.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
@@ -177,9 +171,6 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logger.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp">
-      <Filter>Blocks\Reymenta\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
@@ -190,9 +181,6 @@
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Textures.cpp">
-      <Filter>Blocks\Reymenta\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WebSocketsWrapper.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h">
@@ -339,9 +327,6 @@
     <ClInclude Include="..\include\MixNMapApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MIDIWrapper.h">
-      <Filter>Blocks\Reymenta\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
@@ -391,9 +376,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\MixNMapApp.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MIDIWrapper.cpp">
-      <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp">
       <Filter>Blocks\Reymenta\src</Filter>

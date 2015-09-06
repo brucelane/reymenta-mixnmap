@@ -124,7 +124,6 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MIDIWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h" />
     <ClInclude Include="..\include\AppConsole.h" />
     <ClInclude Include="..\include\MixNMapApp.h" />
@@ -143,13 +142,11 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Batchass.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\JSONWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logger.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Shaders.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\SpoutWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Textures.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Watchdog.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WebSocketsWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\WarpBilinear.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\WarpPerspective.h" />
@@ -181,7 +178,6 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MIDIWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
     <ClCompile Include="..\src\AppConsole.cpp" />
     <ClCompile Include="..\src\MixNMapApp.cpp" />
@@ -194,12 +190,10 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Batchass.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\JSONWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logger.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Shaders.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\SpoutWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Textures.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WebSocketsWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\Warp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpBilinear.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspective.cpp" />

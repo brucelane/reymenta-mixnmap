@@ -40,8 +40,6 @@ namespace Reymenta
 		ParameterBagRef				mParameterBag;
 		// utils
 		BatchassRef					mBatchass;
-		// WebSockets
-		WebSocketsRef				mWebSockets;
 
 		char                  InputBuf[256];
 		ImVector<char*>       Items;

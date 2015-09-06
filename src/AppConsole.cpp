@@ -183,13 +183,13 @@ void AppConsole::ExecCommand(const char* command_line)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_MESH);
 	}
-	else if (ui::ImStricmp(command_line, "WSCNX") == 0)
+	/*else if (ui::ImStricmp(command_line, "WSCNX") == 0)
 	{
-		mWebSockets->connect();
+		mBatchass->wsConnect();
 	}
 	else if (ui::ImStricmp(command_line, "WSPING") == 0)
 	{
-		mWebSockets->ping();
+		mBatchass->wsPing();
 	}
 	else if (ui::ImStricmp(command_line, "WSCNF") == 0)
 	{
@@ -201,7 +201,7 @@ void AppConsole::ExecCommand(const char* command_line)
 		{
 			AddLog("Client %s %s\n", mParameterBag->mWebSocketsHost.c_str(), (mWebSockets->isClientConnected() ? "true" : "false"));
 		}
-	}
+	}*/
 	else
 	{
 		AddLog("Unknown command: '%s'\n", command_line);
