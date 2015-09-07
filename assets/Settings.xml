@@ -12,25 +12,25 @@
 	<AspectRatio value="0.75"/>
 	<FboWidth value="800"/>
 	<FboHeight value="600"/>
+	<MIDIEnabled value="1"/>
 	<OSCEnabled value="1"/>
 	<OSCReceiverPort value="9001"/>
 	<OSCDestinationPort value="3333"/>
 	<OSCDestinationHost value="127.0.0.1"/>
 	<OSCDestinationPort2 value="7000"/>
 	<OSCDestinationHost2 value="127.0.0.1"/>
-	<MIDIEnabled value="1"/>
 	<MIDIOpenAllInputPorts value="0"/>
 	<ShowUI value="1"/>
 	<CursorVisible value="1"/>
 	<IsOSCSender value="1"/>
 	<AreWebSocketsEnabledAtStartup value="1"/>
 	<IsWebSocketsServer value="1"/>
-	<WebSocketsHost value="127.0.0.1"/>
-	<WebSocketsPort value="9092"/>
+	<WebSocketsHost value="localhost"/>
+	<WebSocketsPort value="9999"/>
 	<FftSize value="512"/>
 	<WindowSize value="1024"/>
 	<Info value="light4events.herokuapp.com 80"/>
-	<AssetsPath value="rachel"/>
+	<AssetsPath value="default"/>
 	<UseLineIn value="1"/>
 </settings>
 
