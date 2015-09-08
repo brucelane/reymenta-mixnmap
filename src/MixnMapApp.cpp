@@ -1054,7 +1054,7 @@ void MixNMapApp::draw()
 					ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
 					ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
 					sprintf_s(buf, "L##s%d", i);
-					if (ui::Button(buf)) mParameterBag->mLeftFragIndex = i;
+					if (ui::Button(buf)) mBatchass->selectShader(true, i);
 					if (ui::IsItemHovered()) ui::SetTooltip("Set shader to left");
 					ui::PopStyleColor(3);
 					//ui::NextColumn();
@@ -1071,7 +1071,7 @@ void MixNMapApp::draw()
 					ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
 					ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
 					sprintf_s(buf, "R##s%d", i);
-					if (ui::Button(buf)) mParameterBag->mRightFragIndex = i;
+					if (ui::Button(buf))  mBatchass->selectShader(false, i);
 					if (ui::IsItemHovered()) ui::SetTooltip("Set shader to right");
 					ui::PopStyleColor(3);
 					//ui::NextColumn();

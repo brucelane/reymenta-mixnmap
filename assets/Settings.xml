@@ -13,7 +13,7 @@
 	<FboWidth value="800"/>
 	<FboHeight value="600"/>
 	<MIDIEnabled value="1"/>
-	<OSCEnabled value="1"/>
+	<OSCEnabled value="0"/>
 	<OSCReceiverPort value="9001"/>
 	<OSCDestinationPort value="3333"/>
 	<OSCDestinationHost value="127.0.0.1"/>
