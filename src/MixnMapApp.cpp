@@ -30,17 +30,19 @@ void MixNMapApp::prepareSettings(Settings* settings)
 	settings->setFrameRate(60.0f);
 	//settings->setWindowPos(Vec2i(w - mParameterBag->mMainWindowWidth, 0));
 	settings->setWindowPos(Vec2i(0, 0));
-
 	settings->setResizable(false);
 	settings->setBorderless();
+#if defined(DEBUG)
 
+#else
+	settings->setBorderless();
+#endif
 	// if mStandalone, put on the 2nd screen
 	if (mParameterBag->mStandalone)
 	{
 		settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 		settings->setWindowPos(Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY));
 		settings->setBorderless();
-		settings->setResizable(false);
 	}
 	auto end = Clock::now();
 	auto msdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);

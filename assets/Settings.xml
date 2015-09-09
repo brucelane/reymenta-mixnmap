@@ -24,8 +24,8 @@
 	<CursorVisible value="1"/>
 	<IsOSCSender value="1"/>
 	<AreWebSocketsEnabledAtStartup value="1"/>
-	<IsWebSocketsServer value="1"/>
-	<WebSocketsHost value="localhost"/>
+	<IsWebSocketsServer value="0"/>
+	<WebSocketsHost value="xps"/>
 	<WebSocketsPort value="9999"/>
 	<FftSize value="512"/>
 	<WindowSize value="1024"/>
