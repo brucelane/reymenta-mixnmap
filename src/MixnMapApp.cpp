@@ -1298,6 +1298,13 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 			timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
 		}
 	}
+	else if (ext == "mov" || ext == "mp4")
+	{
+		/*
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		mBatchass->getTexturesRef()->loadMovieFile(index, mFile);*/
+	}
 	else if (ext == "fs")
 	{
 		//mShaders->incrementPreviewIndex();
@@ -1355,7 +1362,10 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 	else if (ext == "")
 	{
 		// try loading image sequence from dir
-		//mTextures->createFromDir(mFile + "/");
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		mBatchass->getTexturesRef()->createFromDir(mFile + "/", index);
+		// or create thumbs from shaders
 		mBatchass->getShadersRef()->createThumbsFromDir(mFile + "/");
 	}
 	/*if (!loaded && ext == "frag")
