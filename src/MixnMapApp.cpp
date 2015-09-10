@@ -31,8 +31,8 @@ void MixNMapApp::prepareSettings(Settings* settings)
 	//settings->setWindowPos(Vec2i(w - mParameterBag->mMainWindowWidth, 0));
 	settings->setWindowPos(Vec2i(0, 0));
 	settings->setResizable(false);
-	settings->setBorderless();
 #if defined(DEBUG)
+	settings->setWindowSize(640, 480);
 
 #else
 	settings->setBorderless();
