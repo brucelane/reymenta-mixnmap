@@ -17,7 +17,7 @@ uniform float       iRatio;
 uniform vec2        iRenderXY;           	// move x y 
 uniform float       iZoom;               	// zoom
 uniform int        	iBlendmode;          	// blendmode for channels
-uniform float		    iRotationSpeed;	  		// Rotation Speed
+uniform float		iRotationSpeed;	  		// Rotation Speed
 uniform float       iCrossfade;          	// CrossFade 2 shaders
 uniform float       iPixelate;           	// pixelate
 uniform int         iGreyScale;          	// 1 for grey scale mode
@@ -35,14 +35,17 @@ uniform int         iDebug;           		// 1 to show debug
 uniform int         iShowFps;           	// 1 to show fps
 uniform float       iFps;          			// frames per second
 uniform float       iTempoTime;
-uniform vec4		    iDate;					// (year, month, day, time in seconds)
+uniform vec4		iDate;					// (year, month, day, time in seconds)
 uniform int         iGlitch;           		// 1 for glitch
 uniform float       iChromatic;				// chromatic if > 0.
 uniform float       iTrixels;           	// trixels if > 0.
-uniform float       iGridSize;            // gridSize if > 0.
-uniform bool        iFlipH;               // flip horizontally
-uniform int         iBeat;               // measure from ableton
-uniform float       iSeed;              // random 
+uniform float       iGridSize;				// gridSize if > 0.
+uniform bool        iFlipH;					// flip horizontally
+uniform int         iBeat;					// measure from ableton
+uniform float       iSeed;					// random 
+uniform float       iRedMultiplier;			// red multiplier 
+uniform float       iGreenMultiplier;		// green multiplier 
+uniform float       iBlueMultiplier;		// blue multiplier 
 
 const 	float 		  PI = 3.14159265;
 // uniforms end
@@ -694,6 +697,9 @@ void main(void)
   {
     col = greyScale( col );
   }
+  col.r *= iRedMultiplier;
+  col.g *= iGreenMultiplier;
+  col.b *= iBlueMultiplier;
 
 	gl_FragColor = iAlpha * vec4( col, 1.0 );
 

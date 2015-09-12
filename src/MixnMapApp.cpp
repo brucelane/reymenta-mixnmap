@@ -163,7 +163,7 @@ void MixNMapApp::draw()
 	xPos = margin;
 	yPos = margin;
 	const char* textureNames[] = { "audio", "img1", "img2", "img3", "4pvwFbo", "5mixFbo", "6leftFbo", "7rightFbo", "8warp1Fbo", "9warp2Fbo", "10spout", "11LiveFbo" };
-	const char* fboNames[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "sphere", "mesh", "audio", "vtxsphere" };
+	const char* fboNames[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "sphere", "mesh", "audio", "vtxsphere", "1", "2", "3", "4" };
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live" };
 
 #pragma region style
@@ -588,7 +588,7 @@ void MixNMapApp::draw()
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ui::Begin("MIDI");
 		{
-			sprintf_s(buf, "Enable");	
+			sprintf_s(buf, "Enable");
 			if (ui::Button(buf)) mBatchass->midiSetup();
 			if (ui::CollapsingHeader("MidiIn", "20", true, true))
 			{
@@ -600,7 +600,7 @@ void MixNMapApp::draw()
 				for (int i = 0; i < mBatchass->midiInCount(); i++)
 				{
 					ui::Text(mBatchass->midiInPortName(i).c_str()); ui::NextColumn();
-					
+
 					if (mBatchass->midiInConnected(i))
 					{
 						sprintf_s(buf, "Disconnect %d", i);
@@ -611,13 +611,13 @@ void MixNMapApp::draw()
 					}
 
 					if (ui::Button(buf))
-					{						
+					{
 						if (mBatchass->midiInConnected(i))
 						{
 							mBatchass->midiInClosePort(i);
 						}
 						else
-						{ 
+						{
 							mBatchass->midiInOpenPort(i);
 						}
 					}
@@ -837,7 +837,7 @@ void MixNMapApp::draw()
 			if (strAParams.length() > 60)
 			{
 				mBatchass->sendJSON(strAParams);
-				
+
 			}
 		}
 		ui::PopItemWidth();
@@ -878,6 +878,15 @@ void MixNMapApp::draw()
 					mParameterBag->controlValues[i + 5] = backcolor[i];
 				}
 
+			}
+			if (ui::SliderFloat("RedX", &mParameterBag->iRedMultiplier, 0.0f, 3.0f))
+			{
+			}
+			if (ui::SliderFloat("GreenX", &mParameterBag->iGreenMultiplier, 0.0f, 3.0f))
+			{
+			}
+			if (ui::SliderFloat("BlueX", &mParameterBag->iBlueMultiplier, 0.0f, 3.0f))
+			{
 			}
 
 			sParams << "]}";
@@ -983,7 +992,6 @@ void MixNMapApp::draw()
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
 				//BEGIN
-				//ui::SameLine();
 				sprintf_s(buf, "WS##s%d", i);
 				if (ui::Button(buf))
 				{
@@ -991,6 +999,55 @@ void MixNMapApp::draw()
 					//mBatchass->wsWrite(buf);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
+				if (!mBatchass->getTexturesRef()->isLoadingFromDisk(i)) {
+					ui::SameLine();
+					sprintf_s(buf, "LD##s%d", i);
+					if (ui::Button(buf))
+					{
+						mBatchass->getTexturesRef()->toggleLoadingFromDisk(i);
+					}
+					if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
+				}
+				ui::SameLine();
+				sprintf_s(buf, "FV##s%d", i);
+				if (ui::Button(buf))
+				{
+					mBatchass->getTexturesRef()->flipTexture(i);
+				}
+				sprintf_s(buf, ">##s%d", i);
+				if (ui::Button(buf))
+				{
+					mBatchass->getTexturesRef()->playSequence(i);
+				}
+				ui::SameLine();
+				sprintf_s(buf, "\"##s%d", i);
+				if (ui::Button(buf))
+				{
+					mBatchass->getTexturesRef()->pauseSequence(i);
+				}
+				ui::SameLine();
+				static int playheadPosition = mBatchass->getTexturesRef()->getPlayheadPosition(i);
+				sprintf_s(buf, "r##s%d", i);
+				if (ui::Button(buf))
+				{
+					mBatchass->getTexturesRef()->reverseSequence(i);
+				}
+				ui::SameLine();
+				sprintf_s(buf, "p%d##s%d", mBatchass->getTexturesRef()->getPlayheadPosition(i), i);
+				if (ui::Button(buf))
+				{
+					mBatchass->getTexturesRef()->setPlayheadPosition(i, 0);
+				}
+
+				if (ui::SliderInt("scrub", &playheadPosition, 0, mBatchass->getTexturesRef()->getMaxFrames(i)))
+				{
+					mBatchass->getTexturesRef()->setPlayheadPosition(i, playheadPosition);
+				}
+				static int speed = mBatchass->getTexturesRef()->getSpeed(i);
+				if (ui::SliderInt("speed", &speed, -5, 5))
+				{
+					mBatchass->getTexturesRef()->setSpeed(i, speed);
+				}
 
 				//ui::NextColumn();
 				//END
@@ -1524,7 +1581,7 @@ void MixNMapApp::keyDown(KeyEvent event)
 			mParameterBag->save();
 			ui::Shutdown();
 			mBatchass->shutdown();
-			
+
 			quit();
 			break;
 		case ci::app::KeyEvent::KEY_0:
