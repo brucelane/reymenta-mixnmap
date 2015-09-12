@@ -100,9 +100,11 @@ private:
 
 	static const int			MODE_WARP = 1;
 
+	// imgui
 	float						color[4];
 	float						backcolor[4];
-	// imgui
+	int							playheadPositions[12];
+	int							speeds[12];
 	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
 	int							w;
 	int							h;

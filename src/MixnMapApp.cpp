@@ -982,7 +982,7 @@ void MixNMapApp::draw()
 	{
 		for (int i = 0; i < mBatchass->getTexturesRef()->getTextureCount(); i++)
 		{
-			ui::SetNextWindowSize(ImVec2(w, h));
+			ui::SetNextWindowSize(ImVec2(w, h*1.3));
 			ui::SetNextWindowPos(ImVec2((i * (w + inBetween)) + margin, yPos));
 			ui::Begin(textureNames[i], NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
@@ -1026,27 +1026,27 @@ void MixNMapApp::draw()
 					mBatchass->getTexturesRef()->pauseSequence(i);
 				}
 				ui::SameLine();
-				static int playheadPosition = mBatchass->getTexturesRef()->getPlayheadPosition(i);
 				sprintf_s(buf, "r##s%d", i);
 				if (ui::Button(buf))
 				{
 					mBatchass->getTexturesRef()->reverseSequence(i);
 				}
 				ui::SameLine();
-				sprintf_s(buf, "p%d##s%d", mBatchass->getTexturesRef()->getPlayheadPosition(i), i);
+				playheadPositions[i] = mBatchass->getTexturesRef()->getPlayheadPosition(i);
+				sprintf_s(buf, "p%d##s%d", playheadPositions[i], i);
 				if (ui::Button(buf))
 				{
 					mBatchass->getTexturesRef()->setPlayheadPosition(i, 0);
 				}
 
-				if (ui::SliderInt("scrub", &playheadPosition, 0, mBatchass->getTexturesRef()->getMaxFrames(i)))
+				if (ui::SliderInt("scrub", &playheadPositions[i], 0, mBatchass->getTexturesRef()->getMaxFrames(i)))
 				{
-					mBatchass->getTexturesRef()->setPlayheadPosition(i, playheadPosition);
+					mBatchass->getTexturesRef()->setPlayheadPosition(i, playheadPositions[i]);
 				}
-				static int speed = mBatchass->getTexturesRef()->getSpeed(i);
-				if (ui::SliderInt("speed", &speed, -5, 5))
+				speeds[i] = mBatchass->getTexturesRef()->getSpeed(i);
+				if (ui::SliderInt("speed", &speeds[i], -5, 5))
 				{
-					mBatchass->getTexturesRef()->setSpeed(i, speed);
+					mBatchass->getTexturesRef()->setSpeed(i, speeds[i]);
 				}
 
 				//ui::NextColumn();
@@ -1056,7 +1056,7 @@ void MixNMapApp::draw()
 			}
 			ui::End();
 		}
-		yPos += h + margin;
+		yPos += h*1.3 + margin;
 	}
 #pragma endregion textures
 #pragma region library
