@@ -48,3 +48,5 @@ uniform vec4		iDate;					// (year, month, day, time in seconds)
 uniform int         iGlitch;           		// 1 for glitch
 uniform int         iBeat;					// measure from ableton
 uniform float       iSeed;              	// random 
+uniform bool        iFlipH;					// flip horizontally
+uniform bool        iFlipV;					// flip vertically

@@ -372,6 +372,24 @@
     <None Include="..\assets\spectrum.vert">
       <Filter>assets</Filter>
     </None>
+    <None Include="..\assets\0.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\1.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\2.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\3.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\shadertoy.inc">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\passthru.vert">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\MixNMapApp.cpp">

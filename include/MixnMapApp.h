@@ -104,7 +104,7 @@ private:
 	float						color[4];
 	float						backcolor[4];
 	int							playheadPositions[12];
-	int							speeds[12];
+	float						speeds[12];
 	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
 	int							w;
 	int							h;

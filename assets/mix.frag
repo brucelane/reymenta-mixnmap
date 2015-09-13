@@ -41,6 +41,7 @@ uniform float       iChromatic;				// chromatic if > 0.
 uniform float       iTrixels;           	// trixels if > 0.
 uniform float       iGridSize;				// gridSize if > 0.
 uniform bool        iFlipH;					// flip horizontally
+uniform bool        iFlipV;					// flip vertically
 uniform int         iBeat;					// measure from ableton
 uniform float       iSeed;					// random 
 uniform float       iRedMultiplier;			// red multiplier 
@@ -630,21 +631,36 @@ void main(void)
 	uv.x -= iRenderXY.x;
 	uv.y -= iRenderXY.y;
 	// flip horizontally
-  if (iFlipH)
-  {
-    uv.x = 1.0 - uv.x;
-  }
-  // rotate
-  //float rad = radians(360.0 * fract(iGlobalTime*iRotationSpeed));
-  //mat2 rotate = mat2(cos(rad),sin(rad),-sin(rad),cos(rad));
-  //uv = rotate * (uv - 0.5) + 0.5;
+	if (iFlipH)
+	{
+		uv.x = 1.0 - uv.x;
+	}
+	// flip vertically
+	if (iFlipV)
+	{
+		uv.y = 1.0 - uv.y;
+	}
+	// rotate
+	//float rad = radians(360.0 * fract(iGlobalTime*iRotationSpeed));
+	//mat2 rotate = mat2(cos(rad),sin(rad),-sin(rad),cos(rad));
+	//uv = rotate * (uv - 0.5) + 0.5;
 
-  // zoom centered
-  float xZ = (uv.x - 0.5)*iZoom*2.0;
-  float yZ = (uv.y - 0.5)*iZoom*2.0;
-  vec2 cZ = vec2(xZ, yZ);
+	// zoom centered
+	float xZ = (uv.x - 0.5)*iZoom*2.0;
+	float yZ = (uv.y - 0.5)*iZoom*2.0;
+	vec2 cZ = vec2(xZ, yZ);
 
-  // glitch
+	// slitscan
+	if (iRatio < 20.0)
+	{
+		float x = gl_FragCoord.x;
+		float y = gl_FragCoord.y;
+		float z = floor((x/20.0) + 0.5);
+		float y2 = y + (sin(z + (iGlobalTime * 2.0)) * iRatio);
+		vec2 uv2 = vec2(x / iResolution.x, y2/ iResolution.y);
+		uv 	= texture2D( iChannel1, uv2 ).rg;
+	}
+	// glitch
 	if (iGlitch == 1) 
 	{
 		// glitch the point around

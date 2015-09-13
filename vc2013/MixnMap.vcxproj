@@ -214,9 +214,15 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\assets\0.glsl" />
+    <None Include="..\assets\1.glsl" />
+    <None Include="..\assets\2.glsl" />
+    <None Include="..\assets\3.glsl" />
     <None Include="..\assets\mix.frag" />
+    <None Include="..\assets\passthru.vert" />
     <None Include="..\assets\pointsphere.frag" />
     <None Include="..\assets\pointsphere.vert" />
+    <None Include="..\assets\shadertoy.inc" />
     <None Include="..\assets\spectrum.frag" />
     <None Include="..\assets\spectrum.vert" />
   </ItemGroup>

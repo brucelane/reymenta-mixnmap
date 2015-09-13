@@ -162,7 +162,6 @@ void MixNMapApp::draw()
 	gl::setMatricesWindow(getWindowSize());
 	xPos = margin;
 	yPos = margin;
-	const char* textureNames[] = { "audio", "img1", "img2", "img3", "4pvwFbo", "5mixFbo", "6leftFbo", "7rightFbo", "8warp1Fbo", "9warp2Fbo", "10spout", "11LiveFbo" };
 	const char* fboNames[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "sphere", "mesh", "audio", "vtxsphere", "1", "2", "3", "4" };
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live" };
 
@@ -349,7 +348,7 @@ void MixNMapApp::draw()
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.1f, 0.8f, 0.8f));
 
 		sprintf_s(buf, "FV##fv%d", 42);
-		if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(mParameterBag->mMixFboIndex);
+		mParameterBag->iFlipVertically ^= ui::Button(buf);
 		if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 		ui::SameLine();
 		sprintf_s(buf, "FH##fh%d", 42);
@@ -434,7 +433,7 @@ void MixNMapApp::draw()
 				}
 				ui::NextColumn();
 				ui::PopStyleColor(3);
-				ui::Text("%s", textureNames[mParameterBag->iChannels[i]]);
+				ui::Text("%s", mBatchass->getTexturesRef()->getTextureName(mParameterBag->iChannels[i]));
 				ui::NextColumn();
 			}
 			ui::Columns(1);
@@ -542,7 +541,8 @@ void MixNMapApp::draw()
 		{
 			ui::Text("Beat %d", mParameterBag->iBeat);
 			ui::SameLine();
-			ui::Checkbox("Playing", &mParameterBag->mIsPlaying);
+			ui::Text("Time %.2f", mParameterBag->iGlobalTime);
+			//ui::Checkbox("Playing", &mParameterBag->mIsPlaying);
 
 			ui::Text("Tempo %.2f", mParameterBag->mTempo);
 			if (ui::Button("Tap tempo")) { mBatchass->tapTempo(); }
@@ -569,8 +569,11 @@ void MixNMapApp::draw()
 			if (mParameterBag->maxVolume > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 			ui::PlotLines("Volume", &values.front(), (int)values.size(), values_offset, toString(mBatchass->formatFloat(mParameterBag->maxVolume)).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
 			if (mParameterBag->maxVolume > 240.0) ui::PopStyleColor();
-			ui::Text("Time %.2f", mParameterBag->iGlobalTime);
 			ui::Text("Track %s %.2f", mParameterBag->mTrackName.c_str(), mParameterBag->liveMeter);
+
+			if (ui::Button("x##spdx")) { mParameterBag->iSpeedMultiplier = 1.0; }
+			ui::SameLine();
+			ui::SliderFloat("speed x", &mParameterBag->iSpeedMultiplier, 0.01f, 5.0f, "%.1f");
 
 		}
 		ui::End();
@@ -879,12 +882,19 @@ void MixNMapApp::draw()
 				}
 
 			}
+			// color multipliers
+			if (ui::Button("x##RedX")) { mParameterBag->iRedMultiplier = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("RedX", &mParameterBag->iRedMultiplier, 0.0f, 3.0f))
 			{
 			}
+			if (ui::Button("x##GreenX")) { mParameterBag->iGreenMultiplier = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("GreenX", &mParameterBag->iGreenMultiplier, 0.0f, 3.0f))
 			{
 			}
+			if (ui::Button("x##BlueX")) { mParameterBag->iBlueMultiplier = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("BlueX", &mParameterBag->iBlueMultiplier, 0.0f, 3.0f))
 			{
 			}
@@ -982,9 +992,10 @@ void MixNMapApp::draw()
 	{
 		for (int i = 0; i < mBatchass->getTexturesRef()->getTextureCount(); i++)
 		{
-			ui::SetNextWindowSize(ImVec2(w, h*1.3));
+			ui::SetNextWindowSize(ImVec2(w, h*1.4));
 			ui::SetNextWindowPos(ImVec2((i * (w + inBetween)) + margin, yPos));
-			ui::Begin(textureNames[i], NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			//ui::Begin(textureNames[i], NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			ui::Begin(mBatchass->getTexturesRef()->getTextureName(i), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushID(i);
 				ui::Image((void*)mBatchass->getTexturesRef()->getTexture(i).getId(), Vec2i(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
@@ -999,64 +1010,66 @@ void MixNMapApp::draw()
 					//mBatchass->wsWrite(buf);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
-				if (!mBatchass->getTexturesRef()->isLoadingFromDisk(i)) {
-					ui::SameLine();
-					sprintf_s(buf, "LD##s%d", i);
-					if (ui::Button(buf))
-					{
-						mBatchass->getTexturesRef()->toggleLoadingFromDisk(i);
-					}
-					if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
-				}
 				ui::SameLine();
 				sprintf_s(buf, "FV##s%d", i);
 				if (ui::Button(buf))
 				{
 					mBatchass->getTexturesRef()->flipTexture(i);
 				}
-				sprintf_s(buf, ">##s%d", i);
-				if (ui::Button(buf))
-				{
-					mBatchass->getTexturesRef()->playSequence(i);
-				}
-				ui::SameLine();
-				sprintf_s(buf, "\"##s%d", i);
-				if (ui::Button(buf))
-				{
-					mBatchass->getTexturesRef()->pauseSequence(i);
-				}
-				ui::SameLine();
-				sprintf_s(buf, "r##s%d", i);
-				if (ui::Button(buf))
-				{
-					mBatchass->getTexturesRef()->reverseSequence(i);
-				}
-				ui::SameLine();
-				playheadPositions[i] = mBatchass->getTexturesRef()->getPlayheadPosition(i);
-				sprintf_s(buf, "p%d##s%d", playheadPositions[i], i);
-				if (ui::Button(buf))
-				{
-					mBatchass->getTexturesRef()->setPlayheadPosition(i, 0);
+				if (mBatchass->getTexturesRef()->isSequence(i)) {
+					if (!mBatchass->getTexturesRef()->isLoadingFromDisk(i)) {
+						ui::SameLine();
+						sprintf_s(buf, "LD##s%d", i);
+						if (ui::Button(buf))
+						{
+							mBatchass->getTexturesRef()->toggleLoadingFromDisk(i);
+						}
+						if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
+					}
+					sprintf_s(buf, ">##s%d", i);
+					if (ui::Button(buf))
+					{
+						mBatchass->getTexturesRef()->playSequence(i);
+					}
+					ui::SameLine();
+					sprintf_s(buf, "\"##s%d", i);
+					if (ui::Button(buf))
+					{
+						mBatchass->getTexturesRef()->pauseSequence(i);
+					}
+					ui::SameLine();
+					sprintf_s(buf, "r##s%d", i);
+					if (ui::Button(buf))
+					{
+						mBatchass->getTexturesRef()->reverseSequence(i);
+					}
+					ui::SameLine();
+					playheadPositions[i] = mBatchass->getTexturesRef()->getPlayheadPosition(i);
+					sprintf_s(buf, "p%d##s%d", playheadPositions[i], i);
+					if (ui::Button(buf))
+					{
+						mBatchass->getTexturesRef()->setPlayheadPosition(i, 0);
+					}
+
+					if (ui::SliderInt("scrub", &playheadPositions[i], 0, mBatchass->getTexturesRef()->getMaxFrames(i)))
+					{
+						mBatchass->getTexturesRef()->setPlayheadPosition(i, playheadPositions[i]);
+					}
+					speeds[i] = mBatchass->getTexturesRef()->getSpeed(i);
+					if (ui::SliderFloat("speed", &speeds[i], 0.0f, 6.0f))
+					{
+						mBatchass->getTexturesRef()->setSpeed(i, speeds[i]);
+					}
+
 				}
 
-				if (ui::SliderInt("scrub", &playheadPositions[i], 0, mBatchass->getTexturesRef()->getMaxFrames(i)))
-				{
-					mBatchass->getTexturesRef()->setPlayheadPosition(i, playheadPositions[i]);
-				}
-				speeds[i] = mBatchass->getTexturesRef()->getSpeed(i);
-				if (ui::SliderInt("speed", &speeds[i], -5, 5))
-				{
-					mBatchass->getTexturesRef()->setSpeed(i, speeds[i]);
-				}
-
-				//ui::NextColumn();
 				//END
 				ui::PopStyleColor(3);
 				ui::PopID();
 			}
 			ui::End();
 		}
-		yPos += h*1.3 + margin;
+		yPos += h*1.4 + margin;
 	}
 #pragma endregion textures
 #pragma region library
@@ -1236,7 +1249,6 @@ void MixNMapApp::draw()
 	// console
 	if (showConsole)
 	{
-		yPos += h + margin;
 		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ShowAppConsole(&showConsole);
@@ -1478,7 +1490,7 @@ void MixNMapApp::update()
 	{
 		mParameterBag->iGlobalTime = getElapsedSeconds();
 	}
-
+	mParameterBag->iGlobalTime *= mParameterBag->iSpeedMultiplier;
 	mSpout->update();
 	mBatchass->update();
 	mAudio->update();
