@@ -162,7 +162,6 @@ void MixNMapApp::draw()
 	gl::setMatricesWindow(getWindowSize());
 	xPos = margin;
 	yPos = margin;
-	const char* fboNames[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "sphere", "mesh", "audio", "vtxsphere", "1", "2", "3", "4" };
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live" };
 
 #pragma region style
@@ -228,7 +227,7 @@ void MixNMapApp::draw()
 		if (mParameterBag->mMode == mParameterBag->MODE_WARP)
 		{
 			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp1FboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
-			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(mParameterBag->mWarp1FboIndex);
+			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mWarp1FboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
 			ui::SliderFloat("W1RdrX", &mParameterBag->mWarp1RenderXY.x, -1.0f, 1.0f);
@@ -260,7 +259,7 @@ void MixNMapApp::draw()
 		else
 		{
 			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mLeftFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
-			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(mParameterBag->mLeftFboIndex);
+			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mLeftFboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
 			ui::SliderFloat("LeftRdrX", &mParameterBag->mLeftRenderXY.x, -1.0f, 1.0f);
@@ -309,7 +308,7 @@ void MixNMapApp::draw()
 		if (mParameterBag->mMode == mParameterBag->MODE_WARP)
 		{
 			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp2FboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
-			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(mParameterBag->mWarp2FboIndex);
+			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mWarp2FboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
 			ui::SliderFloat("W2RdrX", &mParameterBag->mWarp2RenderXY.x, -1.0f, 1.0f);
@@ -320,7 +319,7 @@ void MixNMapApp::draw()
 		else
 		{
 			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mRightFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
-			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(mParameterBag->mRightFboIndex);
+			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mRightFboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
 			ui::SliderFloat("RightRdrX", &mParameterBag->mRightRenderXY.x, -1.0f, 1.0f);
@@ -348,11 +347,13 @@ void MixNMapApp::draw()
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.1f, 0.8f, 0.8f));
 
 		sprintf_s(buf, "FV##fv%d", 42);
-		mParameterBag->iFlipVertically ^= ui::Button(buf);
+		if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mMixFboIndex);
+		//mParameterBag->iFlipVertically ^= ui::Button(buf);
 		if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 		ui::SameLine();
 		sprintf_s(buf, "FH##fh%d", 42);
-		mParameterBag->iFlipHorizontally ^= ui::Button(buf);
+		//mParameterBag->iFlipHorizontally ^= ui::Button(buf);
+		if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboH(mParameterBag->mMixFboIndex);
 		if (ui::IsItemHovered()) ui::SetTooltip("Flip horizontally");
 		// crossfade
 		if (ui::DragFloat("Xfade", &mParameterBag->controlValues[18], 0.01f, 0.001f, 1.0f))
@@ -1197,8 +1198,8 @@ void MixNMapApp::draw()
 					if (ui::IsItemHovered()) ui::SetTooltip("Set warp 2 shader");
 					ui::PopStyleColor(3);
 
-					// remove
-					if (i > 3)
+					// enable removing shaders
+					if (i > 4)
 					{
 						ui::SameLine();
 						sprintf_s(buf, "X##s%d", i);
@@ -1225,7 +1226,7 @@ void MixNMapApp::draw()
 		{
 			ui::SetNextWindowSize(ImVec2(w, h));
 			ui::SetNextWindowPos(ImVec2((i * (w + inBetween)) + margin, yPos));
-			ui::Begin(fboNames[i], NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			ui::Begin(mBatchass->getTexturesRef()->getFboName(i), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				//if (i > 0) ui::SameLine();
 				ui::PushID(i);
@@ -1235,7 +1236,7 @@ void MixNMapApp::draw()
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
 
 				sprintf_s(buf, "FV##f%d", i);
-				if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFbo(i);
+				if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(i);
 				if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 
 				ui::PopStyleColor(3);

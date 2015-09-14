@@ -390,6 +390,9 @@
     <None Include="..\assets\passthru.vert">
       <Filter>assets</Filter>
     </None>
+    <None Include="..\assets\4.glsl">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\MixNMapApp.cpp">

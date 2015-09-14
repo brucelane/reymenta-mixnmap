@@ -218,6 +218,7 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <None Include="..\assets\1.glsl" />
     <None Include="..\assets\2.glsl" />
     <None Include="..\assets\3.glsl" />
+    <None Include="..\assets\4.glsl" />
     <None Include="..\assets\mix.frag" />
     <None Include="..\assets\passthru.vert" />
     <None Include="..\assets\pointsphere.frag" />
