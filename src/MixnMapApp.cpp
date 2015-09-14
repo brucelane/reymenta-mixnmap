@@ -828,7 +828,7 @@ void MixNMapApp::draw()
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
-			// trixels
+			// grid
 			ctrl = 17;
 			if (ui::SliderFloat("grid", &mParameterBag->controlValues[ctrl], 0.00f, 60.0f))
 			{
