@@ -6,6 +6,11 @@ TODO
 - sort fbo names and indexes (warps only 4 or 5 inputs)
 - spout texture 10 create shader 10.glsl(ThemeFromBrazil) iChannel0
 - warpwrapper handle texture mode 0 for spout (without fbo)
+- put sliderInt instead of popups //warps next
+- proper slitscan h and v //wip
+- proper rotation
+- badtv in mix.frag
+
 */
 
 #include "MixNMapApp.h"
@@ -391,7 +396,10 @@ void MixNMapApp::draw()
 		}
 		mParameterBag->mPreviewEnabled ^= ui::Button(buf);
 		if (ui::IsItemHovered()) ui::SetTooltip("Preview enabled");
-
+		ui::SameLine();
+		sprintf_s(buf, "Reset##pvreset");
+		if (ui::Button(buf)) mParameterBag->reset();
+		if (ui::IsItemHovered()) ui::SetTooltip("Reset live params");
 		ui::PopStyleColor(3);
 		ui::Text(mBatchass->getTexturesRef()->getPreviewTime());
 
@@ -405,7 +413,8 @@ void MixNMapApp::draw()
 #pragma region channels
 	if (showChannels)
 	{
-		static bool popupTexture_open = false;
+
+		/*static bool popupTexture_open = false;*/
 		static int selectedChn = -1;
 		static int selectedTex = -1;
 
@@ -415,22 +424,22 @@ void MixNMapApp::draw()
 		ui::Begin("Channels");
 		{
 			ui::Columns(3);
+			ui::SetColumnOffset(0, 4.0f);// int column_index, float offset)
+			ui::SetColumnOffset(1, 20.0f);// int column_index, float offset)
+			//ui::SetColumnOffset(2, 24.0f);// int column_index, float offset)
 			ui::Text("Chn"); ui::NextColumn();
 			ui::Text("Tex"); ui::NextColumn();
 			ui::Text("Name"); ui::NextColumn();
-
 			ui::Separator();
-			for (int i = 0; i < mParameterBag->iChannels.size() - 1; i++)
+			for (int i = 0; i < mParameterBag->MAX - 1; i++)
 			{
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
-				ui::Text("c%d", i); ui::NextColumn();
-				sprintf_s(buf, "%d", mParameterBag->iChannels[i]);
-				if (ImGui::Button(buf))
-				{
-					popupTexture_open = true;
-					selectedChn = i;
+				ui::Text("c%d", i); 
+				ui::NextColumn();
+				sprintf_s(buf, "%d", i);
+				if (ui::SliderInt(buf, &mParameterBag->iChannels[i], 0, mParameterBag->MAX-1)) {
 				}
 				ui::NextColumn();
 				ui::PopStyleColor(3);
@@ -440,37 +449,6 @@ void MixNMapApp::draw()
 			ui::Columns(1);
 		}
 		ui::End();
-
-		ImGui::SameLine();
-		if (selectedTex == -1)
-		{
-			ImGui::Text("<None>");
-		}
-		else
-		{
-			sprintf_s(buf, "%d", mParameterBag->iChannels[selectedTex]);
-			ImGui::Text(buf);
-		}
-		if (popupTexture_open)
-		{
-			//sprintf_s(buf, "##wtpopup", selectedChn);
-			ImGui::BeginPopup(&popupTexture_open);
-			for (size_t i = 0; i < mBatchass->getTexturesRef()->getTextureCount(); i++)
-			{
-				sprintf_s(buf, "%d##chntpopup", i);
-				if (ImGui::Selectable(buf, false))
-				{
-					selectedTex = i;
-					if (selectedTex > -1) mBatchass->assignTextureToChannel(selectedTex, selectedChn);
-					// reinit
-					popupTexture_open = false;
-					selectedChn = -1;
-					selectedTex = -1;
-				}
-			}
-			ImGui::EndPopup();
-
-		}
 		xPos += w * 2 + margin;
 	}
 #pragma endregion channels
@@ -808,6 +786,16 @@ void MixNMapApp::draw()
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
+			// param1
+			if (ui::SliderFloat("param1/min/max", &mParameterBag->iParam1, 0.01f, 100.0f))
+			{
+			}
+			// param2
+			if (ui::SliderFloat("param2/min/max", &mParameterBag->iParam2, 0.01f, 100.0f))
+			{
+			}
+			sprintf_s(buf, "XorY");
+			mParameterBag->iXorY ^= ui::Button(buf);
 			// blend modes
 			ui::SliderInt("blendmode", &mParameterBag->iBlendMode, 0, mParameterBag->maxBlendMode);
 

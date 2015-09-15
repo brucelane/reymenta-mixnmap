@@ -47,6 +47,9 @@ uniform float       iSeed;					// random
 uniform float       iRedMultiplier;			// red multiplier 
 uniform float       iGreenMultiplier;		// green multiplier 
 uniform float       iBlueMultiplier;		// blue multiplier 
+uniform float       iParam1;				// slitscan (or other) Param1
+uniform float       iParam2;				// slitscan (or other) Param2 
+uniform bool        iXorY;					// slitscan (or other) effect on x or y
 
 const 	float 		  PI = 3.14159265;
 // uniforms end
@@ -655,9 +658,20 @@ void main(void)
 	{
 		float x = gl_FragCoord.x;
 		float y = gl_FragCoord.y;
-		float z = floor((x/20.0) + 0.5);
-		float y2 = y + (sin(z + (iGlobalTime * 2.0)) * iRatio);
-		vec2 uv2 = vec2(x / iResolution.x, y2/ iResolution.y);
+		float x2 = x;	  
+		float y2 = y;
+		if (iXorY)
+		{
+			float z1 = floor((x/iParam1) + 0.5);	   //((x/20.0) + 0.5)
+			x2 = x + (sin(z1 + (iGlobalTime * 2.0)) * iRatio);
+		}
+		else
+		{
+			float z2 = floor((y/iParam2) + 0.5);	   //((x/20.0) + 0.5)
+			y2 = y + (sin(z2 + (iGlobalTime * 2.0)) * iRatio);
+		}
+
+		vec2 uv2 = vec2(x2 / iResolution.x, y2/ iResolution.y);
 		uv 	= texture2D( iChannel1, uv2 ).rg;
 	}
 	// glitch
