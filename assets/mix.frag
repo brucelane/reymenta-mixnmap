@@ -50,6 +50,7 @@ uniform float       iBlueMultiplier;		// blue multiplier
 uniform float       iParam1;				// slitscan (or other) Param1
 uniform float       iParam2;				// slitscan (or other) Param2 
 uniform bool        iXorY;					// slitscan (or other) effect on x or y
+uniform float       iBadTv;					// badtv if > 0.
 
 const 	float 		  PI = 3.14159265;
 // uniforms end
@@ -627,6 +628,8 @@ vec3 mainFunction( vec2 uv )
    }
    return c;
 }
+float BadTVResoRand(in float a, in float b) { return fract((cos(dot(vec2(a,b) ,vec2(12.9898,78.233))) * 43758.5453)); }
+
 // main start
 void main(void)
 {
@@ -722,16 +725,41 @@ void main(void)
 		vec2 p = 1.0 + -2.0 * uv;
 		col = mix( col, vec3( iBackgroundColor ), dot( p, p )*iRotationSpeed );
 	}
-  // grey scale mode
-  if (iGreyScale == 1)
-  {
-    col = greyScale( col );
-  }
-  col.r *= iRedMultiplier;
-  col.g *= iGreenMultiplier;
-  col.b *= iBlueMultiplier;
+	// badtv
+	if (iBadTv > 0.0)
+	{
+		float c = 1.;
+		c += 2. * iBadTv * sin(iGlobalTime * 4. + uv.y * 1000.);
+		c += 1. * iBadTv * sin(iGlobalTime * 1. + uv.y * 800.);
+		c += 20. * iBadTv * sin(iGlobalTime * 10. + uv.y * 9000.);
+	
+		c += 1. * cos(iGlobalTime + uv.x);
+	
+		//vignetting
+		c *= sin(uv.x*3.15);
+		c *= sin(uv.y*3.);
+		c *= .9;
+	
+		uv += iGlobalTime;
+	
+		float r = BadTVResoRand(uv.x, uv.y);
+		float g = BadTVResoRand(uv.x * 9., uv.y * 9.);
+		float b = BadTVResoRand(uv.x * 3., uv.y * 3.);
+	
+		col.x *= r*c*.35;
+		col.y *= b*c*.95;
+		col.z *= g*c*.35;
+	}
+
+	// grey scale mode
+	if (iGreyScale == 1)
+	{
+	col = greyScale( col );
+	}
+	col.r *= iRedMultiplier;
+	col.g *= iGreenMultiplier;
+	col.b *= iBlueMultiplier;
 
 	gl_FragColor = iAlpha * vec4( col, 1.0 );
-
 }
 // main end

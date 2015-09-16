@@ -31,6 +31,6 @@
 	<WindowSize value="1024"/>
 	<Info value="light4events.herokuapp.com 80"/>
 	<AssetsPath value="jeyzikaround"/>
-	<UseLineIn value="1"/>
+	<UseLineIn value="0"/>
 </settings>
 

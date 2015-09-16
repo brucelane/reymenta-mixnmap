@@ -167,7 +167,7 @@ void MixNMapApp::draw()
 	gl::setMatricesWindow(getWindowSize());
 	xPos = margin;
 	yPos = margin;
-	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live" };
+	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15" };
 
 #pragma region style
 	// our theme variables
@@ -413,11 +413,6 @@ void MixNMapApp::draw()
 #pragma region channels
 	if (showChannels)
 	{
-
-		/*static bool popupTexture_open = false;*/
-		static int selectedChn = -1;
-		static int selectedTex = -1;
-
 		ui::SetNextWindowSize(ImVec2(w * 2, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 
@@ -786,6 +781,10 @@ void MixNMapApp::draw()
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
+			// badTv
+			if (ui::SliderFloat("badTv/min/max", &mParameterBag->iBadTv, 0.0f, 5.0f))
+			{
+			}
 			// param1
 			if (ui::SliderFloat("param1/min/max", &mParameterBag->iParam1, 0.01f, 100.0f))
 			{
@@ -924,10 +923,6 @@ void MixNMapApp::draw()
 #pragma region warps
 	if (mParameterBag->mMode == MODE_WARP)
 	{
-		static bool popup_open = false;
-		static int selected_index = -1;
-		static int selected_fbo = -1;
-
 		for (int i = 0; i < mBatchass->getWarpsRef()->getWarpsCount(); i++)
 		{
 			sprintf_s(buf, "Warp %d", i);
@@ -940,38 +935,16 @@ void MixNMapApp::draw()
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
-
-				sprintf_s(buf, "In:%s##wm%d", warpInputs[mParameterBag->mWarpFbos[i].textureIndex], i);
-				if (ImGui::Button(buf))
-				{
-					popup_open = true;
-					selected_index = i;
+				sprintf_s(buf, "%d", mParameterBag->mWarpFbos[i].textureIndex);
+				if (ui::SliderInt(buf, &mParameterBag->mWarpFbos[i].textureIndex, 0, mParameterBag->MAX - 1)) {
 				}
+				sprintf_s(buf, "%s", warpInputs[mParameterBag->mWarpFbos[i].textureIndex]);
+				ui::Text(buf);
+
 				ui::PopStyleColor(3);
 				ui::PopID();
 			}
 			ui::End();
-		}
-		ImGui::SameLine();
-		ImGui::Text(selected_fbo == -1 ? "<None>" : warpInputs[selected_fbo]);
-		if (popup_open)
-		{
-			// needed? sprintf_s(buf, "##wmpopup", selected_index);
-			ImGui::BeginPopup(&popup_open);
-			for (size_t i = 0; i < IM_ARRAYSIZE(warpInputs); i++)
-			{
-				if (ImGui::Selectable(warpInputs[i], false))
-				{
-					selected_fbo = i;
-					if (selected_fbo > -1) mBatchass->assignFboToWarp(selected_index, selected_fbo);
-					// reinit
-					popup_open = false;
-					selected_index = -1;
-					selected_fbo = -1;
-				}
-			}
-			ImGui::EndPopup();
-
 		}
 		yPos += h + margin;
 	}
@@ -1334,15 +1307,12 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 	}
 	else if (ext == "glsl")
 	{
-		//mShaders->incrementPreviewIndex();
-		//mUserInterface->mLibraryPanel->addShader(mFile);
-
-		if (index < 3) index = 3;
+		if (index < 4) index = 4;
 		int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
 		if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
 		{
 			mParameterBag->controlValues[22] = 1.0f;
-			// send content via OSC
+			// TODO  send content via websockets
 			/*fs::path fr = mFile;
 			string name = "unknown";
 			if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
