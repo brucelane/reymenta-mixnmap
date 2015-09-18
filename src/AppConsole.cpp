@@ -23,6 +23,7 @@ AppConsole::AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass)
 	Commands.push_back("WSPING");
 	Commands.push_back("WSCNF");
 	Commands.push_back("LOADSTOP");
+	Commands.push_back("TEMPO");
 }
 void AppConsole::ClearLog()
 {
@@ -187,6 +188,15 @@ void AppConsole::ExecCommand(const char* command_line)
 	else if (ui::ImStricmp(command_line, "LOADSTOP") == 0)
 	{
 		mBatchass->stopLoading();
+	}
+	else if (ui::ImStrnicmp(command_line, "TEMPO", 5) == 0)
+	{
+		if (strlen(command_line) > 7)
+		{
+			string to = command_line;
+			int firstDigit = to.find_first_of("0123456789");			
+			if (firstDigit > -1) mParameterBag->mTempo = std::stoi(to.substr(firstDigit));
+		}		
 	}
 	else if (ui::ImStricmp(command_line, "WSCNX") == 0)
 	{
