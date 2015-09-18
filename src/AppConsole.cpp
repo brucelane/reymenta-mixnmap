@@ -22,6 +22,7 @@ AppConsole::AppConsole(ParameterBagRef aParameterBag, BatchassRef aBatchass)
 	Commands.push_back("WSCNX");
 	Commands.push_back("WSPING");
 	Commands.push_back("WSCNF");
+	Commands.push_back("LOADSTOP");
 }
 void AppConsole::ClearLog()
 {
@@ -182,6 +183,10 @@ void AppConsole::ExecCommand(const char* command_line)
 	else if (ui::ImStricmp(command_line, "MODEMESH") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_MESH);
+	}
+	else if (ui::ImStricmp(command_line, "LOADSTOP") == 0)
+	{
+		mBatchass->stopLoading();
 	}
 	else if (ui::ImStricmp(command_line, "WSCNX") == 0)
 	{

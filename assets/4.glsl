@@ -1,6 +1,4 @@
 //for spout input
-uniform bool        iFlipH;					// flip horizontally
-uniform bool        iFlipV;					// flip vertically
 
 void main(void)
 {

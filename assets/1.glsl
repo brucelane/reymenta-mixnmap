@@ -1,6 +1,4 @@
 //for texture1 or image sequence1 input
-uniform bool        iFlipH;					// flip horizontally
-uniform bool        iFlipV;					// flip vertically
 
 void main(void)
 {
