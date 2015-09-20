@@ -497,7 +497,7 @@ void MixNMapApp::draw()
 		ui::SameLine();
 		mParameterBag->mRenderThumbs ^= ui::Button("Thumbs");
 		ui::PopItemWidth();
-
+		if (ui::Button("Stop Loading")) mBatchass->stopLoading();
 	}
 	ui::End();
 	xPos += largePreviewW + 20 + margin;
@@ -782,42 +782,58 @@ void MixNMapApp::draw()
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
 			// badTv
+			if (ui::Button("x##badtv")) { mParameterBag->iBadTv = 0.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("badTv/min/max", &mParameterBag->iBadTv, 0.0f, 5.0f))
 			{
 			}
 			// param1
+			if (ui::Button("x##param1")) { mParameterBag->iParam1 = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("param1/min/max", &mParameterBag->iParam1, 0.01f, 100.0f))
 			{
 			}
 			// param2
+			if (ui::Button("x##param2")) { mParameterBag->iParam2 = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("param2/min/max", &mParameterBag->iParam2, 0.01f, 100.0f))
 			{
 			}
 			sprintf_s(buf, "XorY");
 			mParameterBag->iXorY ^= ui::Button(buf);
 			// blend modes
+			if (ui::Button("x##blendmode")) { mParameterBag->iBlendMode = 0.0f; }
+			ui::SameLine();
 			ui::SliderInt("blendmode", &mParameterBag->iBlendMode, 0, mParameterBag->maxBlendMode);
 
 			// steps
 			ctrl = 20;
+			if (ui::Button("x##steps")) { mParameterBag->controlValues[ctrl] = 16.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("steps", &mParameterBag->controlValues[ctrl], 1.0f, 128.0f))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
 			// pixelate
 			ctrl = 15;
+			if (ui::Button("x##pixelate")) { mParameterBag->controlValues[ctrl] = 1.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("pixelate", &mParameterBag->controlValues[ctrl], 0.01f, 1.0f))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
 			// trixels
 			ctrl = 16;
+			if (ui::Button("x##trixels")) { mParameterBag->controlValues[ctrl] = 0.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("trixels", &mParameterBag->controlValues[ctrl], 0.00f, 1.0f))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
 			}
 			// grid
 			ctrl = 17;
+			if (ui::Button("x##grid")) { mParameterBag->controlValues[ctrl] = 0.0f; }
+			ui::SameLine();
 			if (ui::SliderFloat("grid", &mParameterBag->controlValues[ctrl], 0.00f, 60.0f))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mParameterBag->controlValues[ctrl] << "}";
