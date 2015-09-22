@@ -12,7 +12,7 @@ Setup
 Compile
 - use visual studio 2013
 - download Cinder 0.8.6 branch from https://github.com/cinder/Cinder/tree/release_v0.8.6
-- download these Cinder blocks (0.8.6 branch):  openCV(https://github.com/cinder/Cinder-OpenCV), Warping (https://github.com/paulhoux/Cinder-Warping), Spout(https://github.com/brucelane/Cinder-Spout), WebSockets (https://github.com/wieden-kennedy/Cinder-WebSocketPP), imgui (https://github.com/brucelane/Cinder-ImGui), MIDI2, Reymenta (https://github.com/Reymenta-Visuals/Cinder-Reymenta)
+- download these Cinder blocks (0.8.6 branch):  openCV(https://github.com/cinder/Cinder-OpenCV), Warping (https://github.com/brucelane/Cinder-Warping/tree/Cinder-0.8.6), Spout(https://github.com/brucelane/Cinder-Spout), WebSockets (https://github.com/wieden-kennedy/Cinder-WebSocketPP), imgui (https://github.com/brucelane/Cinder-ImGui), MIDI2, Reymenta (https://github.com/Reymenta-Visuals/Cinder-Reymenta)
 
 Follow me on https://www.facebook.com/reymentavisuals
 
