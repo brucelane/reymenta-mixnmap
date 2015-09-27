@@ -18,14 +18,14 @@ TODO
 void MixNMapApp::setup()
 {
 
-	int w;
+	int wr;
 	// parameters
 	mParameterBag = ParameterBag::create();
 	// utils
 	mBatchass = Batchass::create(mParameterBag);
 	mBatchass->log("start");
 
-	w = mBatchass->getWindowsResolution();
+	wr = mBatchass->getWindowsResolution();
 
 	setWindowSize(mParameterBag->mMainWindowWidth, mParameterBag->mMainWindowHeight);
 	// Setting an unrealistically high frame rate effectively
@@ -106,7 +106,7 @@ void MixNMapApp::setup()
 	showTest = showTheme = showOSC = showFbos = false;
 
 	// set ui window and io events callbacks
-	ui::connectWindow(getWindow());
+	// 20150927 ui::connectWindow(getWindow());
 	ui::initialize();
 
 	mSeconds = 0;
@@ -1258,18 +1258,18 @@ void MixNMapApp::draw()
 
 void MixNMapApp::saveThumb()
 {
-	/* TODO
+
 	string filename;
 	try
 	{
-	filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
-	writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
-	mBatchass->log("saved:" + filename);
+		filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
+		writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
+		mBatchass->log("saved:" + filename);
 	}
 	catch (const std::exception &e)
 	{
-	mBatchass->log("unable to save:" + filename + string(e.what()));
-	}*/
+		mBatchass->log("unable to save:" + filename + string(e.what()));
+	}
 }
 void MixNMapApp::keyUp(KeyEvent event)
 {
