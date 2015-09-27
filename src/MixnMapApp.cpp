@@ -19,14 +19,14 @@ void MixNMapApp::prepareSettings(Settings* settings)
 {
 	// start profiling
 	auto start = Clock::now();
-	int w;
+	int wr;
 	// parameters
 	mParameterBag = ParameterBag::create();
 	// utils
 	mBatchass = Batchass::create(mParameterBag);
 	mBatchass->log("start");
 
-	w = mBatchass->getWindowsResolution();
+	wr = mBatchass->getWindowsResolution();
 
 	settings->setWindowSize(mParameterBag->mMainWindowWidth, mParameterBag->mMainWindowHeight);
 	// Setting an unrealistically high frame rate effectively
