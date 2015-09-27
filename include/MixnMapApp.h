@@ -20,7 +20,8 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 
 // don't forget to add winmm.lib to the linker
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
+#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/GlslProg.h"
@@ -53,9 +54,8 @@ using namespace Reymenta;
 #define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 
-class MixNMapApp : public AppBasic {
+class MixNMapApp : public App {
 public:
-	void						prepareSettings(Settings* settings);
 	void 						setup();
 	void 						update();
 	void						draw();

@@ -87,22 +87,10 @@
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiConstants.h">
-      <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiExceptions.h">
       <Filter>Blocks\Midi2\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiHeaders.h">
-      <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiHub.h">
-      <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiIn.h">
-      <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiMessage.h">
       <Filter>Blocks\Midi2\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiOut.h">
@@ -115,12 +103,6 @@
       <Filter>Blocks\Midi2\lib</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiHub.cpp">
-      <Filter>Blocks\Midi2\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiIn.cpp">
-      <Filter>Blocks\Midi2\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiMessage.cpp">
       <Filter>Blocks\Midi2\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiOut.cpp">
@@ -184,15 +166,6 @@
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h">
-      <Filter>Blocks\Warping\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\WarpBilinear.h">
-      <Filter>Blocks\Warping\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\WarpPerspective.h">
-      <Filter>Blocks\Warping\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\WarpPerspectiveBilinear.h">
       <Filter>Blocks\Warping\include</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\Warp.cpp">
@@ -330,6 +303,9 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h">
+      <Filter>Blocks\Midi2\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -400,6 +376,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp">
+      <Filter>Blocks\Midi2\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\imGui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\imGui\src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
