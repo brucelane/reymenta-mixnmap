@@ -1258,18 +1258,18 @@ void MixNMapApp::draw()
 
 void MixNMapApp::saveThumb()
 {
-
+	/* TODO
 	string filename;
 	try
 	{
-		filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
-		writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
-		mBatchass->log("saved:" + filename);
+	filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
+	writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
+	mBatchass->log("saved:" + filename);
 	}
 	catch (const std::exception &e)
 	{
-		mBatchass->log("unable to save:" + filename + string(e.what()));
-	}
+	mBatchass->log("unable to save:" + filename + string(e.what()));
+	}*/
 }
 void MixNMapApp::keyUp(KeyEvent event)
 {
