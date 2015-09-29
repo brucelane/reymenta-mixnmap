@@ -401,5 +401,11 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\imGui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\imGui\src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

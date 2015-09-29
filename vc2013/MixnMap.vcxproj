@@ -176,6 +176,8 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
