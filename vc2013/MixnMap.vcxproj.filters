@@ -387,5 +387,31 @@
     <None Include="..\assets\passthru.vert">
       <Filter>assets</Filter>
     </None>
+    <None Include="..\assets\mix.frag">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\shadertoy.inc">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\0.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\1.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\2.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\3.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\assets\4.glsl">
+      <Filter>assets</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\assets\Settings.xml">
+      <Filter>assets</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

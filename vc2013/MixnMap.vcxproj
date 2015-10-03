@@ -80,7 +80,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\include\asio;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\OSC\src;..\..\..\include\asio;..\..\..\blocks\Cinder-WebSocketPP\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -115,10 +115,21 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\assets\0.glsl" />
+    <None Include="..\assets\1.glsl" />
+    <None Include="..\assets\2.glsl" />
+    <None Include="..\assets\3.glsl" />
+    <None Include="..\assets\4.glsl" />
+    <None Include="..\assets\mix.frag" />
     <None Include="..\assets\passthru.frag" />
     <None Include="..\assets\passthru.vert" />
+    <None Include="..\assets\shadertoy.inc" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Xml Include="..\assets\Settings.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h" />
     <ClInclude Include="..\include\AppConsole.h" />
