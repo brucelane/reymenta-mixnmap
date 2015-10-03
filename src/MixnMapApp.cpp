@@ -53,8 +53,8 @@ void MixNMapApp::setup()
 	mBatchass->log("setup");
 	removeUI = false;
 	/*ci::app::App::get()->getSignalShutdown().connect([&]() {
-		MixNMapApp::shutdown();
-		});*/
+	MixNMapApp::shutdown();
+	});*/
 	// instanciate the json wrapper class
 	mJson = JSONWrapper::create();
 	// setup shaders and textures

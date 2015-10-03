@@ -1,8 +1,7 @@
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MixNMap", "MixNMap.vcxproj", "{804EF824-9E8F-40A7-9EDF-3A9822864C8B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MixNMap", "MixNMap.vcxproj", "{BC644FB2-005A-44F3-8789-A3B0EE96DB04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{804EF824-9E8F-40A7-9EDF-3A9822864C8B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{804EF824-9E8F-40A7-9EDF-3A9822864C8B}.Debug|Win32.Build.0 = Debug|Win32
-		{804EF824-9E8F-40A7-9EDF-3A9822864C8B}.Release|Win32.ActiveCfg = Release|Win32
-		{804EF824-9E8F-40A7-9EDF-3A9822864C8B}.Release|Win32.Build.0 = Release|Win32
+		{BC644FB2-005A-44F3-8789-A3B0EE96DB04}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BC644FB2-005A-44F3-8789-A3B0EE96DB04}.Debug|Win32.Build.0 = Debug|Win32
+		{BC644FB2-005A-44F3-8789-A3B0EE96DB04}.Release|Win32.ActiveCfg = Release|Win32
+		{BC644FB2-005A-44F3-8789-A3B0EE96DB04}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

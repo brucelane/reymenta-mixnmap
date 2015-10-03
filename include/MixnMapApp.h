@@ -30,7 +30,7 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include <list>
 
 // window manager
-#include "WindowMngr.h"
+// needed? #include "WindowMngr.h"
 // UserInterface
 #include "CinderImGui.h"
 // parameters

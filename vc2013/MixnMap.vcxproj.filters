@@ -14,79 +14,136 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="Blocks">
-      <UniqueIdentifier>{DEF05C60-C851-475E-A4AC-F508CC0A5282}</UniqueIdentifier>
+      <UniqueIdentifier>{16C12D21-868A-41B5-971B-C7D412003476}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\imGui">
-      <UniqueIdentifier>{EACD0E04-88D8-4873-946E-1C2EF6B397A2}</UniqueIdentifier>
+    <Filter Include="Blocks\Cinder-Hap2">
+      <UniqueIdentifier>{CC344BD2-ED40-4EAD-8E77-1714AC92BDA7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\imGui\src">
-      <UniqueIdentifier>{E95975FD-B864-45C4-8B41-F991197F7816}</UniqueIdentifier>
+    <Filter Include="Blocks\Cinder-Hap2\src">
+      <UniqueIdentifier>{F39A1FB1-9252-4E72-B5ED-A22AB5A718E0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui">
+      <UniqueIdentifier>{AAD9F8B7-9F68-4E66-958E-5C139BAB04E0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\include">
+      <UniqueIdentifier>{225D7E86-1B9E-4D28-B1D3-D464FB45D1FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib">
+      <UniqueIdentifier>{6B277405-440B-4D73-BD74-5D53E6B5392A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib\imgui">
+      <UniqueIdentifier>{A2F2C4DB-F3BE-407E-8BEC-A68E025BF8A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\src">
+      <UniqueIdentifier>{46F81FC4-3511-4B60-88AD-DD4D7D3C47B5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Midi2">
-      <UniqueIdentifier>{8911EAC7-1849-4AD6-9212-8F7C0A72FE7D}</UniqueIdentifier>
+      <UniqueIdentifier>{89B58656-C027-4828-9940-B5310EB189CB}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Midi2\include">
-      <UniqueIdentifier>{5CDAD28D-8BFA-4D46-9AC0-30529295E045}</UniqueIdentifier>
+      <UniqueIdentifier>{0A8A3C6C-2FD4-4A4C-8B3C-8A31DAEC65BD}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Midi2\lib">
-      <UniqueIdentifier>{55A6D896-6025-4CAE-9006-F78B554FA254}</UniqueIdentifier>
+      <UniqueIdentifier>{1A5C2204-256E-434E-9F3D-AEE2E486141B}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Midi2\src">
-      <UniqueIdentifier>{3A254752-36BC-4695-8B3C-7E247A7D9F84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blocks\OpenCV">
-      <UniqueIdentifier>{4A0AEFCA-F06A-465C-B90D-D165E0D610E1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blocks\OpenCV\include">
-      <UniqueIdentifier>{F7DFD7CB-D884-44C8-B397-D85726042B54}</UniqueIdentifier>
+      <UniqueIdentifier>{6A8A0A0B-24EC-4129-805E-BCDE70845D0A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Reymenta">
-      <UniqueIdentifier>{E576FFDC-B591-40E3-AB08-BC692784A993}</UniqueIdentifier>
+      <UniqueIdentifier>{A80F20A1-21C2-432F-98E3-239DE666A11C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Reymenta\include">
-      <UniqueIdentifier>{D493BECE-A8B7-4D25-A1D3-421DE57B4661}</UniqueIdentifier>
+      <UniqueIdentifier>{023AD297-4304-44A3-B661-75B0FEF01AF4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Reymenta\src">
-      <UniqueIdentifier>{23908C9A-8107-4AEE-9A76-E24361F7787B}</UniqueIdentifier>
+      <UniqueIdentifier>{767EDFD2-0442-4EA0-A274-74BD4F05BF23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\Warping">
-      <UniqueIdentifier>{FC63D898-065B-4BF7-91FA-9CA3A1987443}</UniqueIdentifier>
+    <Filter Include="Blocks\Cinder-Warping">
+      <UniqueIdentifier>{C6818D5E-65B7-4F19-BB22-EAF87B1B3D7C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\Warping\include">
-      <UniqueIdentifier>{1B0A14C6-5A32-4C1E-84C3-00C8DD3BC85D}</UniqueIdentifier>
+    <Filter Include="Blocks\Cinder-Warping\include">
+      <UniqueIdentifier>{A02A314F-291F-4838-8F95-024055918F04}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blocks\Warping\src">
-      <UniqueIdentifier>{7C14919F-2A61-464B-898F-0681D23126DD}</UniqueIdentifier>
+    <Filter Include="Blocks\Cinder-Warping\src">
+      <UniqueIdentifier>{720ADC4F-2327-41BF-98B2-9758A185893A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Cinder-WebSocketPP">
-      <UniqueIdentifier>{EA7F2387-778D-46C4-A408-CBDDFDF783DF}</UniqueIdentifier>
+      <UniqueIdentifier>{EC68EE5E-D4FC-4F32-97CB-9C1B653411D5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\Cinder-WebSocketPP\src">
-      <UniqueIdentifier>{6C1CAB87-4B21-49F0-A909-BE62C834ED5A}</UniqueIdentifier>
+      <UniqueIdentifier>{D485AFBD-8382-482D-BD7F-9694AA2CDC4A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\OSC">
-      <UniqueIdentifier>{C4B038EC-2A34-48D6-A10C-3AB12D6D4B2F}</UniqueIdentifier>
+      <UniqueIdentifier>{E2E2768A-3D5E-4D7D-BC59-348B70AF7FAA}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\OSC\src">
-      <UniqueIdentifier>{16F48ED0-7091-4F10-B9EC-1EE1BE909CD6}</UniqueIdentifier>
+      <UniqueIdentifier>{959AC21F-AF96-47F7-86C4-CF2EB81D1B04}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\OSC\src\ip">
-      <UniqueIdentifier>{8D48C251-78B3-4641-990D-68F800437F9D}</UniqueIdentifier>
+      <UniqueIdentifier>{54C0CD41-44F3-4792-9612-A1CBD6D9C8FA}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\OSC\src\osc">
-      <UniqueIdentifier>{B3D75A14-1B49-4D86-9E36-AE4DEC74B7F4}</UniqueIdentifier>
+      <UniqueIdentifier>{1B2F6CC2-786D-439F-A77B-AE026245E206}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blocks\OSC\src\ip\win32">
-      <UniqueIdentifier>{0DBB2E5F-65A5-4709-AC1B-F775D1E70356}</UniqueIdentifier>
+      <UniqueIdentifier>{6C0BB7EB-AFD0-4F29-824B-81062CB13926}</UniqueIdentifier>
     </Filter>
     <Filter Include="assets">
-      <UniqueIdentifier>{3e45864a-66d1-4947-ac6c-7db2d27842ab}</UniqueIdentifier>
+      <UniqueIdentifier>{b1028527-48c0-4bed-b997-6b6f12e2c151}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\MixNMapApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\src\MixNMapApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.cpp">
+      <Filter>Blocks\Cinder-Hap2\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.c">
+      <Filter>Blocks\Cinder-Hap2\src</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.h">
+      <Filter>Blocks\Cinder-Hap2\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.h">
+      <Filter>Blocks\Cinder-Hap2\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.inl">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imconfig.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_internal.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp">
+      <Filter>Blocks\ImGui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiExceptions.h">
       <Filter>Blocks\Midi2\include</Filter>
     </ClInclude>
@@ -95,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiOut.h">
       <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\lib\RtError.h">
-      <Filter>Blocks\Midi2\lib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.h">
       <Filter>Blocks\Midi2\lib</Filter>
@@ -111,9 +165,6 @@
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.cpp">
       <Filter>Blocks\Midi2\lib</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\blocks\Cinder-OpenCV\include\CinderOpenCV.h">
-      <Filter>Blocks\OpenCV\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\AudioWrapper.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
@@ -126,6 +177,12 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logger.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h">
+      <Filter>Blocks\Reymenta\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h">
+      <Filter>Blocks\Reymenta\include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
@@ -136,6 +193,9 @@
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Textures.h">
+      <Filter>Blocks\Reymenta\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h">
       <Filter>Blocks\Reymenta\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Watchdog.h">
@@ -153,6 +213,12 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logger.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp">
+      <Filter>Blocks\Reymenta\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp">
+      <Filter>Blocks\Reymenta\src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
@@ -165,20 +231,23 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Textures.cpp">
       <Filter>Blocks\Reymenta\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp">
+      <Filter>Blocks\Reymenta\src</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h">
-      <Filter>Blocks\Warping\include</Filter>
+      <Filter>Blocks\Cinder-Warping\include</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\Warp.cpp">
-      <Filter>Blocks\Warping\src</Filter>
+      <Filter>Blocks\Cinder-Warping\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpBilinear.cpp">
-      <Filter>Blocks\Warping\src</Filter>
+      <Filter>Blocks\Cinder-Warping\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspective.cpp">
-      <Filter>Blocks\Warping\src</Filter>
+      <Filter>Blocks\Cinder-Warping\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspectiveBilinear.cpp">
-      <Filter>Blocks\Warping\src</Filter>
+      <Filter>Blocks\Cinder-Warping\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.cpp">
       <Filter>Blocks\Cinder-WebSocketPP\src</Filter>
@@ -285,46 +354,25 @@
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp">
       <Filter>Blocks\OSC\src\ip\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp">
-      <Filter>Blocks\imGui\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp">
-      <Filter>Blocks\imGui\src</Filter>
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp">
+      <Filter>Blocks\Midi2\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\AppConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp">
-      <Filter>Blocks\Reymenta\src</Filter>
-    </ClCompile>
-    <ClInclude Include="..\include\MixNMapApp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h">
-      <Filter>Blocks\Reymenta\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h">
-      <Filter>Blocks\Midi2\include</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\WindowMngr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h">
-      <Filter>Blocks\imGui\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h">
-      <Filter>Blocks\imGui\src</Filter>
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h">
+      <Filter>Blocks\Midi2\include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\AppConsole.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h">
-      <Filter>Blocks\Reymenta\include</Filter>
+    <ClInclude Include="..\include\MixNMapApp.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,58 +381,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\assets\mix.frag">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\pointsphere.frag">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\pointsphere.vert">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\spectrum.frag">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\spectrum.vert">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\0.glsl">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\1.glsl">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\2.glsl">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\3.glsl">
-      <Filter>assets</Filter>
-    </None>
-    <None Include="..\assets\shadertoy.inc">
+    <None Include="..\assets\passthru.frag">
       <Filter>assets</Filter>
     </None>
     <None Include="..\assets\passthru.vert">
       <Filter>assets</Filter>
     </None>
-    <None Include="..\assets\4.glsl">
-      <Filter>assets</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\MixNMapApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp">
-      <Filter>Blocks\Reymenta\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp">
-      <Filter>Blocks\Midi2\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
-      <Filter>Blocks\imGui\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
-      <Filter>Blocks\imGui\src</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{804EF824-9E8F-40A7-9EDF-3A9822864C8B}</ProjectGuid>
-    <RootNamespace>Batchass</RootNamespace>
+    <ProjectGuid>{BC644FB2-005A-44F3-8789-A3B0EE96DB04}</ProjectGuid>
+    <RootNamespace>MixNMap</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -47,14 +47,11 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>$(ProjectName)-debug</TargetName>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;..\..\..\\include;..\..\..\include\asio;..\..\..\\boost;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-ImGui\src;..\..\..\blocks\Cinder-MeshHelper\src;$(KINECTSDK10_DIR)\inc;$(KINECT_TOOLKIT_DIR)inc;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-OpenCV\include;..\..\..\blocks\Cinder-OpenCV\include\opencv2;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\QuickTime\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\include\asio;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -64,11 +61,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249d.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249d.lib;..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib;..\..\..\blocks\Cinder-Spout\lib\Spout2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -77,17 +74,14 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>rem xcopy /y "..\..\..\blocks\Cinder-KCB\lib\x86\dll\Release\KinectCommonBridge.dll" "$(OutDir)"
-rem xcopy /y "$(KINECT_TOOLKIT_DIR)Redist\x86\FaceTrackLib.dll" "$(OutDir)"
-rem xcopy /y "$(KINECT_TOOLKIT_DIR)Redist\x86\FaceTrackData.dll" "$(OutDir)"
-rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
-rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\..\..\\include;..\..\..\include\asio;..\..\..\\boost;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-ImGui\src;..\..\..\blocks\Cinder-MeshHelper\src;$(KINECTSDK10_DIR)\inc;$(KINECT_TOOLKIT_DIR)inc;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-MinimalUI\include;..\..\..\blocks\Cinder-OpenCV\include;..\..\..\blocks\Cinder-OpenCV\include\opencv2;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\QuickTime\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\include\asio;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
@@ -98,11 +92,11 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies);..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_calib3d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_contrib249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_core249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_features2d249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_flann249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_gpu249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_imgproc249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_legacy249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ml249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_nonfree249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_objdetect249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ocl249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_photo249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_stitching249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_superres249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_ts249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_video249.lib;..\..\..\blocks\OpenCV\lib\vc2013\x86\opencv_videostab249.lib;..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib;..\..\..\blocks\Cinder-Spout\lib\Spout2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -113,10 +107,7 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "..\..\..\blocks\Cinder-KCB\lib\x86\dll\Release\KinectCommonBridge.dll" "$(OutDir)"
-xcopy /y "$(KINECT_TOOLKIT_DIR)Redist\x86\FaceTrackLib.dll" "$(OutDir)"
-xcopy /y "$(KINECT_TOOLKIT_DIR)Redist\x86\FaceTrackData.dll" "$(OutDir)"
-xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
 xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -124,28 +115,38 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h" />
+    <None Include="..\assets\passthru.frag" />
+    <None Include="..\assets\passthru.vert" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h" />
     <ClInclude Include="..\include\AppConsole.h" />
     <ClInclude Include="..\include\MixNMapApp.h" />
     <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.inl" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imconfig.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiExceptions.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiHub.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiOut.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\lib\RtError.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-OpenCV\include\CinderOpenCV.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\AudioWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Batchass.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\JSONWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logger.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Shaders.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\SpoutWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Textures.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Watchdog.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.h" />
@@ -169,18 +170,17 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.h" />
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.h" />
     <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
-    <ClInclude Include="..\include\WindowMngr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
     <ClCompile Include="..\src\AppConsole.cpp" />
     <ClCompile Include="..\src\MixNMapApp.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiHub.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiOut.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.cpp" />
@@ -188,10 +188,13 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Batchass.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\JSONWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logger.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Shaders.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\SpoutWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Textures.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\Warp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpBilinear.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspective.cpp" />
@@ -210,20 +213,6 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscTypes.cpp" />
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\NetworkingUtils.cpp" />
     <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\assets\0.glsl" />
-    <None Include="..\assets\1.glsl" />
-    <None Include="..\assets\2.glsl" />
-    <None Include="..\assets\3.glsl" />
-    <None Include="..\assets\4.glsl" />
-    <None Include="..\assets\mix.frag" />
-    <None Include="..\assets\passthru.vert" />
-    <None Include="..\assets\pointsphere.frag" />
-    <None Include="..\assets\pointsphere.vert" />
-    <None Include="..\assets\shadertoy.inc" />
-    <None Include="..\assets\spectrum.frag" />
-    <None Include="..\assets\spectrum.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
