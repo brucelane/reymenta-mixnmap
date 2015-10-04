@@ -2,8 +2,6 @@
 
 uniform sampler2D uSampler;
 
-uniform int uMode;
-
 in Vertex
 {
 	vec2 	uv;
