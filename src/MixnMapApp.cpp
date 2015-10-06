@@ -106,7 +106,6 @@ void MixNMapApp::setup()
 	showTest = showTheme = showOSC = showFbos = false;
 
 	// set ui window and io events callbacks
-	// 20150927 ui::connectWindow(getWindow());
 	ui::initialize();
 
 	mSeconds = 0;
@@ -219,25 +218,25 @@ void MixNMapApp::draw()
 			// left zoom
 			ui::SliderFloat("lZoom", &mParameterBag->iZoomLeft, mBatchass->minZoom, mBatchass->maxZoom);
 
-			/*ui::Columns(4);
-			ui::Text("ID"); ui::NextColumn();
-			ui::Text("idx"); ui::NextColumn();
-			ui::Text("mode"); ui::NextColumn();
-			ui::Text("actv"); ui::NextColumn();
-			ui::Separator();
-			for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
-			{
-			if (mParameterBag->mWarpFbos[i].textureIndex == 3)
-			{
-			ui::Text("%d", i); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
+			//ui::Columns(4);
+			//ui::Text("ID"); ui::NextColumn();
+			//ui::Text("idx"); ui::NextColumn();
+			//ui::Text("mode"); ui::NextColumn();
+			//ui::Text("actv"); ui::NextColumn();
+			//ui::Separator();
+			//for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
+			//{
+			//if (mParameterBag->mWarpFbos[i].textureIndex == 3)
+			//{
+			//ui::Text("%d", i); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
 
-			}
+			//}
 
-			}
-			ui::Columns(1);*/
+			//}
+			//ui::Columns(1);
 
 		}
 		else
@@ -251,25 +250,25 @@ void MixNMapApp::draw()
 			// left zoom
 			ui::SliderFloat("lZoom", &mParameterBag->iZoomLeft, mBatchass->minZoom, mBatchass->maxZoom);
 
-			/*ui::Columns(4);
-			ui::Text("ID"); ui::NextColumn();
-			ui::Text("idx"); ui::NextColumn();
-			ui::Text("mode"); ui::NextColumn();
-			ui::Text("actv"); ui::NextColumn();
-			ui::Separator();
-			for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
-			{
-			if (mParameterBag->mWarpFbos[i].textureIndex == 4)
-			{
-			ui::Text("%d", i); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
+			//ui::Columns(4);
+			//ui::Text("ID"); ui::NextColumn();
+			//ui::Text("idx"); ui::NextColumn();
+			//ui::Text("mode"); ui::NextColumn();
+			//ui::Text("actv"); ui::NextColumn();
+			//ui::Separator();
+			//for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
+			//{
+			//if (mParameterBag->mWarpFbos[i].textureIndex == 4)
+			//{
+			//ui::Text("%d", i); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
 
-			}
+			//}
 
-			}
-			ui::Columns(1);*/
+			//}
+			//ui::Columns(1);
 		}
 		ui::PopStyleColor(3);
 		ui::PopItemWidth();
@@ -1252,7 +1251,6 @@ void MixNMapApp::draw()
 	}
 #pragma endregion OSC
 
-
 	gl::disableAlphaBlending();
 }
 
@@ -1281,7 +1279,6 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 	int index;
 	string ext = "";
 	// use the last of the dropped files
-	//boost::filesystem::path 
 	const fs::path &mPath = event.getFile(event.getNumFiles() - 1);
 	string mFile = mPath.string();
 	int dotIndex = mFile.find_last_of(".");

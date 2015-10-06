@@ -25,7 +25,6 @@ along with Cinder-MIDI.  If not, see <http://www.gnu.org/licenses/>.
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/GlslProg.h"
-//#include "OSCSender.h"
 
 #include <list>
 
@@ -54,19 +53,19 @@ using namespace Reymenta;
 
 class MixNMapApp : public App {
 public:
-	void 						setup();
-	void 						update();
-	void						draw();
+	void 						setup() override;
+	void 						update() override;
+	void						draw() override;
 	void 						keyDown(KeyEvent event);
 	void 						keyUp(KeyEvent event);
-	void 						fileDrop(FileDropEvent event);
+	void 						fileDrop(FileDropEvent event) override;
 	void 						shutdown();
-	void 						resize();
-	void 						mouseMove(MouseEvent event);
-	void 						mouseDown(MouseEvent event);
-	void 						mouseDrag(MouseEvent event);
-	void 						mouseUp(MouseEvent event);
-	void 						mouseWheel(MouseEvent event);
+	void 						resize() override;
+	void 						mouseMove(MouseEvent event) override;
+	void 						mouseDown(MouseEvent event) override;
+	void 						mouseDrag(MouseEvent event) override;
+	void 						mouseUp(MouseEvent event) override;
+	void 						mouseWheel(MouseEvent event) override;
 	void 						saveThumb();
 	//! Override to receive window activate events
 	void						activate();

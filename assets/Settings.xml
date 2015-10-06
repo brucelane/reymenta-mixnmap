@@ -30,7 +30,7 @@
 	<FftSize value="512"/>
 	<WindowSize value="1024"/>
 	<Info value="light4events.herokuapp.com 80"/>
-	<AssetsPath value="jeyzikaround"/>
+	<AssetsPath value="batchass"/>
 	<UseLineIn value="0"/>
 </settings>
 
