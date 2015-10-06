@@ -1,5 +1,9 @@
 //for texture1 or image sequence1 input
-
+in Vertex
+{
+	vec2 	uv;
+} vertex;
+out vec4 fragColor;
 void main(void)
 {
 	vec2 uv = gl_FragCoord.xy / iResolution.xy;
@@ -14,5 +18,5 @@ void main(void)
 		uv.y = 1.0 - uv.y;
 	}
    	vec4 tex = texture2D(iChannel1, uv);
-   	gl_FragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);
+   	fragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);
 }
