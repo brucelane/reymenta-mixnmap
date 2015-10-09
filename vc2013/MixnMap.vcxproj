@@ -229,6 +229,9 @@ rem xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Com
     <None Include="..\assets\spectrum.frag" />
     <None Include="..\assets\spectrum.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\assets\Settings.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

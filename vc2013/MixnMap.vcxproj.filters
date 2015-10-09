@@ -408,4 +408,9 @@
       <Filter>Blocks\imGui\src</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\assets\Settings.xml">
+      <Filter>assets</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>
