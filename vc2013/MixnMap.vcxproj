@@ -132,6 +132,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logan.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4frame.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4frame_static.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4hc.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\xxhash.h" />
     <ClInclude Include="..\include\AppConsole.h" />
     <ClInclude Include="..\include\MixNMapApp.h" />
     <ClInclude Include="..\include\Resources.h" />
@@ -150,7 +156,6 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\AudioWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Batchass.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\JSONWrapper.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logger.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h" />
@@ -184,6 +189,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logan.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4frame.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4hc.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\xxhash.c" />
     <ClCompile Include="..\src\AppConsole.cpp" />
     <ClCompile Include="..\src\MixNMapApp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.cpp" />
@@ -198,7 +208,6 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\AudioWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Batchass.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\JSONWrapper.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logger.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp" />

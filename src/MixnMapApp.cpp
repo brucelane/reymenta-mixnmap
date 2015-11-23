@@ -100,7 +100,6 @@ void MixNMapApp::setup()
 	largePreviewH = (mParameterBag->mPreviewHeight + margin) * 2.4;
 	displayHeight = mParameterBag->mMainDisplayHeight - 50;
 	mouseGlobal = false;
-	static float f = 0.0f;
 
 	showConsole = showGlobal = showTextures = showAudio = showMidi = showChannels = showShaders = true;
 	showTest = showTheme = showOSC = showFbos = false;
@@ -425,6 +424,7 @@ void MixNMapApp::draw()
 		xPos += w * 2 + margin;
 	}
 #pragma endregion channels
+
 #pragma region Info
 
 	ui::SetNextWindowSize(ImVec2(largePreviewW + 20, largePreviewH), ImGuiSetCond_Once);
@@ -588,6 +588,7 @@ void MixNMapApp::draw()
 
 	}
 #pragma endregion MIDI
+
 #pragma region Global
 
 	ui::SetNextWindowSize(ImVec2(largeW, displayHeight), ImGuiSetCond_Once);
@@ -943,6 +944,7 @@ void MixNMapApp::draw()
 		yPos += h + margin;
 	}
 #pragma endregion warps
+
 #pragma region textures
 	if (showTextures)
 	{
@@ -1028,6 +1030,7 @@ void MixNMapApp::draw()
 		yPos += h*1.4 + margin;
 	}
 #pragma endregion textures
+
 #pragma region library
 	if (showShaders)
 	{
@@ -1173,6 +1176,7 @@ void MixNMapApp::draw()
 		yPos += h + margin;
 	}
 #pragma endregion library
+
 #pragma region fbos
 
 	if (showFbos)

@@ -24,9 +24,10 @@
 	<CursorVisible value="1"/>
 	<IsOSCSender value="1"/>
 	<AreWebSocketsEnabledAtStartup value="1"/>
+	<IsRouter value="0"/>
 	<IsWebSocketsServer value="0"/>
-	<WebSocketsHost value="srv"/>
-	<WebSocketsPort value="9999"/>
+	<WebSocketsHost value="localhost"/>
+	<WebSocketsPort value="7002"/>
 	<FftSize value="512"/>
 	<WindowSize value="1024"/>
 	<Info value="light4events.herokuapp.com 80"/>
