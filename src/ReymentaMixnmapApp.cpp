@@ -981,8 +981,13 @@ void ReymentaMixnmapApp::draw()
 			ui::SliderFloat("ABP Bend", &mParameterBag->mBend, -20.0f, 20.0f);
 
 		}
-
-
+		if (ui::CollapsingHeader("Tracks", NULL, true, true))
+		{
+			for (int a = 0; a < mParameterBag->MAX; a++)
+			{
+				if (mBatchass->getTrack(a) != "default.glsl") ui::Button(mBatchass->getTrack(a).c_str());
+			}
+		}
 	}
 	ui::End();
 
