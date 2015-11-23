@@ -13,74 +13,71 @@ TODO
 
 */
 
-#include "MixNMapApp.h"
+#include "ReymentaMixnmapApp.h"
 
-void MixNMapApp::setup()
+void ReymentaMixnmapApp::prepare(Settings* settings)
 {
+	// Do not allow resizing our window. Feel free to remove this limitation.
+	settings->setResizable(false);
+	settings->setBorderless();
+}
 
+void ReymentaMixnmapApp::setup()
+{
 	int wr;
 	// parameters
 	mParameterBag = ParameterBag::create();
+	mParameterBag->mLiveCode = true;
+	mParameterBag->mRenderThumbs = false;
 	// utils
 	mBatchass = Batchass::create(mParameterBag);
-	mBatchass->log("start");
-
+	CI_LOG_V("reymenta setup");
+	mFirstLaunch = true;
 	wr = mBatchass->getWindowsResolution();
-
 	setWindowSize(mParameterBag->mMainWindowWidth, mParameterBag->mMainWindowHeight);
+	// setup shaders and textures
+	mBatchass->setup();
 	// Setting an unrealistically high frame rate effectively
 	// disables frame rate limiting
 	//settings->setFrameRate(10000.0f);
 	setFrameRate(60.0f);
 	//settings->setWindowPos(ivec2(w - mParameterBag->mMainWindowWidth, 0));
 	setWindowPos(ivec2(0, 0));
-	//setResizable(false);
+	mParameterBag->iResolution.x = mParameterBag->mRenderWidth;
+	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
+	mParameterBag->mRenderResolution = ivec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);//20141214 was 0
 #if defined(DEBUG)
 	setWindowSize(640, 480);
-
 #else
-	//setBorderless();
-#endif
 	// if mStandalone, put on the 2nd screen
 	if (mParameterBag->mStandalone)
 	{
 		setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 		setWindowPos(ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY));
-		//setBorderless();
 	}
 
-	//0SetWindowPos
-	mBatchass->log("setup");
-	removeUI = false;
-	/*ci::app::App::get()->getSignalShutdown().connect([&]() {
-	MixNMapApp::shutdown();
-	});*/
-	// instanciate the json wrapper class
-	mJson = JSONWrapper::create();
-	// setup shaders and textures
-	mBatchass->setup();
-
+#endif
 	mParameterBag->mMode = MODE_WARP;
-	// setup the main window and associated draw function
-	mMainWindow = getWindow();
-	mMainWindow->setTitle("MixNMap");
-	//mMainWindow->connectClose(&MixNMapApp::shutdown, this);
 
-	mBatchass->getWindowsResolution();
+	// Load our textures and transition shader in the main thread.
+	try {
+		gl::Texture::Format fmt;
+		fmt.setWrap(GL_REPEAT, GL_REPEAT);
 
-	mParameterBag->iResolution.x = mParameterBag->mRenderWidth;
-	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
-	mParameterBag->mRenderResolution = ivec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+		mChannel0 = gl::Texture::create(loadImage(loadAsset("presets/tex16.png")), fmt);
+		mChannel1 = gl::Texture::create(loadImage(loadAsset("presets/tex06.jpg")), fmt);
+		mChannel2 = gl::Texture::create(loadImage(loadAsset("presets/tex09.jpg")), fmt);
+		mChannel3 = gl::Texture::create(loadImage(loadAsset("presets/tex02.jpg")), fmt);
 
-	mBatchass->log("createRenderWindow, resolution:" + toString(mParameterBag->iResolution.x) + "x" + toString(mParameterBag->iResolution.y));
-
-	mMainWindow->setBorderless();
-	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);//20141214 was 0
-	mMainWindow->setPos(mParameterBag->mRenderX, mParameterBag->mRenderY);
-
-	// instanciate the audio class
-	mAudio = AudioWrapper::create(mParameterBag, mBatchass->getTexturesRef());
+		mShaderTransition = gl::GlslProg::create(loadAsset("common/shadertoy.vert"), loadAsset("common/shadertoy.frag"));
+	}
+	catch (const std::exception& e) {
+		// Quit if anything went wrong.
+		CI_LOG_EXCEPTION("Failed to load common textures and shaders:", e);
+		quit(); return;
+	}
 	// instanciate the spout class
 	mSpout = SpoutWrapper::create(mParameterBag, mBatchass->getTexturesRef());
 	// instanciate the console class
@@ -107,35 +104,114 @@ void MixNMapApp::setup()
 	// set ui window and io events callbacks
 	ui::initialize();
 
-	mSeconds = 0;
 	// RTE mBatchass->getShadersRef()->setupLiveShader();
 	mBatchass->tapTempo();
 }
 
+void ReymentaMixnmapApp::cleanup()
+{
+	CI_LOG_V("shutdown");
+	// save warp settings
+	mBatchass->getWarpsRef()->save();
+	// save params
+	mParameterBag->save();
+	ui::Shutdown();
+	// close spout
+	mSpout->shutdown();
+	quit();
+}
 
+void ReymentaMixnmapApp::update()
+{
+	mSpout->update();
+	mBatchass->update();
+	//mAudio->update();
+	mParameterBag->iFps = getAverageFps();
+	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
+	getWindow()->setTitle(std::string("(" + mParameterBag->sFps + " fps)"));
+}
 
-void MixNMapApp::draw()
+void ReymentaMixnmapApp::draw()
 {
 	// must be first to avoid gl matrices to change
 	// draw from Spout receivers
 	mSpout->draw();
 	// draw the fbos
 	mBatchass->getTexturesRef()->draw();
-	// clear
-	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
-	gl::color(ColorAf(1.0f, 1.0f, 1.0f, 1.0f));
+	// Bind textures.
+	if (mChannel0) mChannel0->bind(0);
+	if (mChannel1) mChannel1->bind(1);
+	if (mChannel2) mChannel2->bind(2);
+	if (mChannel3) mChannel3->bind(3);
 
-	//gl::setViewport(getWindowBounds());
-	gl::enableAlphaBlending();
-	//gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight, false);//20150702 was true
-	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);// , false);
-	//gl::setMatricesWindow(getWindowSize());
+	// Render the current shader to a frame buffer.
+	if ( mBatchass->getShadersRef()->getShaderCurrent() && mBufferCurrent) {
+		gl::ScopedFramebuffer fbo(mBufferCurrent);
 
+		// Bind shader.
+		gl::ScopedGlslProg shader(mBatchass->getShadersRef()->getShaderCurrent());
+		setUniforms();
+
+		// Clear buffer and draw full screen quad (flipped).
+		gl::clear();
+		gl::drawSolidRect(Rectf(0, (float)getWindowHeight(), (float)getWindowWidth(), 0));
+	}
+
+	// Render the next shader to a frame buffer.
+	if (mBatchass->getShadersRef()->getShaderNext() && mBufferNext) {
+		gl::ScopedFramebuffer fbo(mBufferNext);
+
+		// Bind shader.
+		gl::ScopedGlslProg shader(mBatchass->getShadersRef()->getShaderNext());
+		setUniforms();
+
+		// Clear buffer and draw full screen quad (flipped).
+		gl::clear();
+		gl::drawSolidRect(Rectf(0, (float)getWindowHeight(), (float)getWindowWidth(), 0));
+	}
+
+	// Perform a cross-fade between the two shaders.
+	double time = getElapsedSeconds() - mParameterBag->mTransitionTime;
+	double fade = math<double>::clamp(time / mParameterBag->mTransitionDuration, 0.0, 1.0);
+
+	if (fade <= 0.0) {
+		// Transition has not yet started. Keep drawing current buffer.
+		gl::draw(mBufferCurrent->getColorTexture(), getWindowBounds());
+	}
+	else if (fade < 1.0) {
+		// Transition is in progress.
+		// Use a transition shader to avoid having to draw one buffer on top of another.
+		gl::ScopedTextureBind tex0(mBufferCurrent->getColorTexture(), 0);
+		gl::ScopedTextureBind tex1(mBufferNext->getColorTexture(), 1);
+
+		gl::ScopedGlslProg shader(mShaderTransition);
+		mShaderTransition->uniform("iSrc", 0);
+		mShaderTransition->uniform("iDst", 1);
+		mShaderTransition->uniform("iFade", (float)fade);
+
+		gl::drawSolidRect(getWindowBounds());
+	}
+	else if (mBatchass->getShadersRef()->getShaderNext()) {
+		// Transition is done. Swap shaders.
+		gl::draw(mBufferNext->getColorTexture(), getWindowBounds());
+		mBatchass->getShadersRef()->swapShaders();
+		
+	}
+	else {
+		// No transition in progress.
+		gl::draw(mBufferCurrent->getColorTexture(), getWindowBounds());
+	}
+	if (!mParameterBag->mShowUI || mBatchass->getWarpsRef()->isEditModeEnabled())
+	{
+		return;
+	}
+	//gl::enableAlphaBlending();
+	//gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	mBatchass->getWarpsRef()->draw();
+	//gl::disableAlphaBlending();
 
-	gl::disableAlphaBlending();
-	//imgui
-	if (removeUI || mBatchass->getWarpsRef()->isEditModeEnabled())
+	//imgui TO MIGRATE AND ADD FROM BatchassApp TOO
+	if (!mParameterBag->mShowUI || mBatchass->getWarpsRef()->isEditModeEnabled())
 	{
 		return;
 	}
@@ -516,7 +592,7 @@ void MixNMapApp::draw()
 			}
 
 			ui::SliderFloat("mult x", &mParameterBag->controlValues[13], 0.01f, 10.0f);
-			ImGui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
+			//ImGui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
 
 			if (mParameterBag->maxVolume > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 			ui::PlotLines("Volume", &values.front(), (int)values.size(), values_offset, toString(mBatchass->formatFloat(mParameterBag->maxVolume)).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
@@ -1255,31 +1331,183 @@ void MixNMapApp::draw()
 	}
 #pragma endregion OSC
 
-	gl::disableAlphaBlending();
+	//gl::disableAlphaBlending();
+}
+void ReymentaMixnmapApp::mouseMove(MouseEvent event)
+{
+	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseMove(event);
+}
+void ReymentaMixnmapApp::mouseDown(MouseEvent event)
+{
+	mMouse.x = (float)event.getPos().x;
+	mMouse.y = (float)event.getPos().y;
+	mMouse.z = (float)event.getPos().x;
+	mMouse.w = (float)event.getPos().y;
+	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDown(event);
+	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDown(event);
+
 }
 
-void MixNMapApp::saveThumb()
+void ReymentaMixnmapApp::mouseDrag(MouseEvent event)
 {
-	/* TODO
-	string filename;
-	try
-	{
-	filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
-	writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
-	mBatchass->log("saved:" + filename);
-	}
-	catch (const std::exception &e)
-	{
-	mBatchass->log("unable to save:" + filename + string(e.what()));
-	}*/
+	mMouse.x = (float)event.getPos().x;
+	mMouse.y = (float)event.getPos().y;
+	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDrag(event);
+	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDrag(event);
+
 }
-void MixNMapApp::keyUp(KeyEvent event)
+void ReymentaMixnmapApp::mouseUp(MouseEvent event)
+{
+	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseUp(event);
+	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseUp(event);
+}
+void ReymentaMixnmapApp::keyUp(KeyEvent event)
 {
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->keyUp(event);
+
+}
+void ReymentaMixnmapApp::keyDown(KeyEvent event)
+{
+
+	int textureIndex = mParameterBag->iChannels[mParameterBag->selectedChannel];
+	int keyCode = event.getCode();
+	bool handled = false;
+	mBatchass->getWarpsRef()->keyDown(event);
+	if (!handled && (keyCode > 255 && keyCode < 265))
+	{
+		handled = true;
+		mParameterBag->selectedChannel = keyCode - 256;
+	}
+	if (!handled)
+	{
+		switch (keyCode)
+		{
+		case ci::app::KeyEvent::KEY_c:
+			mBatchass->createWarp();
+			break;
+		case ci::app::KeyEvent::KEY_s:
+			if (event.isControlDown())
+			{
+				// save warp settings
+				mBatchass->getWarpsRef()->save("warps2.xml");
+				// save params
+				mParameterBag->save();
+			}
+			break;
+		case ci::app::KeyEvent::KEY_r:
+			mParameterBag->controlValues[1] += 0.2;
+			if (mParameterBag->controlValues[1] > 0.9) mParameterBag->controlValues[1] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_g:
+			mParameterBag->controlValues[2] += 0.2;
+			if (mParameterBag->controlValues[2] > 0.9) mParameterBag->controlValues[2] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_b:
+			mParameterBag->controlValues[3] += 0.2;
+			if (mParameterBag->controlValues[3] > 0.9) mParameterBag->controlValues[3] = 0.0;
+			break;
+		case ci::app::KeyEvent::KEY_p:
+			mParameterBag->mPreviewEnabled = !mParameterBag->mPreviewEnabled;
+			break;
+		case ci::app::KeyEvent::KEY_v:
+			mParameterBag->controlValues[48] = !mParameterBag->controlValues[48];
+			break;
+		case ci::app::KeyEvent::KEY_f:
+			break;
+		case ci::app::KeyEvent::KEY_h:
+			if (mParameterBag->mCursorVisible)
+			{
+				mParameterBag->mShowUI = true;
+				hideCursor();
+			}
+			else
+			{
+				mParameterBag->mShowUI = false;
+				showCursor();
+			}
+			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
+			break;
+		case ci::app::KeyEvent::KEY_ESCAPE:
+			mParameterBag->save();
+			ui::Shutdown();
+			mBatchass->shutdown();
+
+			quit();
+			break;
+		case KeyEvent::KEY_SPACE:
+			//random();
+			mBatchass->getShadersRef()->random();
+			break;
+		case ci::app::KeyEvent::KEY_0:
+		case 256:
+			mParameterBag->selectedChannel = 0;
+			break;
+		case ci::app::KeyEvent::KEY_1:
+		case 257:
+			mParameterBag->selectedChannel = 1;
+			break;
+		case ci::app::KeyEvent::KEY_2:
+		case 258:
+			mParameterBag->selectedChannel = 2;
+			break;
+		case ci::app::KeyEvent::KEY_3:
+		case 259:
+			mParameterBag->selectedChannel = 3;
+			break;
+		case ci::app::KeyEvent::KEY_4:
+		case 260:
+			mParameterBag->selectedChannel = 4;
+			break;
+		case ci::app::KeyEvent::KEY_5:
+		case 261:
+			mParameterBag->selectedChannel = 5;
+			break;
+		case ci::app::KeyEvent::KEY_6:
+		case 262:
+			mParameterBag->selectedChannel = 6;
+			break;
+		case ci::app::KeyEvent::KEY_7:
+		case 263:
+			mParameterBag->selectedChannel = 7;
+			break;
+		case ci::app::KeyEvent::KEY_8:
+		case 264:
+			mParameterBag->selectedChannel = 8;
+			break;
+		case ci::app::KeyEvent::KEY_PLUS:
+		case 270:
+			textureIndex++;
+			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
+			break;
+		case ci::app::KeyEvent::KEY_MINUS:
+		case 269:
+			textureIndex--;
+			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
-void MixNMapApp::fileDrop(FileDropEvent event)
+void ReymentaMixnmapApp::resize()
 {
+	mBatchass->getWarpsRef()->resize();
+	// Create/resize frame buffers (no multisampling)
+	mBufferCurrent = gl::Fbo::create(getWindowWidth(), getWindowHeight());
+	mBufferNext = gl::Fbo::create(getWindowWidth(), getWindowHeight());
+}
+
+void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
+{
+	// Send all file requests to the loading thread.
+	size_t count = event.getNumFiles();
+	//for (size_t i = 0; i < count && mRequests->isNotFull(); ++i) {
+		//mRequests->pushFront(event.getFile(i));
+	for (size_t i = 0; i < count ; ++i) {
+		mBatchass->getShadersRef()->addRequest(event.getFile(i));
+	}
+	// TO MIGRATE
 	int index;
 	string ext = "";
 	// use the last of the dropped files
@@ -1294,7 +1522,7 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 
 	if (ext == "wav" || ext == "mp3")
 	{
-		mAudio->loadWaveFile(mFile);
+		//mAudio->loadWaveFile(mFile);
 	}
 	else if (ext == "png" || ext == "jpg")
 	{
@@ -1353,7 +1581,7 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 			}
 			catch (cinder::JsonTree::Exception exception)
 			{
-				mBatchass->log("patchjsonparser exception " + mFile + ": " + exception.what());
+				CI_LOG_V("patchjsonparser exception " + mFile + ": " + exception.what());
 
 			}
 			//Assets
@@ -1365,7 +1593,7 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 				int channel = jsonElement->getChild("channel").getValue<int>();
 				if (channel < mBatchass->getTexturesRef()->getTextureCount())
 				{
-					mBatchass->log("asset filename: " + jsonFileName);
+					CI_LOG_V("asset filename: " + jsonFileName);
 					mBatchass->getTexturesRef()->setTexture(channel, jsonFileName);
 				}
 				i++;
@@ -1374,7 +1602,7 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 		}
 		catch (...)
 		{
-			mBatchass->log("patchjson parsing error: " + mFile);
+			CI_LOG_V("patchjson parsing error: " + mFile);
 		}
 	}
 	else if (ext == "txt")
@@ -1408,36 +1636,38 @@ void MixNMapApp::fileDrop(FileDropEvent event)
 	}*/
 	mParameterBag->isUIDirty = true;
 }
-
-void MixNMapApp::shutdown()
+// From imgui by Omar Cornut
+void ReymentaMixnmapApp::ShowAppConsole(bool* opened)
 {
-	mBatchass->log("shutdown");
-	// save warp settings
-	mBatchass->getWarpsRef()->save();
-	// save params
-	mParameterBag->save();
-	ui::Shutdown();
-	// close spout
-	mSpout->shutdown();
-	quit();
-
+	mConsole->Run("Console", opened);
 }
-
-void MixNMapApp::update()
+void ReymentaMixnmapApp::saveThumb()
 {
-	mParameterBag->iFps = getAverageFps();
-	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
-	getWindow()->setTitle("(" + mParameterBag->sFps + " fps) MixNMap");
-	if (mParameterBag->iGreyScale)
+	/* TODO
+	string filename;
+	try
 	{
-		mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
-		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
+	filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
+	writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
+	mBatchass->log("saved:" + filename);
 	}
+	catch (const std::exception &e)
+	{
+	mBatchass->log("unable to save:" + filename + string(e.what()));
+	}*/
+}
+void ReymentaMixnmapApp::setUniforms()
+{
+	auto shader = gl::context()->getGlslProg();
+	if (!shader)
+		return;
 
-	mParameterBag->iChannelTime[0] = getElapsedSeconds();
-	mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
-	mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
-	mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
+	// Calculate shader parameters.
+	vec3  iResolution(vec2(getWindowSize()), 1);
+	mParameterBag->iChannelTime[0] = (float)getElapsedSeconds();
+	mParameterBag->iChannelTime[1] = (float)getElapsedSeconds() - 1;
+	mParameterBag->iChannelTime[2] = (float)getElapsedSeconds() - 2;
+	mParameterBag->iChannelTime[3] = (float)getElapsedSeconds() - 3;
 	//
 	if (mParameterBag->mUseTimeWithTempo)
 	{
@@ -1445,169 +1675,41 @@ void MixNMapApp::update()
 	}
 	else
 	{
-		mParameterBag->iGlobalTime = getElapsedSeconds();
+		mParameterBag->iGlobalTime = (float)getElapsedSeconds();
 	}
 	mParameterBag->iGlobalTime *= mParameterBag->iSpeedMultiplier;
-	mSpout->update();
-	mBatchass->update();
-	mAudio->update();
+
+	vec3  iChannelResolution0 = mChannel0 ? vec3(mChannel0->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution1 = mChannel1 ? vec3(mChannel1->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution2 = mChannel2 ? vec3(mChannel2->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution3 = mChannel3 ? vec3(mChannel3->getSize(), 1) : vec3(1);
+
+	time_t now = time(0);
+	tm*    t = gmtime(&now);
+	vec4   iDate(float(t->tm_year + 1900),
+		float(t->tm_mon + 1),
+		float(t->tm_mday),
+		float(t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec));
+
+	// Set shader uniforms.
+	shader->uniform("iResolution", iResolution);
+	shader->uniform("iGlobalTime", mParameterBag->iGlobalTime);
+	shader->uniform("iChannelTime[0]", mParameterBag->iChannelTime[0]);
+	shader->uniform("iChannelTime[1]", mParameterBag->iChannelTime[1]);
+	shader->uniform("iChannelTime[2]", mParameterBag->iChannelTime[2]);
+	shader->uniform("iChannelTime[3]", mParameterBag->iChannelTime[3]);
+	shader->uniform("iChannelResolution[0]", iChannelResolution0);
+	shader->uniform("iChannelResolution[1]", iChannelResolution1);
+	shader->uniform("iChannelResolution[2]", iChannelResolution2);
+	shader->uniform("iChannelResolution[3]", iChannelResolution3);
+	shader->uniform("iMouse", mMouse);
+	shader->uniform("iChannel0", 0);
+	shader->uniform("iChannel1", 1);
+	shader->uniform("iChannel2", 2);
+	shader->uniform("iChannel3", 3);
+	shader->uniform("iDate", iDate);
 }
 
-void MixNMapApp::resize()
-{
-	mBatchass->getWarpsRef()->resize();
+#pragma warning(pop) // _CRT_SECURE_NO_WARNINGS
 
-}
-
-void MixNMapApp::mouseMove(MouseEvent event)
-{
-	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseMove(event);
-}
-
-void MixNMapApp::mouseDown(MouseEvent event)
-{
-	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDown(event);
-	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDown(event);
-}
-
-void MixNMapApp::mouseDrag(MouseEvent event)
-{
-	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDrag(event);
-	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDrag(event);
-}
-
-void MixNMapApp::mouseUp(MouseEvent event)
-{
-	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseUp(event);
-	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseUp(event);
-}
-void MixNMapApp::mouseWheel(MouseEvent event)
-{
-}
-void MixNMapApp::keyDown(KeyEvent event)
-{
-	int textureIndex = mParameterBag->iChannels[mParameterBag->selectedChannel];
-	int keyCode = event.getCode();
-	bool handled = false;
-	mBatchass->getWarpsRef()->keyDown(event);
-	if (!handled && (keyCode > 255 && keyCode < 265))
-	{
-		handled = true;
-		mParameterBag->selectedChannel = keyCode - 256;
-	}
-	if (!handled)
-	{
-		switch (keyCode)
-		{
-		case ci::app::KeyEvent::KEY_c:
-			mBatchass->createWarp();
-			break;
-
-		case ci::app::KeyEvent::KEY_s:
-			if (event.isControlDown())
-			{
-				// save warp settings
-				mBatchass->getWarpsRef()->save("warps2.xml");
-				// save params
-				mParameterBag->save();
-			}
-
-			break;
-		case ci::app::KeyEvent::KEY_r:
-			mParameterBag->controlValues[1] += 0.2;
-			if (mParameterBag->controlValues[1] > 0.9) mParameterBag->controlValues[1] = 0.0;
-			break;
-		case ci::app::KeyEvent::KEY_g:
-			mParameterBag->controlValues[2] += 0.2;
-			if (mParameterBag->controlValues[2] > 0.9) mParameterBag->controlValues[2] = 0.0;
-			break;
-		case ci::app::KeyEvent::KEY_b:
-			mParameterBag->controlValues[3] += 0.2;
-			if (mParameterBag->controlValues[3] > 0.9) mParameterBag->controlValues[3] = 0.0;
-			break;
-		case ci::app::KeyEvent::KEY_p:
-			mParameterBag->mPreviewEnabled = !mParameterBag->mPreviewEnabled;
-			break;
-		case ci::app::KeyEvent::KEY_v:
-			mParameterBag->controlValues[48] = !mParameterBag->controlValues[48];
-			break;
-		case ci::app::KeyEvent::KEY_f:
-			break;
-		case ci::app::KeyEvent::KEY_h:
-			if (mParameterBag->mCursorVisible)
-			{
-				removeUI = true;
-				hideCursor();
-			}
-			else
-			{
-				removeUI = false;
-				showCursor();
-			}
-			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
-			break;
-		case ci::app::KeyEvent::KEY_ESCAPE:
-			mParameterBag->save();
-			ui::Shutdown();
-			mBatchass->shutdown();
-
-			quit();
-			break;
-		case ci::app::KeyEvent::KEY_0:
-		case 256:
-			mParameterBag->selectedChannel = 0;
-			break;
-		case ci::app::KeyEvent::KEY_1:
-		case 257:
-			mParameterBag->selectedChannel = 1;
-			break;
-		case ci::app::KeyEvent::KEY_2:
-		case 258:
-			mParameterBag->selectedChannel = 2;
-			break;
-		case ci::app::KeyEvent::KEY_3:
-		case 259:
-			mParameterBag->selectedChannel = 3;
-			break;
-		case ci::app::KeyEvent::KEY_4:
-		case 260:
-			mParameterBag->selectedChannel = 4;
-			break;
-		case ci::app::KeyEvent::KEY_5:
-		case 261:
-			mParameterBag->selectedChannel = 5;
-			break;
-		case ci::app::KeyEvent::KEY_6:
-		case 262:
-			mParameterBag->selectedChannel = 6;
-			break;
-		case ci::app::KeyEvent::KEY_7:
-		case 263:
-			mParameterBag->selectedChannel = 7;
-			break;
-		case ci::app::KeyEvent::KEY_8:
-		case 264:
-			mParameterBag->selectedChannel = 8;
-			break;
-		case ci::app::KeyEvent::KEY_PLUS:
-		case 270:
-			textureIndex++;
-			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
-			break;
-		case ci::app::KeyEvent::KEY_MINUS:
-		case 269:
-			textureIndex--;
-			mBatchass->assignTextureToChannel(textureIndex, mParameterBag->selectedChannel);
-			break;
-		default:
-			break;
-		}
-	}
-}
-
-// From imgui by Omar Cornut
-void MixNMapApp::ShowAppConsole(bool* opened)
-{
-	mConsole->Run("Console", opened);
-}
-CINDER_APP(MixNMapApp, RendererGl)
+CINDER_APP(ReymentaMixnmapApp, RendererGl, &ReymentaMixnmapApp::prepare)
