@@ -16,7 +16,7 @@ Compile
 
 Follow me on https://www.facebook.com/reymentavisuals
 
-[![Patreon](assets/patreon.png)](http://www.patreon.com/reymenta) 
+[![Patreon](documentation/images/patreon.png)](http://www.patreon.com/reymenta) 
 
 If you wish to make a donation, my paypal is bruce at batchass dot fr
 
