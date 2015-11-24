@@ -41,6 +41,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "CinderImGui.h"
 // parameters
 #include "ParameterBag.h"
+// audio
+#include "AudioWrapper.h"
 // spout
 #include "SpoutWrapper.h"
 // Utils
@@ -97,6 +99,8 @@ private:
 
 	// parameters
 	ParameterBagRef				mParameterBag;
+	// audio
+	AudioWrapperRef				mAudio;
 	// utils
 	BatchassRef					mBatchass;
 	// console

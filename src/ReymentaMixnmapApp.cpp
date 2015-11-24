@@ -19,7 +19,11 @@ void ReymentaMixnmapApp::prepare(Settings* settings)
 {
 	// Do not allow resizing our window. Feel free to remove this limitation.
 	settings->setResizable(false);
+#if defined(DEBUG)
+	
+#else
 	settings->setBorderless();
+#endif
 }
 
 void ReymentaMixnmapApp::setup()
@@ -28,7 +32,7 @@ void ReymentaMixnmapApp::setup()
 	// parameters
 	mParameterBag = ParameterBag::create();
 	mParameterBag->mLiveCode = true;
-	mParameterBag->mRenderThumbs = false;
+	mParameterBag->mRenderThumbs = true;
 	// utils
 	mBatchass = Batchass::create(mParameterBag);
 	CI_LOG_V("reymenta setup");
@@ -78,6 +82,8 @@ void ReymentaMixnmapApp::setup()
 		CI_LOG_EXCEPTION("Failed to load common textures and shaders:", e);
 		quit(); return;
 	}
+	// instanciate the audio class
+	mAudio = AudioWrapper::create(mParameterBag, mBatchass->getTexturesRef());
 	// instanciate the spout class
 	mSpout = SpoutWrapper::create(mParameterBag, mBatchass->getTexturesRef());
 	// instanciate the console class
@@ -98,8 +104,8 @@ void ReymentaMixnmapApp::setup()
 	displayHeight = mParameterBag->mMainDisplayHeight - 50;
 	mouseGlobal = false;
 
-	showConsole = showGlobal = showTextures = showAudio = showMidi = showChannels = showShaders = true;
-	showTest = showTheme = showOSC = showFbos = false;
+	showConsole = showGlobal = showAudio = showMidi = showChannels = showShaders = showOSC = true;
+	showTest = showTheme = showFbos = showTextures = false;
 
 	// set ui window and io events callbacks
 	ui::initialize();
@@ -125,7 +131,7 @@ void ReymentaMixnmapApp::update()
 {
 	mSpout->update();
 	mBatchass->update();
-	//mAudio->update();
+	mAudio->update();
 	mParameterBag->iFps = getAverageFps();
 	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
 	getWindow()->setTitle(std::string("(" + mParameterBag->sFps + " fps)"));
@@ -201,10 +207,7 @@ void ReymentaMixnmapApp::draw()
 		// No transition in progress.
 		gl::draw(mBufferCurrent->getColorTexture(), getWindowBounds());
 	}
-	if (!mParameterBag->mShowUI || mBatchass->getWarpsRef()->isEditModeEnabled())
-	{
-		return;
-	}
+
 	//gl::enableAlphaBlending();
 	//gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	mBatchass->getWarpsRef()->draw();
@@ -580,7 +583,8 @@ void ReymentaMixnmapApp::draw()
 			//void Batchass::setTimeFactor(const int &aTimeFactor)
 			ui::SliderFloat("time x", &mParameterBag->iTimeFactor, 0.0001f, 32.0f, "%.1f");
 
-			static ImVector<float> values; if (values.empty()) { values.resize(40); memset(&values.front(), 0, values.size()*sizeof(float)); }
+			static ImVector<float> values; 
+			if (values.empty()) { values.resize(40); memset(&values.front(), 0, values.size()*sizeof(float)); }
 			static int values_offset = 0;
 			// audio maxVolume
 			static float refresh_time = -1.0f;
@@ -592,12 +596,11 @@ void ReymentaMixnmapApp::draw()
 			}
 
 			ui::SliderFloat("mult x", &mParameterBag->controlValues[13], 0.01f, 10.0f);
-			//ImGui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
+			ui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
 
 			if (mParameterBag->maxVolume > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 			ui::PlotLines("Volume", &values.front(), (int)values.size(), values_offset, toString(mBatchass->formatFloat(mParameterBag->maxVolume)).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
 			if (mParameterBag->maxVolume > 240.0) ui::PopStyleColor();
-			ui::Text("Track %s %.2f", mParameterBag->mTrackName.c_str(), mParameterBag->liveMeter);
 
 			if (ui::Button("x##spdx")) { mParameterBag->iSpeedMultiplier = 1.0; }
 			ui::SameLine();
@@ -981,13 +984,7 @@ void ReymentaMixnmapApp::draw()
 			ui::SliderFloat("ABP Bend", &mParameterBag->mBend, -20.0f, 20.0f);
 
 		}
-		if (ui::CollapsingHeader("Tracks", NULL, true, true))
-		{
-			for (int a = 0; a < mParameterBag->MAX; a++)
-			{
-				if (mBatchass->getTrack(a) != "default.glsl") ui::Button(mBatchass->getTrack(a).c_str());
-			}
-		}
+
 	}
 	ui::End();
 
@@ -1115,22 +1112,26 @@ void ReymentaMixnmapApp::draw()
 #pragma region library
 	if (showShaders)
 	{
-
 		static ImGuiTextFilter filter;
-		ui::Text("Filter usage:\n"
-			"  \"\"         display all lines\n"
-			"  \"xxx\"      display lines containing \"xxx\"\n"
-			"  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n"
-			"  \"-xxx\"     hide lines containing \"xxx\"");
-		filter.Draw();
-
-
-		for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
+		ui::SetNextWindowSize(ImVec2(w, h));
+		ui::SetNextWindowPos(ImVec2(600, h));
+		ui::Begin("Filter", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
-			if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()))
-				ui::BulletText("%s", mBatchass->getShadersRef()->getShader(i).name.c_str());
-		}
+			ui::Text("Filter usage:\n"
+				"  \"\"         display all lines\n"
+				"  \"xxx\"      display lines containing \"xxx\"\n"
+				"  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n"
+				"  \"-xxx\"     hide lines containing \"xxx\"");
+			filter.Draw();
 
+
+			for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
+			{
+				if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()))
+					ui::BulletText("%s", mBatchass->getShadersRef()->getShader(i).name.c_str());
+			}
+		}
+		ui::End();
 		xPos = margin;
 		for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
 		{
@@ -1330,6 +1331,33 @@ void ReymentaMixnmapApp::draw()
 			ui::InputInt("track", &i0);
 			ui::InputFloat("clip", &f0, 0.01f, 1.0f);
 			if (ui::Button("Send")) { mBatchass->sendOSCIntMessage(str0, i0); }
+
+			// meter
+			static ImVector<float> meterValues; 
+			if (meterValues.empty()) { meterValues.resize(40); memset(&meterValues.front(), 0, meterValues.size()*sizeof(float)); }
+			static int meterValues_offset = 0;
+			static float meterRefresh_time = -1.0f;
+			if (ui::GetTime() > meterRefresh_time + 1.0f / 20.0f)
+			{
+				meterRefresh_time = ui::GetTime();
+				meterValues[meterValues_offset] = mParameterBag->liveMeter;
+				meterValues_offset = (meterValues_offset + 1) % meterValues.size();
+			}
+
+			if (mParameterBag->liveMeter > 0.9) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+			sprintf_s(buf, "%.2f", mParameterBag->liveMeter);
+			ui::PlotLines("Meter", &meterValues.front(), (int)meterValues.size(), meterValues_offset, buf, 0.0f, 1.0f, ImVec2(0, 30));
+			if (mParameterBag->liveMeter > 0.9) ui::PopStyleColor();
+			ui::Text("Track %s %.2f", mParameterBag->mTrackName.c_str(), mParameterBag->liveMeter);
+
+
+			if (ui::CollapsingHeader("Tracks", NULL, true, true))
+			{
+				for (int a = 0; a < mParameterBag->MAX; a++)
+				{
+					if (mBatchass->getTrack(a) != "default.glsl") ui::Button(mBatchass->getTrack(a).c_str());
+				}
+			}
 		}
 		ui::End();
 		xPos += largeW + margin;
@@ -1349,7 +1377,7 @@ void ReymentaMixnmapApp::mouseDown(MouseEvent event)
 	mMouse.z = (float)event.getPos().x;
 	mMouse.w = (float)event.getPos().y;
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDown(event);
-	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDown(event);
+	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDown(event);
 
 }
 
@@ -1358,13 +1386,13 @@ void ReymentaMixnmapApp::mouseDrag(MouseEvent event)
 	mMouse.x = (float)event.getPos().x;
 	mMouse.y = (float)event.getPos().y;
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDrag(event);
-	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDrag(event);
+	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDrag(event);
 
 }
 void ReymentaMixnmapApp::mouseUp(MouseEvent event)
 {
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseUp(event);
-	//if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseUp(event);
+	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseUp(event);
 }
 void ReymentaMixnmapApp::keyUp(KeyEvent event)
 {
@@ -1387,7 +1415,7 @@ void ReymentaMixnmapApp::keyDown(KeyEvent event)
 	{
 		switch (keyCode)
 		{
-		case ci::app::KeyEvent::KEY_c:
+		case ci::app::KeyEvent::KEY_n:
 			mBatchass->createWarp();
 			break;
 		case ci::app::KeyEvent::KEY_s:
@@ -1419,18 +1447,20 @@ void ReymentaMixnmapApp::keyDown(KeyEvent event)
 			break;
 		case ci::app::KeyEvent::KEY_f:
 			break;
-		case ci::app::KeyEvent::KEY_h:
+		case ci::app::KeyEvent::KEY_c:
+			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;		
 			if (mParameterBag->mCursorVisible)
 			{
-				mParameterBag->mShowUI = true;
 				hideCursor();
 			}
 			else
 			{
-				mParameterBag->mShowUI = false;
 				showCursor();
 			}
-			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
+			break;
+		case ci::app::KeyEvent::KEY_h:
+			mParameterBag->mShowUI = !mParameterBag->mShowUI;
+			if (!mParameterBag->mShowUI) hideCursor();
 			break;
 		case ci::app::KeyEvent::KEY_ESCAPE:
 			mParameterBag->save();
@@ -1527,7 +1557,7 @@ void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
 
 	if (ext == "wav" || ext == "mp3")
 	{
-		//mAudio->loadWaveFile(mFile);
+		mAudio->loadWaveFile(mFile);
 	}
 	else if (ext == "png" || ext == "jpg")
 	{
