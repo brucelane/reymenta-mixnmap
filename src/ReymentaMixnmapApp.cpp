@@ -17,12 +17,11 @@ TODO
 
 void ReymentaMixnmapApp::prepare(Settings* settings)
 {
-	// Do not allow resizing our window. Feel free to remove this limitation.
-	settings->setResizable(false);
-#if defined(DEBUG)
+#if defined(_DEBUG)
 	
 #else
-	settings->setBorderless();
+	//settings->setResizable(false);
+	//settings->setBorderless();
 #endif
 }
 
@@ -51,9 +50,10 @@ void ReymentaMixnmapApp::setup()
 	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
 	mParameterBag->mRenderResolution = ivec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);//20141214 was 0
-#if defined(DEBUG)
-	setWindowSize(640, 480);
+	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);
+#if defined(_DEBUG)
+	setWindowSize(1400, 600);
+	setWindowPos(1600,40);
 #else
 	// if mStandalone, put on the 2nd screen
 	if (mParameterBag->mStandalone)
@@ -219,8 +219,9 @@ void ReymentaMixnmapApp::draw()
 		return;
 	}
 
-	//gl::setViewport(getWindowBounds());
-	gl::setMatricesWindow(getWindowSize());
+	
+	//gl::setMatricesWindow(getWindowSize());
+	
 	xPos = margin;
 	yPos = margin;
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15" };
@@ -1114,7 +1115,7 @@ void ReymentaMixnmapApp::draw()
 	{
 		static ImGuiTextFilter filter;
 		ui::SetNextWindowSize(ImVec2(w, h));
-		ui::SetNextWindowPos(ImVec2(600, h));
+		ui::SetNextWindowPos(ImVec2(800, 240));
 		ui::Begin("Filter", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::Text("Filter usage:\n"
@@ -1137,8 +1138,13 @@ void ReymentaMixnmapApp::draw()
 		{
 			if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()) && mBatchass->getShadersRef()->getShader(i).active)
 			{
+				if (mParameterBag->iTrack == i) {
+					sprintf_s(buf, "SEL ##lsh%d", i);
+				}
+				else {
+					sprintf_s(buf, "%d##lsh%d", mBatchass->getShadersRef()->getShader(i).microseconds, i);
+				}
 
-				sprintf_s(buf, "%d##lsh%d", mBatchass->getShadersRef()->getShader(i).microseconds, i);
 				ui::SetNextWindowSize(ImVec2(w, h));
 				ui::SetNextWindowPos(ImVec2(xPos + margin, yPos));
 				ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -1291,7 +1297,7 @@ void ReymentaMixnmapApp::draw()
 	// console
 	if (showConsole)
 	{
-		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX, largePreviewH), ImGuiSetCond_Once);
+		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX/2, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ShowAppConsole(&showConsole);
 		if (mParameterBag->newMsg)
@@ -1306,7 +1312,7 @@ void ReymentaMixnmapApp::draw()
 		ui::ShowStyleEditor();
 
 	}
-	xPos += largePreviewH + margin;
+	xPos += ((w + margin) * mParameterBag->MAX / 2) + margin;
 
 #pragma region OSC
 
@@ -1537,11 +1543,7 @@ void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
 {
 	// Send all file requests to the loading thread.
 	size_t count = event.getNumFiles();
-	//for (size_t i = 0; i < count && mRequests->isNotFull(); ++i) {
-		//mRequests->pushFront(event.getFile(i));
-	for (size_t i = 0; i < count ; ++i) {
-		mBatchass->getShadersRef()->addRequest(event.getFile(i));
-	}
+
 	// TO MIGRATE
 	int index;
 	string ext = "";
@@ -1569,10 +1571,18 @@ void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
 	else if (ext == "glsl")
 	{
 		if (index < 4) index = 4;
+
+		//for (size_t i = 0; i < count && mRequests->isNotFull(); ++i) {
+		//mRequests->pushFront(event.getFile(i));
+		for (size_t i = 0; i < count; ++i) {
+			mBatchass->getShadersRef()->addRequest(event.getFile(i), index);
+		}
+
+/*
 		int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
 		if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
 		{
-			mParameterBag->controlValues[22] = 1.0f;
+			mParameterBag->controlValues[22] = 1.0f;*/
 			// TODO  send content via websockets
 			/*fs::path fr = mFile;
 			string name = "unknown";
@@ -1584,8 +1594,8 @@ void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
 			if (mParameterBag->mOSCEnabled) mOSC->sendOSCStringMessage("/fs", 0, fs, name);
 			}*/
 			// save thumb
-			timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
-		}
+			/*timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+		}*/
 	}
 	else if (ext == "mov" || ext == "mp4")
 	{
