@@ -20,8 +20,13 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
+// from Paul Houx 
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#define WIN_AMBIGUITY_FIX
+// Also disable an annoying warning:
 #pragma warning(push)
-#pragma warning(disable: 4996) // _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4996) // warning C4996: 'sprintf': This function or variable may be unsafe.
+#endif
 
 
 #include "cinder/app/App.h"

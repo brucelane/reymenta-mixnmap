@@ -10,7 +10,7 @@ TODO
 - proper slitscan h and v //wip
 - proper rotation
 - badtv in mix.frag
-
+- blendmode preview
 */
 
 #include "ReymentaMixnmapApp.h"
@@ -18,7 +18,7 @@ TODO
 void ReymentaMixnmapApp::prepare(Settings* settings)
 {
 #if defined(_DEBUG)
-	
+
 #else
 	//settings->setResizable(false);
 	//settings->setBorderless();
@@ -53,7 +53,7 @@ void ReymentaMixnmapApp::setup()
 	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);
 #if defined(_DEBUG)
 	setWindowSize(1400, 600);
-	setWindowPos(1600,40);
+	setWindowPos(1600, 40);
 #else
 	// if mStandalone, put on the 2nd screen
 	if (mParameterBag->mStandalone)
@@ -151,7 +151,7 @@ void ReymentaMixnmapApp::draw()
 	if (mChannel3) mChannel3->bind(3);
 
 	// Render the current shader to a frame buffer.
-	if ( mBatchass->getShadersRef()->getShaderCurrent() && mBufferCurrent) {
+	if (mBatchass->getShadersRef()->getShaderCurrent() && mBufferCurrent) {
 		gl::ScopedFramebuffer fbo(mBufferCurrent);
 
 		// Bind shader.
@@ -201,7 +201,7 @@ void ReymentaMixnmapApp::draw()
 		// Transition is done. Swap shaders.
 		gl::draw(mBufferNext->getColorTexture(), getWindowBounds());
 		mBatchass->getShadersRef()->swapShaders();
-		
+
 	}
 	else {
 		// No transition in progress.
@@ -219,9 +219,9 @@ void ReymentaMixnmapApp::draw()
 		return;
 	}
 
-	
+
 	//gl::setMatricesWindow(getWindowSize());
-	
+
 	xPos = margin;
 	yPos = margin;
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15" };
@@ -584,7 +584,7 @@ void ReymentaMixnmapApp::draw()
 			//void Batchass::setTimeFactor(const int &aTimeFactor)
 			ui::SliderFloat("time x", &mParameterBag->iTimeFactor, 0.0001f, 32.0f, "%.1f");
 
-			static ImVector<float> values; 
+			static ImVector<float> values;
 			if (values.empty()) { values.resize(40); memset(&values.front(), 0, values.size()*sizeof(float)); }
 			static int values_offset = 0;
 			// audio maxVolume
@@ -1297,7 +1297,7 @@ void ReymentaMixnmapApp::draw()
 	// console
 	if (showConsole)
 	{
-		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX/2, largePreviewH), ImGuiSetCond_Once);
+		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX / 2, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ShowAppConsole(&showConsole);
 		if (mParameterBag->newMsg)
@@ -1339,7 +1339,7 @@ void ReymentaMixnmapApp::draw()
 			if (ui::Button("Send")) { mBatchass->sendOSCIntMessage(str0, i0); }
 
 			// meter
-			static ImVector<float> meterValues; 
+			static ImVector<float> meterValues;
 			if (meterValues.empty()) { meterValues.resize(40); memset(&meterValues.front(), 0, meterValues.size()*sizeof(float)); }
 			static int meterValues_offset = 0;
 			static float meterRefresh_time = -1.0f;
@@ -1454,7 +1454,7 @@ void ReymentaMixnmapApp::keyDown(KeyEvent event)
 		case ci::app::KeyEvent::KEY_f:
 			break;
 		case ci::app::KeyEvent::KEY_c:
-			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;		
+			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
 			if (mParameterBag->mCursorVisible)
 			{
 				hideCursor();
@@ -1578,24 +1578,24 @@ void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
 			mBatchass->getShadersRef()->addRequest(event.getFile(i), index);
 		}
 
-/*
-		int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
-		if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
+		/* obsolete
+				int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
+				if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
+				{
+				mParameterBag->controlValues[22] = 1.0f;*/
+		// TODO  send content via websockets
+		/*fs::path fr = mFile;
+		string name = "unknown";
+		if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
+		if (fs::exists(fr))
 		{
-			mParameterBag->controlValues[22] = 1.0f;*/
-			// TODO  send content via websockets
-			/*fs::path fr = mFile;
-			string name = "unknown";
-			if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
-			if (fs::exists(fr))
-			{
 
-			std::string fs = loadString(loadFile(mFile));
-			if (mParameterBag->mOSCEnabled) mOSC->sendOSCStringMessage("/fs", 0, fs, name);
-			}*/
-			// save thumb
-			/*timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+		std::string fs = loadString(loadFile(mFile));
+		if (mParameterBag->mOSCEnabled) mOSC->sendOSCStringMessage("/fs", 0, fs, name);
 		}*/
+		// save thumb
+		/*timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+	}*/
 	}
 	else if (ext == "mov" || ext == "mp4")
 	{
@@ -1754,7 +1754,7 @@ void ReymentaMixnmapApp::setUniforms()
 	shader->uniform("iChannel3", 3);
 	shader->uniform("iDate", iDate);
 }
-
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 #pragma warning(pop) // _CRT_SECURE_NO_WARNINGS
-
+#endif
 CINDER_APP(ReymentaMixnmapApp, RendererGl, &ReymentaMixnmapApp::prepare)
