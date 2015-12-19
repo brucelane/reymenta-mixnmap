@@ -3,7 +3,7 @@ Reymenta mix-n-map
 
 Cinder app to render multiple sources with Spout
 
-mix-n-map is currently in active development, stay tuned for a release, I will post a setup package here
+mix-n-map is currently in active development, stay tuned for a release, I will post a setup package here.
 
 Setup
 - install 32 bit visual studio 2013 redistribuable from http://www.microsoft.com/fr-fr/download/details.aspx?id=40784
