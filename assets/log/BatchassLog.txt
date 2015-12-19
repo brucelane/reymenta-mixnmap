@@ -1,0 +1,13 @@
+[16:21:28] Batchass constructor
+[16:21:28] start
+[16:21:28] Window 2: 1024x768
+[16:21:28]  mMainDisplayWidth1600 mMainDisplayHeight900
+[16:21:28]  mRenderX1600 mRenderY0
+[16:21:28] prepareSettings: 20
+[16:21:29] setup
+[16:21:38] Window 2: 1024x768
+[16:21:38]  mMainDisplayWidth1600 mMainDisplayHeight900
+[16:21:38]  mRenderX1600 mRenderY0
+[16:21:38] createRenderWindow, resolution:1024x768
+[16:21:38] setup before: 9367
+[16:21:39] setup: 774

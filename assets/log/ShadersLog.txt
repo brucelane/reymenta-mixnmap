@@ -1,0 +1,24 @@
+[16:21:29] Shaders constructor
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\0.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\1.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\2.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\3.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\4.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\5.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\6.glsl loaded and compiled
+[16:21:36] setGLSLString success
+[16:21:36] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\7.glsl loaded and compiled
+[16:21:37] setGLSLString success
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\8.glsl loaded and compiled
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\9.glsl does not exist
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\10.glsl does not exist
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\11.glsl does not exist
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\12.glsl does not exist
+[16:21:37] C:\Users\bruce\Dropbox\Cinder\Cinder-086\_Shared\reymenta-mixnmap\assets\rachel\13.glsl does not exist

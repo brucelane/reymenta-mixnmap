@@ -1,0 +1,3 @@
+[16:21:38] Audio constructor
+[16:21:38] Could not compile spectrum.frag or vert
+[16:21:38] Could not compile spectrum2.frag or vert
