@@ -37,9 +37,9 @@ void AppConsole::AddLog(const char* fmt, ...)
 	char buf[1024];
 	va_list args;
 	va_start(args, fmt);
-	ui::ImFormatStringV(buf, IM_ARRAYSIZE(buf), fmt, args);
+	ImFormatStringV(buf, IM_ARRAYSIZE(buf), fmt, args);
 	va_end(args);
-	Items.push_back(ui::ImStrdup(buf));
+	Items.push_back(ImStrdup(buf));
 	ScrollToBottom = true;
 }
 
@@ -100,14 +100,14 @@ void AppConsole::Run(const char* title, bool* opened)
 	ImGui::Separator();
 
 	// Command-line
-	/* STOPS EXEC IN RELEASE MODE if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory, &TextEditCallbackStub, (void*)this))
+	if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory, &TextEditCallbackStub, (void*)this))
 	{
 		char* input_end = InputBuf + strlen(InputBuf);
 		while (input_end > InputBuf && input_end[-1] == ' ') input_end--; *input_end = 0;
 		if (InputBuf[0])
 			ExecCommand(InputBuf);
 		strcpy(InputBuf, "");
-	}*/
+	}
 
 	// Demonstrate keeping auto focus on the input box
 	if (ImGui::IsItemHovered() || (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
@@ -122,39 +122,39 @@ void AppConsole::ExecCommand(const char* command_line)
 	// Insert into history. First find match and delete it so it can be pushed to the back. This isn't trying to be smart or optimal.
 	HistoryPos = -1;
 	for (int i = (int)History.size() - 1; i >= 0; i--)
-		if (ui::ImStricmp(History[i], command_line) == 0)
+		if (ImStricmp(History[i], command_line) == 0)
 		{
 			ImGui::MemFree(History[i]);
 			History.erase(History.begin() + i);
 			break;
 		}
-	History.push_back(ui::ImStrdup(command_line));
+	History.push_back(ImStrdup(command_line));
 
 	// Process command
-	if (ui::ImStricmp(command_line, "CLEAR") == 0)
+	if (ImStricmp(command_line, "CLEAR") == 0)
 	{
 		ClearLog();
 	}
-	else if (ui::ImStricmp(command_line, "HELP") == 0)
+	else if (ImStricmp(command_line, "HELP") == 0)
 	{
 		AddLog("Commands:");
 		for (size_t i = 0; i < Commands.size(); i++)
 			AddLog("- %s", Commands[i]);
 	}
-	else if (ui::ImStricmp(command_line, "HISTORY") == 0)
+	else if (ImStricmp(command_line, "HISTORY") == 0)
 	{
 		for (size_t i = History.size() >= 10 ? History.size() - 10 : 0; i < History.size(); i++)
 			AddLog("%3d: %s\n", i, History[i]);
 	}
-	else if (ui::ImStricmp(command_line, "DEBUG") == 0)
+	else if (ImStricmp(command_line, "DEBUG") == 0)
 	{
 		mParameterBag->iDebug = !mParameterBag->iDebug;
 	}
-	else if (ui::ImStricmp(command_line, "WARPCREATE") == 0)
+	else if (ImStricmp(command_line, "WARPCREATE") == 0)
 	{
 		mBatchass->createWarp();
 	}
-	else if (ui::ImStrnicmp(command_line, "WARPF", 5) == 0)
+	else if (ImStrnicmp(command_line, "WARPF", 5) == 0)
 	{
 		// for instance WARPF 0 4
 		if (strlen(command_line) > 8)
@@ -165,31 +165,31 @@ void AppConsole::ExecCommand(const char* command_line)
 			mBatchass->assignFboToWarp(index - 48, fbo - 48);
 		}
 	}
-	else if (ui::ImStricmp(command_line, "MODEMIX") == 0)
+	else if (ImStricmp(command_line, "MODEMIX") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_MIX);
 	}
-	else if (ui::ImStricmp(command_line, "MODEAUDIO") == 0)
+	else if (ImStricmp(command_line, "MODEAUDIO") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_AUDIO);
 	}
-	else if (ui::ImStricmp(command_line, "MODEWARP") == 0)
+	else if (ImStricmp(command_line, "MODEWARP") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_WARP);
 	}
-	else if (ui::ImStricmp(command_line, "MODESPHERE") == 0)
+	else if (ImStricmp(command_line, "MODESPHERE") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_SPHERE);
 	}
-	else if (ui::ImStricmp(command_line, "MODEMESH") == 0)
+	else if (ImStricmp(command_line, "MODEMESH") == 0)
 	{
 		mBatchass->changeMode(mParameterBag->MODE_MESH);
 	}
-	else if (ui::ImStricmp(command_line, "LOADSTOP") == 0)
+	else if (ImStricmp(command_line, "LOADSTOP") == 0)
 	{
 		mBatchass->stopLoading();
 	}
-	else if (ui::ImStrnicmp(command_line, "TEMPO", 5) == 0)
+	else if (ImStrnicmp(command_line, "TEMPO", 5) == 0)
 	{
 		if (strlen(command_line) > 7)
 		{
@@ -198,15 +198,15 @@ void AppConsole::ExecCommand(const char* command_line)
 			if (firstDigit > -1) mParameterBag->mTempo = std::stoi(to.substr(firstDigit));
 		}		
 	}
-	else if (ui::ImStricmp(command_line, "WSCNX") == 0)
+	else if (ImStricmp(command_line, "WSCNX") == 0)
 	{
 		mBatchass->wsConnect();
 	}
-	else if (ui::ImStricmp(command_line, "WSPING") == 0)
+	else if (ImStricmp(command_line, "WSPING") == 0)
 	{
 		mBatchass->wsPing();
 	}
-	else if (ui::ImStricmp(command_line, "WSCNF") == 0)
+	else if (ImStricmp(command_line, "WSCNF") == 0)
 	{
 		if (mParameterBag->mIsWebSocketsServer)
 		{
@@ -239,7 +239,7 @@ int AppConsole::TextEditCallback(ImGuiTextEditCallbackData* data)
 		while (word_start > data->Buf)
 		{
 			const char c = word_start[-1];
-			if (ui::ImCharIsSpace(c) || c == ',' || c == ';')
+			if (ImCharIsSpace(c) || c == ',' || c == ';')
 				break;
 			word_start--;
 		}
@@ -247,7 +247,7 @@ int AppConsole::TextEditCallback(ImGuiTextEditCallbackData* data)
 		// Build a list of candidates
 		ImVector<const char*> candidates;
 		for (size_t i = 0; i < Commands.size(); i++)
-			if (ui::ImStrnicmp(Commands[i], word_start, (int)(word_end - word_start)) == 0)
+			if (ImStrnicmp(Commands[i], word_start, (int)(word_end - word_start)) == 0)
 				candidates.push_back(Commands[i]);
 
 		if (candidates.size() == 0)
@@ -315,11 +315,86 @@ int AppConsole::TextEditCallback(ImGuiTextEditCallbackData* data)
 		// A better implementation would preserve the data on the current input line along with cursor position.
 		if (prev_history_pos != HistoryPos)
 		{
-			ui::ImFormatString(data->Buf, data->BufSize, "%s", (HistoryPos >= 0) ? History[HistoryPos] : "");
+			ImFormatString(data->Buf, data->BufSize, "%s", (HistoryPos >= 0) ? History[HistoryPos] : "");
 			data->BufDirty = true;
 			data->CursorPos = data->SelectionStart = data->SelectionEnd = (int)strlen(data->Buf);
 		}
 	}
 	}
 	return 0;
+}
+// helpers copied from imgui.cpp
+int AppConsole::ImStricmp(const char* str1, const char* str2)
+{
+	int d;
+	while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; }
+	return d;
+}
+
+int AppConsole::ImStrnicmp(const char* str1, const char* str2, int count)
+{
+	int d = 0;
+	while (count > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; count--; }
+	return d;
+}
+
+char* AppConsole::ImStrdup(const char *str)
+{
+	char *buff = (char*)ImGui::MemAlloc(strlen(str) + 1);
+	IM_ASSERT(buff);
+	strcpy(buff, str);
+	return buff;
+}
+
+int AppConsole::ImStrlenW(const ImWchar* str)
+{
+	int n = 0;
+	while (*str++) n++;
+	return n;
+}
+
+//const AppConsole::ImWchar* ImStrbolW(const ImWchar* buf_mid_line, const ImWchar* buf_begin) // find beginning-of-line
+//{
+//	while (buf_mid_line > buf_begin && buf_mid_line[-1] != '\n')
+//		buf_mid_line--;
+//	return buf_mid_line;
+//}
+
+const char* AppConsole::ImStristr(const char* haystack, const char* haystack_end, const char* needle, const char* needle_end)
+{
+	if (!needle_end)
+		needle_end = needle + strlen(needle);
+
+	const char un0 = (char)toupper(*needle);
+	while ((!haystack_end && *haystack) || (haystack_end && haystack < haystack_end))
+	{
+		if (toupper(*haystack) == un0)
+		{
+			const char* b = needle + 1;
+			for (const char* a = haystack + 1; b < needle_end; a++, b++)
+				if (toupper(*a) != toupper(*b))
+					break;
+			if (b == needle_end)
+				return haystack;
+		}
+		haystack++;
+	}
+	return NULL;
+}
+
+int AppConsole::ImFormatString(char* buf, int buf_size, const char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	int w = vsnprintf(buf, buf_size, fmt, args);
+	va_end(args);
+	buf[buf_size - 1] = 0;
+	return (w == -1) ? buf_size : w;
+}
+
+int AppConsole::ImFormatStringV(char* buf, int buf_size, const char* fmt, va_list args)
+{
+	int w = vsnprintf(buf, buf_size, fmt, args);
+	buf[buf_size - 1] = 0;
+	return (w == -1) ? buf_size : w;
 }

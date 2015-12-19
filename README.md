@@ -11,12 +11,12 @@ Setup
 
 Compile
 - use visual studio 2013
-- download Cinder 0.8.6 branch from https://github.com/cinder/Cinder/tree/release_v0.8.6
-- download these Cinder blocks (0.8.6 branch):  openCV(https://github.com/cinder/Cinder-OpenCV), Warping (https://github.com/brucelane/Cinder-Warping/tree/Cinder-0.8.6), Spout(https://github.com/brucelane/Cinder-Spout), WebSockets (https://github.com/wieden-kennedy/Cinder-WebSocketPP), imgui (https://github.com/brucelane/Cinder-ImGui), MIDI2, Reymenta (https://github.com/Reymenta-Visuals/Cinder-Reymenta)
+- download Cinder 0.9.0 branch from https://github.com/cinder/Cinder
+- download these Cinder blocks:  Warping (https://github.com/paulhoux/Cinder-Warping), Spout(https://github.com/brucelane/Cinder-Spout), WebSockets (https://github.com/wieden-kennedy/Cinder-WebSocketPP), imgui (https://github.com/simongeilfus/Cinder-ImGui), MIDI2 glNext branch (https://github.com/brucelane/Cinder-MIDI2/tree/glNext), Reymenta glNext branch (https://github.com/Reymenta-Visuals/Cinder-Reymenta/tree/glNext), HAP2 (https://github.com/mpcdigital/Cinder-Hap2)
 
 Follow me on https://www.facebook.com/reymentavisuals
 
-[![Patreon](assets/patreon.png)](http://www.patreon.com/reymenta) 
+[![Patreon](documentation/images/patreon.png)](http://www.patreon.com/reymenta) 
 
 If you wish to make a donation, my paypal is bruce at batchass dot fr
 

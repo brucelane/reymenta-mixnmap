@@ -1,6 +1,6 @@
 #pragma once
 #include "cinder/Cinder.h"
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include "cinder/Utilities.h"
 
 // parameters
@@ -53,6 +53,18 @@ namespace Reymenta
 			return console->TextEditCallback(data);
 		}
 		int     TextEditCallback(ImGuiTextEditCallbackData* data);
+
+		// helpers copied from imgui.cpp
+		int ImStricmp(const char* str1, const char* str2);
+		int ImStrnicmp(const char* str1, const char* str2, int count);
+		char* ImStrdup(const char *str);
+		int ImStrlenW(const ImWchar* str);
+		//const ImWchar* ImStrbolW(const ImWchar* buf_mid_line, const ImWchar* buf_begin);
+		const char* ImStristr(const char* haystack, const char* haystack_end, const char* needle, const char* needle_end);
+		int ImFormatString(char* buf, int buf_size, const char* fmt, ...);
+		int ImFormatStringV(char* buf, int buf_size, const char* fmt, va_list args);
+		static inline bool  ImCharIsSpace(int c)            { return c == ' ' || c == '\t' || c == 0x3000; }
+
 
 	};
 }

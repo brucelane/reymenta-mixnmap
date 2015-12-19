@@ -10,89 +10,78 @@ TODO
 - proper slitscan h and v //wip
 - proper rotation
 - badtv in mix.frag
-
+- blendmode preview
 */
 
-#include "MixNMapApp.h"
+#include "ReymentaMixnmapApp.h"
 
-void MixNMapApp::prepareSettings(Settings* settings)
+void ReymentaMixnmapApp::prepare(Settings* settings)
 {
-	// start profiling
-	auto start = Clock::now();
+#if defined(_DEBUG)
+
+#else
+	//settings->setResizable(false);
+	//settings->setBorderless();
+#endif
+}
+
+void ReymentaMixnmapApp::setup()
+{
 	int wr;
 	// parameters
 	mParameterBag = ParameterBag::create();
+	mParameterBag->mLiveCode = true;
+	mParameterBag->mRenderThumbs = true;
 	// utils
 	mBatchass = Batchass::create(mParameterBag);
-	mBatchass->log("start");
-
+	CI_LOG_V("reymenta setup");
+	mFirstLaunch = true;
 	wr = mBatchass->getWindowsResolution();
-
-	settings->setWindowSize(mParameterBag->mMainWindowWidth, mParameterBag->mMainWindowHeight);
+	setWindowSize(mParameterBag->mMainWindowWidth, mParameterBag->mMainWindowHeight);
+	// setup shaders and textures
+	mBatchass->setup();
 	// Setting an unrealistically high frame rate effectively
 	// disables frame rate limiting
 	//settings->setFrameRate(10000.0f);
-	settings->setFrameRate(60.0f);
-	//settings->setWindowPos(Vec2i(w - mParameterBag->mMainWindowWidth, 0));
-	settings->setWindowPos(Vec2i(0, 0));
-	settings->setResizable(false);
-#if defined(DEBUG)
-	settings->setWindowSize(640, 480);
-
+	setFrameRate(60.0f);
+	//settings->setWindowPos(ivec2(w - mParameterBag->mMainWindowWidth, 0));
+	setWindowPos(ivec2(0, 0));
+	mParameterBag->iResolution.x = mParameterBag->mRenderWidth;
+	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
+	mParameterBag->mRenderResolution = ivec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mParameterBag->mRenderResoXY = vec2(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+	mParameterBag->mRenderPosXY = ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY);
+#if defined(_DEBUG)
+	setWindowSize(1400, 600);
+	setWindowPos(1600, 40);
 #else
-	settings->setBorderless();
-#endif
 	// if mStandalone, put on the 2nd screen
 	if (mParameterBag->mStandalone)
 	{
-		settings->setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-		settings->setWindowPos(Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY));
-		settings->setBorderless();
+		setWindowSize(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+		setWindowPos(ivec2(mParameterBag->mRenderX, mParameterBag->mRenderY));
 	}
-	auto end = Clock::now();
-	auto msdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	mBatchass->log("prepareSettings: " + toString(msdur.count()));
-}
 
-void MixNMapApp::setup()
-{
-	// start profiling
-	auto start = Clock::now();
-	//0SetWindowPos
-	mBatchass->log("setup");
-	removeUI = false;
-	ci::app::App::get()->getSignalShutdown().connect([&]() {
-		MixNMapApp::shutdown();
-	});
-	// instanciate the json wrapper class
-	mJson = JSONWrapper::create();
-	// setup shaders and textures
-	mBatchass->setup();
-
+#endif
 	mParameterBag->mMode = MODE_WARP;
-	// setup the main window and associated draw function
-	mMainWindow = getWindow();
-	mMainWindow->setTitle("MixNMap");
-	mMainWindow->connectClose(&MixNMapApp::shutdown, this);
 
-	mBatchass->getWindowsResolution();
+	// Load our textures and transition shader in the main thread.
+	try {
+		gl::Texture::Format fmt;
+		fmt.setWrap(GL_REPEAT, GL_REPEAT);
 
-	mParameterBag->iResolution.x = mParameterBag->mRenderWidth;
-	mParameterBag->iResolution.y = mParameterBag->mRenderHeight;
-	mParameterBag->mRenderResolution = Vec2i(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
+		mChannel0 = gl::Texture::create(loadImage(loadAsset("presets/tex16.png")), fmt);
+		mChannel1 = gl::Texture::create(loadImage(loadAsset("presets/tex06.jpg")), fmt);
+		mChannel2 = gl::Texture::create(loadImage(loadAsset("presets/tex09.jpg")), fmt);
+		mChannel3 = gl::Texture::create(loadImage(loadAsset("presets/tex02.jpg")), fmt);
 
-	mBatchass->log("createRenderWindow, resolution:" + toString(mParameterBag->iResolution.x) + "x" + toString(mParameterBag->iResolution.y));
-
-	mMainWindow->setBorderless();
-	mParameterBag->mRenderResoXY = Vec2f(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	mParameterBag->mRenderPosXY = Vec2i(mParameterBag->mRenderX, mParameterBag->mRenderY);//20141214 was 0
-	mMainWindow->setPos(mParameterBag->mRenderX, mParameterBag->mRenderY);
-
-	auto end = Clock::now();
-	auto mididur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	mBatchass->log("setup before: " + toString(mididur.count()));
-	start = Clock::now();
-
+		mShaderTransition = gl::GlslProg::create(loadAsset("common/shadertoy.vert"), loadAsset("common/shadertoy.frag"));
+	}
+	catch (const std::exception& e) {
+		// Quit if anything went wrong.
+		CI_LOG_EXCEPTION("Failed to load common textures and shaders:", e);
+		quit(); return;
+	}
 	// instanciate the audio class
 	mAudio = AudioWrapper::create(mParameterBag, mBatchass->getTexturesRef());
 	// instanciate the spout class
@@ -114,57 +103,125 @@ void MixNMapApp::setup()
 	largePreviewH = (mParameterBag->mPreviewHeight + margin) * 2.4;
 	displayHeight = mParameterBag->mMainDisplayHeight - 50;
 	mouseGlobal = false;
-	static float f = 0.0f;
 
-	showConsole = showGlobal = showTextures = showAudio = showMidi = showChannels = showShaders = true;
-	showTest = showTheme = showOSC = showFbos = false;
+	showConsole = showGlobal = showAudio = showMidi = showChannels = showShaders = showOSC = true;
+	showTest = showTheme = showFbos = showTextures = false;
 
 	// set ui window and io events callbacks
-	ui::connectWindow(getWindow());
 	ui::initialize();
 
-	mSeconds = 0;
 	// RTE mBatchass->getShadersRef()->setupLiveShader();
 	mBatchass->tapTempo();
-	// end profiling
-	end = Clock::now();
-	auto msdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	mBatchass->log("setup: " + toString(msdur.count()));
-
 }
 
+void ReymentaMixnmapApp::cleanup()
+{
+	CI_LOG_V("shutdown");
+	// save warp settings
+	mBatchass->getWarpsRef()->save();
+	// save params
+	mParameterBag->save();
+	ui::Shutdown();
+	// close spout
+	mSpout->shutdown();
+	quit();
+}
 
+void ReymentaMixnmapApp::update()
+{
+	mSpout->update();
+	mBatchass->update();
+	mAudio->update();
+	mParameterBag->iFps = getAverageFps();
+	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
+	getWindow()->setTitle(std::string("(" + mParameterBag->sFps + " fps)"));
+}
 
-void MixNMapApp::draw()
+void ReymentaMixnmapApp::draw()
 {
 	// must be first to avoid gl matrices to change
 	// draw from Spout receivers
 	mSpout->draw();
 	// draw the fbos
 	mBatchass->getTexturesRef()->draw();
-	// clear
-	gl::clear(ColorAf(0.0f, 0.0f, 0.0f, 0.0f));
-	gl::color(ColorAf(1.0f, 1.0f, 1.0f, 1.0f));
+	// Bind textures.
+	if (mChannel0) mChannel0->bind(0);
+	if (mChannel1) mChannel1->bind(1);
+	if (mChannel2) mChannel2->bind(2);
+	if (mChannel3) mChannel3->bind(3);
 
-	//Area mViewportArea = Area(0, -300, mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
-	//gl::setViewport(mViewportArea);
-	gl::setViewport(getWindowBounds());
-	gl::enableAlphaBlending();
-	//gl::setMatricesWindow(mParameterBag->mFboWidth, mParameterBag->mFboHeight, false);//20150702 was true
-	gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);// , false);
-	//gl::setMatricesWindow(getWindowSize());
+	// Render the current shader to a frame buffer.
+	if (mBatchass->getShadersRef()->getShaderCurrent() && mBufferCurrent) {
+		gl::ScopedFramebuffer fbo(mBufferCurrent);
 
+		// Bind shader.
+		gl::ScopedGlslProg shader(mBatchass->getShadersRef()->getShaderCurrent());
+		setUniforms();
+
+		// Clear buffer and draw full screen quad (flipped).
+		gl::clear();
+		gl::drawSolidRect(Rectf(0, (float)getWindowHeight(), (float)getWindowWidth(), 0));
+	}
+
+	// Render the next shader to a frame buffer.
+	if (mBatchass->getShadersRef()->getShaderNext() && mBufferNext) {
+		gl::ScopedFramebuffer fbo(mBufferNext);
+
+		// Bind shader.
+		gl::ScopedGlslProg shader(mBatchass->getShadersRef()->getShaderNext());
+		setUniforms();
+
+		// Clear buffer and draw full screen quad (flipped).
+		gl::clear();
+		gl::drawSolidRect(Rectf(0, (float)getWindowHeight(), (float)getWindowWidth(), 0));
+	}
+
+	// Perform a cross-fade between the two shaders.
+	double time = getElapsedSeconds() - mParameterBag->mTransitionTime;
+	double fade = math<double>::clamp(time / mParameterBag->mTransitionDuration, 0.0, 1.0);
+
+	if (fade <= 0.0) {
+		// Transition has not yet started. Keep drawing current buffer.
+		gl::draw(mBufferCurrent->getColorTexture(), getWindowBounds());
+	}
+	else if (fade < 1.0) {
+		// Transition is in progress.
+		// Use a transition shader to avoid having to draw one buffer on top of another.
+		gl::ScopedTextureBind tex0(mBufferCurrent->getColorTexture(), 0);
+		gl::ScopedTextureBind tex1(mBufferNext->getColorTexture(), 1);
+
+		gl::ScopedGlslProg shader(mShaderTransition);
+		mShaderTransition->uniform("iSrc", 0);
+		mShaderTransition->uniform("iDst", 1);
+		mShaderTransition->uniform("iFade", (float)fade);
+
+		gl::drawSolidRect(getWindowBounds());
+	}
+	else if (mBatchass->getShadersRef()->getShaderNext()) {
+		// Transition is done. Swap shaders.
+		gl::draw(mBufferNext->getColorTexture(), getWindowBounds());
+		mBatchass->getShadersRef()->swapShaders();
+
+	}
+	else {
+		// No transition in progress.
+		gl::draw(mBufferCurrent->getColorTexture(), getWindowBounds());
+	}
+
+	//gl::enableAlphaBlending();
+	//gl::setMatricesWindow(mParameterBag->mRenderWidth, mParameterBag->mRenderHeight);
 	mBatchass->getWarpsRef()->draw();
+	//gl::disableAlphaBlending();
 
-	gl::disableAlphaBlending();
-	//imgui
-	if (removeUI || mBatchass->getWarpsRef()->isEditModeEnabled())
+	//imgui TO MIGRATE AND ADD FROM BatchassApp TOO
+	if (!mParameterBag->mShowUI || mBatchass->getWarpsRef()->isEditModeEnabled())
 	{
 		return;
 	}
 
-	gl::setViewport(getWindowBounds());
-	gl::setMatricesWindow(getWindowSize());
+
+	//gl::setMatricesWindow(getWindowSize());
+
 	xPos = margin;
 	yPos = margin;
 	const char* warpInputs[] = { "mix", "left", "right", "warp1", "warp2", "preview", "abp", "live", "w8", "w9", "w10", "w11", "w12", "w13", "w14", "w15" };
@@ -231,7 +288,7 @@ void MixNMapApp::draw()
 		sprintf_s(buf, "FV##f%d", 40);
 		if (mParameterBag->mMode == mParameterBag->MODE_WARP)
 		{
-			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp1FboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp1FboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mWarp1FboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
@@ -240,30 +297,30 @@ void MixNMapApp::draw()
 			// left zoom
 			ui::SliderFloat("lZoom", &mParameterBag->iZoomLeft, mBatchass->minZoom, mBatchass->maxZoom);
 
-			/*ui::Columns(4);
-			ui::Text("ID"); ui::NextColumn();
-			ui::Text("idx"); ui::NextColumn();
-			ui::Text("mode"); ui::NextColumn();
-			ui::Text("actv"); ui::NextColumn();
-			ui::Separator();
-			for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
-			{
-			if (mParameterBag->mWarpFbos[i].textureIndex == 3)
-			{
-			ui::Text("%d", i); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
+			//ui::Columns(4);
+			//ui::Text("ID"); ui::NextColumn();
+			//ui::Text("idx"); ui::NextColumn();
+			//ui::Text("mode"); ui::NextColumn();
+			//ui::Text("actv"); ui::NextColumn();
+			//ui::Separator();
+			//for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
+			//{
+			//if (mParameterBag->mWarpFbos[i].textureIndex == 3)
+			//{
+			//ui::Text("%d", i); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
 
-			}
+			//}
 
-			}
-			ui::Columns(1);*/
+			//}
+			//ui::Columns(1);
 
 		}
 		else
 		{
-			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mLeftFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mLeftFboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mLeftFboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
@@ -272,25 +329,25 @@ void MixNMapApp::draw()
 			// left zoom
 			ui::SliderFloat("lZoom", &mParameterBag->iZoomLeft, mBatchass->minZoom, mBatchass->maxZoom);
 
-			/*ui::Columns(4);
-			ui::Text("ID"); ui::NextColumn();
-			ui::Text("idx"); ui::NextColumn();
-			ui::Text("mode"); ui::NextColumn();
-			ui::Text("actv"); ui::NextColumn();
-			ui::Separator();
-			for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
-			{
-			if (mParameterBag->mWarpFbos[i].textureIndex == 4)
-			{
-			ui::Text("%d", i); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
-			ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
+			//ui::Columns(4);
+			//ui::Text("ID"); ui::NextColumn();
+			//ui::Text("idx"); ui::NextColumn();
+			//ui::Text("mode"); ui::NextColumn();
+			//ui::Text("actv"); ui::NextColumn();
+			//ui::Separator();
+			//for (int i = 0; i < mParameterBag->mWarpFbos.size() - 1; i++)
+			//{
+			//if (mParameterBag->mWarpFbos[i].textureIndex == 4)
+			//{
+			//ui::Text("%d", i); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureIndex); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].textureMode); ui::NextColumn();
+			//ui::Text("%d", mParameterBag->mWarpFbos[i].active); ui::NextColumn();
 
-			}
+			//}
 
-			}
-			ui::Columns(1);*/
+			//}
+			//ui::Columns(1);
 		}
 		ui::PopStyleColor(3);
 		ui::PopItemWidth();
@@ -312,7 +369,7 @@ void MixNMapApp::draw()
 		sprintf_s(buf, "FV##f%d", 41);
 		if (mParameterBag->mMode == mParameterBag->MODE_WARP)
 		{
-			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp2FboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarp2FboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mWarp2FboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
@@ -323,7 +380,7 @@ void MixNMapApp::draw()
 		}
 		else
 		{
-			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mRightFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+			ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mRightFboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 			if (ui::Button(buf)) mBatchass->getTexturesRef()->flipFboV(mParameterBag->mRightFboIndex);
 			if (ui::IsItemHovered()) ui::SetTooltip("Flip vertically");
 			// renderXY mouse
@@ -346,7 +403,7 @@ void MixNMapApp::draw()
 		ui::PushItemWidth(mParameterBag->mPreviewFboWidth);
 
 
-		ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mMixFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+		ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mMixFboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 		ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.1f, 0.6f, 0.6f));
 		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.1f, 0.7f, 0.7f));
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.1f, 0.8f, 0.8f));
@@ -381,7 +438,7 @@ void MixNMapApp::draw()
 	{
 		ui::PushItemWidth(mParameterBag->mPreviewFboWidth);
 
-		ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mCurrentPreviewFboIndex), Vec2i(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
+		ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mCurrentPreviewFboIndex), ivec2(mParameterBag->mPreviewWidth, mParameterBag->mPreviewHeight));
 		ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.1f, 0.6f, 0.6f));
 		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.1f, 0.7f, 0.7f));
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.1f, 0.8f, 0.8f));
@@ -431,10 +488,10 @@ void MixNMapApp::draw()
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
-				ui::Text("c%d", i); 
+				ui::Text("c%d", i);
 				ui::NextColumn();
 				sprintf_s(buf, "%d", i);
-				if (ui::SliderInt(buf, &mParameterBag->iChannels[i], 0, mParameterBag->MAX-1)) {
+				if (ui::SliderInt(buf, &mParameterBag->iChannels[i], 0, mParameterBag->MAX - 1)) {
 				}
 				ui::NextColumn();
 				ui::PopStyleColor(3);
@@ -447,6 +504,7 @@ void MixNMapApp::draw()
 		xPos += w * 2 + margin;
 	}
 #pragma endregion channels
+
 #pragma region Info
 
 	ui::SetNextWindowSize(ImVec2(largePreviewW + 20, largePreviewH), ImGuiSetCond_Once);
@@ -526,7 +584,8 @@ void MixNMapApp::draw()
 			//void Batchass::setTimeFactor(const int &aTimeFactor)
 			ui::SliderFloat("time x", &mParameterBag->iTimeFactor, 0.0001f, 32.0f, "%.1f");
 
-			static ImVector<float> values; if (values.empty()) { values.resize(40); memset(&values.front(), 0, values.size()*sizeof(float)); }
+			static ImVector<float> values;
+			if (values.empty()) { values.resize(40); memset(&values.front(), 0, values.size()*sizeof(float)); }
 			static int values_offset = 0;
 			// audio maxVolume
 			static float refresh_time = -1.0f;
@@ -538,12 +597,11 @@ void MixNMapApp::draw()
 			}
 
 			ui::SliderFloat("mult x", &mParameterBag->controlValues[13], 0.01f, 10.0f);
-			ImGui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
+			ui::PlotHistogram("Histogram", mAudio->getSmallSpectrum(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
 
 			if (mParameterBag->maxVolume > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 			ui::PlotLines("Volume", &values.front(), (int)values.size(), values_offset, toString(mBatchass->formatFloat(mParameterBag->maxVolume)).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
 			if (mParameterBag->maxVolume > 240.0) ui::PopStyleColor();
-			ui::Text("Track %s %.2f", mParameterBag->mTrackName.c_str(), mParameterBag->liveMeter);
 
 			if (ui::Button("x##spdx")) { mParameterBag->iSpeedMultiplier = 1.0; }
 			ui::SameLine();
@@ -610,6 +668,7 @@ void MixNMapApp::draw()
 
 	}
 #pragma endregion MIDI
+
 #pragma region Global
 
 	ui::SetNextWindowSize(ImVec2(largeW, displayHeight), ImGuiSetCond_Once);
@@ -919,14 +978,13 @@ void MixNMapApp::draw()
 			float eyeZ = mParameterBag->mCamera.getEyePoint().z;
 			if (ui::SliderFloat("Eye.z", &eyeZ, -500.0f, 1.0f))
 			{
-				Vec3f eye = mParameterBag->mCamera.getEyePoint();
+				vec3 eye = mParameterBag->mCamera.getEyePoint();
 				eye.z = eyeZ;
 				mParameterBag->mCamera.setEyePoint(eye);
 			}
 			ui::SliderFloat("ABP Bend", &mParameterBag->mBend, -20.0f, 20.0f);
 
 		}
-
 
 	}
 	ui::End();
@@ -947,7 +1005,7 @@ void MixNMapApp::draw()
 			{
 				ui::SetWindowPos(ImVec2((i * (w + inBetween)) + margin, yPos));
 				ui::PushID(i);
-				ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarpFbos[i].textureIndex), Vec2i(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
+				ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(mParameterBag->mWarpFbos[i].textureIndex), ivec2(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
@@ -965,6 +1023,7 @@ void MixNMapApp::draw()
 		yPos += h + margin;
 	}
 #pragma endregion warps
+
 #pragma region textures
 	if (showTextures)
 	{
@@ -976,7 +1035,7 @@ void MixNMapApp::draw()
 			ui::Begin(mBatchass->getTexturesRef()->getTextureName(i), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushID(i);
-				ui::Image((void*)mBatchass->getTexturesRef()->getTexture(i).getId(), Vec2i(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
+				ui::Image((void*)mBatchass->getTexturesRef()->getTexture(i)->getId(), ivec2(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
@@ -1050,32 +1109,42 @@ void MixNMapApp::draw()
 		yPos += h*1.4 + margin;
 	}
 #pragma endregion textures
+
 #pragma region library
 	if (showShaders)
 	{
-
 		static ImGuiTextFilter filter;
-		ui::Text("Filter usage:\n"
-			"  \"\"         display all lines\n"
-			"  \"xxx\"      display lines containing \"xxx\"\n"
-			"  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n"
-			"  \"-xxx\"     hide lines containing \"xxx\"");
-		filter.Draw();
-
-
-		for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
+		ui::SetNextWindowSize(ImVec2(w, h));
+		ui::SetNextWindowPos(ImVec2(800, 240));
+		ui::Begin("Filter", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
-			if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()))
-				ui::BulletText("%s", mBatchass->getShadersRef()->getShader(i).name.c_str());
-		}
+			ui::Text("Filter usage:\n"
+				"  \"\"         display all lines\n"
+				"  \"xxx\"      display lines containing \"xxx\"\n"
+				"  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n"
+				"  \"-xxx\"     hide lines containing \"xxx\"");
+			filter.Draw();
 
+
+			for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
+			{
+				if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()))
+					ui::BulletText("%s", mBatchass->getShadersRef()->getShader(i).name.c_str());
+			}
+		}
+		ui::End();
 		xPos = margin;
 		for (int i = 0; i < mBatchass->getShadersRef()->getCount(); i++)
 		{
 			if (filter.PassFilter(mBatchass->getShadersRef()->getShader(i).name.c_str()) && mBatchass->getShadersRef()->getShader(i).active)
 			{
+				if (mParameterBag->iTrack == i) {
+					sprintf_s(buf, "SEL ##lsh%d", i);
+				}
+				else {
+					sprintf_s(buf, "%d##lsh%d", mBatchass->getShadersRef()->getShader(i).microseconds, i);
+				}
 
-				sprintf_s(buf, "%d##lsh%d", mBatchass->getShadersRef()->getShader(i).microseconds, i);
 				ui::SetNextWindowSize(ImVec2(w, h));
 				ui::SetNextWindowPos(ImVec2(xPos + margin, yPos));
 				ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -1087,7 +1156,7 @@ void MixNMapApp::draw()
 						yPos += h + margin;
 					}
 					ui::PushID(i);
-					ui::Image((void*)mBatchass->getTexturesRef()->getShaderThumbTextureId(i), Vec2i(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
+					ui::Image((void*)mBatchass->getTexturesRef()->getShaderThumbTextureId(i), ivec2(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
 					if (ui::IsItemHovered()) ui::SetTooltip(mBatchass->getShadersRef()->getShader(i).name.c_str());
 
 					//ui::Columns(2, "lr", false);
@@ -1195,6 +1264,7 @@ void MixNMapApp::draw()
 		yPos += h + margin;
 	}
 #pragma endregion library
+
 #pragma region fbos
 
 	if (showFbos)
@@ -1207,7 +1277,7 @@ void MixNMapApp::draw()
 			{
 				//if (i > 0) ui::SameLine();
 				ui::PushID(i);
-				ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(i), Vec2i(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
+				ui::Image((void*)mBatchass->getTexturesRef()->getFboTextureId(i), ivec2(mParameterBag->mPreviewFboWidth, mParameterBag->mPreviewFboHeight));
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
@@ -1227,7 +1297,7 @@ void MixNMapApp::draw()
 	// console
 	if (showConsole)
 	{
-		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX, largePreviewH), ImGuiSetCond_Once);
+		ui::SetNextWindowSize(ImVec2((w + margin) * mParameterBag->MAX / 2, largePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		ShowAppConsole(&showConsole);
 		if (mParameterBag->newMsg)
@@ -1242,7 +1312,7 @@ void MixNMapApp::draw()
 		ui::ShowStyleEditor();
 
 	}
-	xPos += largePreviewH + margin;
+	xPos += ((w + margin) * mParameterBag->MAX / 2) + margin;
 
 #pragma region OSC
 
@@ -1267,251 +1337,77 @@ void MixNMapApp::draw()
 			ui::InputInt("track", &i0);
 			ui::InputFloat("clip", &f0, 0.01f, 1.0f);
 			if (ui::Button("Send")) { mBatchass->sendOSCIntMessage(str0, i0); }
+
+			// meter
+			static ImVector<float> meterValues;
+			if (meterValues.empty()) { meterValues.resize(40); memset(&meterValues.front(), 0, meterValues.size()*sizeof(float)); }
+			static int meterValues_offset = 0;
+			static float meterRefresh_time = -1.0f;
+			if (ui::GetTime() > meterRefresh_time + 1.0f / 20.0f)
+			{
+				meterRefresh_time = ui::GetTime();
+				meterValues[meterValues_offset] = mParameterBag->liveMeter;
+				meterValues_offset = (meterValues_offset + 1) % meterValues.size();
+			}
+
+			if (mParameterBag->liveMeter > 0.9) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+			sprintf_s(buf, "%.2f", mParameterBag->liveMeter);
+			ui::PlotLines("Meter", &meterValues.front(), (int)meterValues.size(), meterValues_offset, buf, 0.0f, 1.0f, ImVec2(0, 30));
+			if (mParameterBag->liveMeter > 0.9) ui::PopStyleColor();
+			ui::Text("Track %s %.2f", mParameterBag->mTrackName.c_str(), mParameterBag->liveMeter);
+
+
+			if (ui::CollapsingHeader("Tracks", NULL, true, true))
+			{
+				for (int a = 0; a < mParameterBag->MAX; a++)
+				{
+					if (mBatchass->getTrack(a) != "default.glsl") ui::Button(mBatchass->getTrack(a).c_str());
+				}
+			}
 		}
 		ui::End();
 		xPos += largeW + margin;
 	}
 #pragma endregion OSC
 
-
-	gl::disableAlphaBlending();
+	//gl::disableAlphaBlending();
 }
-
-void MixNMapApp::saveThumb()
-{
-	string filename;
-	try
-	{
-		filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
-		writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
-		mBatchass->log("saved:" + filename);
-	}
-	catch (const std::exception &e)
-	{
-		mBatchass->log("unable to save:" + filename + string(e.what()));
-	}
-}
-void MixNMapApp::keyUp(KeyEvent event)
-{
-	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->keyUp(event);
-}
-
-void MixNMapApp::fileDrop(FileDropEvent event)
-{
-	int index;
-	string ext = "";
-	// use the last of the dropped files
-	boost::filesystem::path mPath = event.getFile(event.getNumFiles() - 1);
-	string mFile = mPath.string();
-	int dotIndex = mFile.find_last_of(".");
-	int slashIndex = mFile.find_last_of("\\");
-
-	if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = mFile.substr(mFile.find_last_of(".") + 1);
-	index = (int)(event.getX() / (margin + mParameterBag->mPreviewFboWidth + inBetween));// +1;
-	//mBatchass->log(mFile + " dropped, currentSelectedIndex:" + toString(mParameterBag->currentSelectedIndex) + " x: " + toString(event.getX()) + " PreviewFboWidth: " + toString(mParameterBag->mPreviewFboWidth));
-
-	if (ext == "wav" || ext == "mp3")
-	{
-		mAudio->loadWaveFile(mFile);
-	}
-	else if (ext == "png" || ext == "jpg")
-	{
-		if (index < 1) index = 1;
-		if (index > 3) index = 3;
-		//mTextures->loadImageFile(mParameterBag->currentSelectedIndex, mFile);
-		mBatchass->getTexturesRef()->loadImageFile(index, mFile);
-	}
-	else if (ext == "glsl")
-	{
-		if (index < 4) index = 4;
-		int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
-		if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
-		{
-			// if shader got compiled without error, send it via websockets
-			if (mFile.find_last_of("\\") != std::string::npos) {
-				string name = mFile.substr(mFile.find_last_of("\\") + 1);
-				string fs = loadString(loadFile(mFile));
-				stringstream gParams;
-				gParams << "{\"glsl\" :[{\"name\" : \"" << name << "\",\"index\" : " << index << ",\"frag\" : \"" << fs << "\"}]}";
-				mBatchass->sendJSON(gParams.str());
-			}
-			mParameterBag->controlValues[22] = 1.0f;
-			// TODO  send content via websockets
-			/*fs::path fr = mFile;
-			string name = "unknown";
-			if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
-			if (fs::exists(fr))
-			{
-
-			std::string fs = loadString(loadFile(mFile));
-			if (mParameterBag->mOSCEnabled) mOSC->sendOSCStringMessage("/fs", 0, fs, name);
-			}*/
-			// save thumb
-			timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
-		}
-	}
-	else if (ext == "mov" || ext == "mp4")
-	{
-		/*
-		if (index < 1) index = 1;
-		if (index > 3) index = 3;
-		mBatchass->getTexturesRef()->loadMovieFile(index, mFile);*/
-	}
-	else if (ext == "fs")
-	{
-		//mShaders->incrementPreviewIndex();
-		mBatchass->getShadersRef()->loadFragmentShader(mPath);
-	}
-	else if (ext == "xml")
-	{
-		mBatchass->getWarpsRef()->loadWarps(mFile);
-	}
-	else if (ext == "patchjson")
-	{
-		// try loading patch
-		try
-		{
-			JsonTree patchjson;
-			try
-			{
-				patchjson = JsonTree(loadFile(mFile));
-				mParameterBag->mCurrentFilePath = mFile;
-			}
-			catch (cinder::JsonTree::Exception exception)
-			{
-				mBatchass->log("patchjsonparser exception " + mFile + ": " + exception.what());
-
-			}
-			//Assets
-			int i = 1; // 0 is audio
-			JsonTree jsons = patchjson.getChild("assets");
-			for (JsonTree::ConstIter jsonElement = jsons.begin(); jsonElement != jsons.end(); ++jsonElement)
-			{
-				string jsonFileName = jsonElement->getChild("filename").getValue<string>();
-				int channel = jsonElement->getChild("channel").getValue<int>();
-				if (channel < mBatchass->getTexturesRef()->getTextureCount())
-				{
-					mBatchass->log("asset filename: " + jsonFileName);
-					mBatchass->getTexturesRef()->setTexture(channel, jsonFileName);
-				}
-				i++;
-			}
-
-		}
-		catch (...)
-		{
-			mBatchass->log("patchjson parsing error: " + mFile);
-		}
-	}
-	else if (ext == "txt")
-	{
-		// try loading shader parts
-		if (mBatchass->getShadersRef()->loadTextFile(mFile))
-		{
-
-		}
-	}
-	else if (ext == "")
-	{
-		// try loading image sequence from dir
-		if (index < 1) index = 1;
-		if (index > 3) index = 3;
-		mBatchass->getTexturesRef()->createFromDir(mFile + "/", index);
-		// or create thumbs from shaders
-		mBatchass->getShadersRef()->createThumbsFromDir(mFile + "/");
-	}
-	/*if (!loaded && ext == "frag")
-	{
-
-	//mShaders->incrementPreviewIndex();
-
-	if (mShaders->loadPixelFrag(mFile))
-	{
-	mParameterBag->controlValues[22] = 1.0f;
-	timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ save(); });
-	}
-	if (mCodeEditor) mCodeEditor->fileDrop(event);
-	}*/
-	mParameterBag->isUIDirty = true;
-}
-
-void MixNMapApp::shutdown()
-{
-	mBatchass->log("shutdown");
-	// save warp settings
-	mBatchass->getWarpsRef()->save();
-	// save params
-	mParameterBag->save();
-	ui::Shutdown();
-	// close spout
-	mSpout->shutdown();
-	quit();
-
-}
-
-void MixNMapApp::update()
-{
-	mParameterBag->iFps = getAverageFps();
-	mParameterBag->sFps = toString(floor(mParameterBag->iFps));
-	getWindow()->setTitle("(" + mParameterBag->sFps + " fps) MixNMap");
-	if (mParameterBag->iGreyScale)
-	{
-		mParameterBag->controlValues[1] = mParameterBag->controlValues[2] = mParameterBag->controlValues[3];
-		mParameterBag->controlValues[5] = mParameterBag->controlValues[6] = mParameterBag->controlValues[7];
-	}
-
-	mParameterBag->iChannelTime[0] = getElapsedSeconds();
-	mParameterBag->iChannelTime[1] = getElapsedSeconds() - 1;
-	mParameterBag->iChannelTime[3] = getElapsedSeconds() - 2;
-	mParameterBag->iChannelTime[4] = getElapsedSeconds() - 3;
-	//
-	if (mParameterBag->mUseTimeWithTempo)
-	{
-		mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
-	}
-	else
-	{
-		mParameterBag->iGlobalTime = getElapsedSeconds();
-	}
-	mParameterBag->iGlobalTime *= mParameterBag->iSpeedMultiplier;
-	mSpout->update();
-	mBatchass->update();
-	mAudio->update();
-}
-
-void MixNMapApp::resize()
-{
-	mBatchass->getWarpsRef()->resize();
-
-}
-
-void MixNMapApp::mouseMove(MouseEvent event)
+void ReymentaMixnmapApp::mouseMove(MouseEvent event)
 {
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseMove(event);
 }
-
-void MixNMapApp::mouseDown(MouseEvent event)
+void ReymentaMixnmapApp::mouseDown(MouseEvent event)
 {
+	mMouse.x = (float)event.getPos().x;
+	mMouse.y = (float)event.getPos().y;
+	mMouse.z = (float)event.getPos().x;
+	mMouse.w = (float)event.getPos().y;
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDown(event);
 	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDown(event);
+
 }
 
-void MixNMapApp::mouseDrag(MouseEvent event)
+void ReymentaMixnmapApp::mouseDrag(MouseEvent event)
 {
+	mMouse.x = (float)event.getPos().x;
+	mMouse.y = (float)event.getPos().y;
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseDrag(event);
 	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseDrag(event);
-}
 
-void MixNMapApp::mouseUp(MouseEvent event)
+}
+void ReymentaMixnmapApp::mouseUp(MouseEvent event)
 {
 	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->mouseUp(event);
 	if (mParameterBag->mMode == mParameterBag->MODE_AUDIO) mAudio->mouseUp(event);
 }
-void MixNMapApp::mouseWheel(MouseEvent event)
+void ReymentaMixnmapApp::keyUp(KeyEvent event)
 {
+	if (mParameterBag->mMode == mParameterBag->MODE_WARP) mBatchass->getWarpsRef()->keyUp(event);
+
 }
-void MixNMapApp::keyDown(KeyEvent event)
+void ReymentaMixnmapApp::keyDown(KeyEvent event)
 {
+
 	int textureIndex = mParameterBag->iChannels[mParameterBag->selectedChannel];
 	int keyCode = event.getCode();
 	bool handled = false;
@@ -1525,10 +1421,9 @@ void MixNMapApp::keyDown(KeyEvent event)
 	{
 		switch (keyCode)
 		{
-		case ci::app::KeyEvent::KEY_c:
+		case ci::app::KeyEvent::KEY_n:
 			mBatchass->createWarp();
 			break;
-
 		case ci::app::KeyEvent::KEY_s:
 			if (event.isControlDown())
 			{
@@ -1537,7 +1432,6 @@ void MixNMapApp::keyDown(KeyEvent event)
 				// save params
 				mParameterBag->save();
 			}
-
 			break;
 		case ci::app::KeyEvent::KEY_r:
 			mParameterBag->controlValues[1] += 0.2;
@@ -1559,18 +1453,20 @@ void MixNMapApp::keyDown(KeyEvent event)
 			break;
 		case ci::app::KeyEvent::KEY_f:
 			break;
-		case ci::app::KeyEvent::KEY_h:
+		case ci::app::KeyEvent::KEY_c:
+			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
 			if (mParameterBag->mCursorVisible)
 			{
-				removeUI = true;
 				hideCursor();
 			}
 			else
 			{
-				removeUI = false;
 				showCursor();
 			}
-			mParameterBag->mCursorVisible = !mParameterBag->mCursorVisible;
+			break;
+		case ci::app::KeyEvent::KEY_h:
+			mParameterBag->mShowUI = !mParameterBag->mShowUI;
+			if (!mParameterBag->mShowUI) hideCursor();
 			break;
 		case ci::app::KeyEvent::KEY_ESCAPE:
 			mParameterBag->save();
@@ -1578,6 +1474,10 @@ void MixNMapApp::keyDown(KeyEvent event)
 			mBatchass->shutdown();
 
 			quit();
+			break;
+		case KeyEvent::KEY_SPACE:
+			//random();
+			mBatchass->getShadersRef()->random();
 			break;
 		case ci::app::KeyEvent::KEY_0:
 		case 256:
@@ -1631,9 +1531,230 @@ void MixNMapApp::keyDown(KeyEvent event)
 	}
 }
 
+void ReymentaMixnmapApp::resize()
+{
+	mBatchass->getWarpsRef()->resize();
+	// Create/resize frame buffers (no multisampling)
+	mBufferCurrent = gl::Fbo::create(getWindowWidth(), getWindowHeight());
+	mBufferNext = gl::Fbo::create(getWindowWidth(), getWindowHeight());
+}
+
+void ReymentaMixnmapApp::fileDrop(FileDropEvent event)
+{
+	// Send all file requests to the loading thread.
+	size_t count = event.getNumFiles();
+
+	// TO MIGRATE
+	int index;
+	string ext = "";
+	// use the last of the dropped files
+	const fs::path &mPath = event.getFile(event.getNumFiles() - 1);
+	string mFile = mPath.string();
+	int dotIndex = mFile.find_last_of(".");
+	int slashIndex = mFile.find_last_of("\\");
+
+	if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = mFile.substr(mFile.find_last_of(".") + 1);
+	index = (int)(event.getX() / (margin + mParameterBag->mPreviewFboWidth + inBetween));// +1;
+	//mBatchass->log(mFile + " dropped, currentSelectedIndex:" + toString(mParameterBag->currentSelectedIndex) + " x: " + toString(event.getX()) + " PreviewFboWidth: " + toString(mParameterBag->mPreviewFboWidth));
+
+	if (ext == "wav" || ext == "mp3")
+	{
+		mAudio->loadWaveFile(mFile);
+	}
+	else if (ext == "png" || ext == "jpg")
+	{
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		//mTextures->loadImageFile(mParameterBag->currentSelectedIndex, mFile);
+		mBatchass->getTexturesRef()->loadImageFile(index, mFile);
+	}
+	else if (ext == "glsl")
+	{
+		if (index < 4) index = 4;
+
+		//for (size_t i = 0; i < count && mRequests->isNotFull(); ++i) {
+		//mRequests->pushFront(event.getFile(i));
+		for (size_t i = 0; i < count; ++i) {
+			mBatchass->getShadersRef()->addRequest(event.getFile(i), index);
+		}
+
+		/* obsolete
+				int rtn = mBatchass->getShadersRef()->loadPixelFragmentShaderAtIndex(mFile, index);
+				if (rtn > -1 && rtn < mBatchass->getShadersRef()->getCount())
+				{
+				mParameterBag->controlValues[22] = 1.0f;*/
+		// TODO  send content via websockets
+		/*fs::path fr = mFile;
+		string name = "unknown";
+		if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
+		if (fs::exists(fr))
+		{
+
+		std::string fs = loadString(loadFile(mFile));
+		if (mParameterBag->mOSCEnabled) mOSC->sendOSCStringMessage("/fs", 0, fs, name);
+		}*/
+		// save thumb
+		/*timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ saveThumb(); });
+	}*/
+	}
+	else if (ext == "mov" || ext == "mp4")
+	{
+		/*
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		mBatchass->getTexturesRef()->loadMovieFile(index, mFile);*/
+	}
+	else if (ext == "fs")
+	{
+		//mShaders->incrementPreviewIndex();
+		mBatchass->getShadersRef()->loadFragmentShader(mPath);
+	}
+	else if (ext == "xml")
+	{
+		mBatchass->getWarpsRef()->loadWarps(mFile);
+	}
+	else if (ext == "patchjson")
+	{
+		// try loading patch
+		try
+		{
+			JsonTree patchjson;
+			try
+			{
+				patchjson = JsonTree(loadFile(mFile));
+				mParameterBag->mCurrentFilePath = mFile;
+			}
+			catch (cinder::JsonTree::Exception exception)
+			{
+				CI_LOG_V("patchjsonparser exception " + mFile + ": " + exception.what());
+
+			}
+			//Assets
+			int i = 1; // 0 is audio
+			JsonTree jsons = patchjson.getChild("assets");
+			for (JsonTree::ConstIter jsonElement = jsons.begin(); jsonElement != jsons.end(); ++jsonElement)
+			{
+				string jsonFileName = jsonElement->getChild("filename").getValue<string>();
+				int channel = jsonElement->getChild("channel").getValue<int>();
+				if (channel < mBatchass->getTexturesRef()->getTextureCount())
+				{
+					CI_LOG_V("asset filename: " + jsonFileName);
+					mBatchass->getTexturesRef()->setTexture(channel, jsonFileName);
+				}
+				i++;
+			}
+
+		}
+		catch (...)
+		{
+			CI_LOG_V("patchjson parsing error: " + mFile);
+		}
+	}
+	else if (ext == "txt")
+	{
+		// try loading shader parts
+		if (mBatchass->getShadersRef()->loadTextFile(mFile))
+		{
+
+		}
+	}
+	else if (ext == "")
+	{
+		// try loading image sequence from dir
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		mBatchass->getTexturesRef()->createFromDir(mFile + "/", index);
+		// or create thumbs from shaders
+		mBatchass->getShadersRef()->createThumbsFromDir(mFile + "/");
+	}
+	/*if (!loaded && ext == "frag")
+	{
+
+	//mShaders->incrementPreviewIndex();
+
+	if (mShaders->loadPixelFrag(mFile))
+	{
+	mParameterBag->controlValues[22] = 1.0f;
+	timeline().apply(&mTimer, 1.0f, 1.0f).finishFn([&]{ save(); });
+	}
+	if (mCodeEditor) mCodeEditor->fileDrop(event);
+	}*/
+	mParameterBag->isUIDirty = true;
+}
 // From imgui by Omar Cornut
-void MixNMapApp::ShowAppConsole(bool* opened)
+void ReymentaMixnmapApp::ShowAppConsole(bool* opened)
 {
 	mConsole->Run("Console", opened);
 }
-CINDER_APP_BASIC(MixNMapApp, RendererGl)
+void ReymentaMixnmapApp::saveThumb()
+{
+	/* TODO
+	string filename;
+	try
+	{
+	filename = mBatchass->getShadersRef()->getFragFileName() + ".jpg";
+	writeImage(getAssetPath("") / "thumbs" / filename, mBatchass->getTexturesRef()->getFboTexture(mParameterBag->mCurrentPreviewFboIndex));
+	mBatchass->log("saved:" + filename);
+	}
+	catch (const std::exception &e)
+	{
+	mBatchass->log("unable to save:" + filename + string(e.what()));
+	}*/
+}
+void ReymentaMixnmapApp::setUniforms()
+{
+	auto shader = gl::context()->getGlslProg();
+	if (!shader)
+		return;
+
+	// Calculate shader parameters.
+	vec3  iResolution(vec2(getWindowSize()), 1);
+	mParameterBag->iChannelTime[0] = (float)getElapsedSeconds();
+	mParameterBag->iChannelTime[1] = (float)getElapsedSeconds() - 1;
+	mParameterBag->iChannelTime[2] = (float)getElapsedSeconds() - 2;
+	mParameterBag->iChannelTime[3] = (float)getElapsedSeconds() - 3;
+	//
+	if (mParameterBag->mUseTimeWithTempo)
+	{
+		mParameterBag->iGlobalTime = mParameterBag->iTempoTime*mParameterBag->iTimeFactor;
+	}
+	else
+	{
+		mParameterBag->iGlobalTime = (float)getElapsedSeconds();
+	}
+	mParameterBag->iGlobalTime *= mParameterBag->iSpeedMultiplier;
+
+	vec3  iChannelResolution0 = mChannel0 ? vec3(mChannel0->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution1 = mChannel1 ? vec3(mChannel1->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution2 = mChannel2 ? vec3(mChannel2->getSize(), 1) : vec3(1);
+	vec3  iChannelResolution3 = mChannel3 ? vec3(mChannel3->getSize(), 1) : vec3(1);
+
+	time_t now = time(0);
+	tm*    t = gmtime(&now);
+	vec4   iDate(float(t->tm_year + 1900),
+		float(t->tm_mon + 1),
+		float(t->tm_mday),
+		float(t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec));
+
+	// Set shader uniforms.
+	shader->uniform("iResolution", iResolution);
+	shader->uniform("iGlobalTime", mParameterBag->iGlobalTime);
+	shader->uniform("iChannelTime[0]", mParameterBag->iChannelTime[0]);
+	shader->uniform("iChannelTime[1]", mParameterBag->iChannelTime[1]);
+	shader->uniform("iChannelTime[2]", mParameterBag->iChannelTime[2]);
+	shader->uniform("iChannelTime[3]", mParameterBag->iChannelTime[3]);
+	shader->uniform("iChannelResolution[0]", iChannelResolution0);
+	shader->uniform("iChannelResolution[1]", iChannelResolution1);
+	shader->uniform("iChannelResolution[2]", iChannelResolution2);
+	shader->uniform("iChannelResolution[3]", iChannelResolution3);
+	shader->uniform("iMouse", mMouse);
+	shader->uniform("iChannel0", 0);
+	shader->uniform("iChannel1", 1);
+	shader->uniform("iChannel2", 2);
+	shader->uniform("iChannel3", 3);
+	shader->uniform("iDate", iDate);
+}
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#pragma warning(pop) // _CRT_SECURE_NO_WARNINGS
+#endif
+CINDER_APP(ReymentaMixnmapApp, RendererGl, &ReymentaMixnmapApp::prepare)

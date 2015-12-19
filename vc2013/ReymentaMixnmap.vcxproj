@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C4C2F8B0-2595-49CA-940F-57C384BF2978}</ProjectGuid>
+    <RootNamespace>ReymentaMixnmap</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c:\tmp\vs\$(TargetName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c:\tmp\vs\$(TargetName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\include\asio;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\QuickTime\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;..\..\..\include;..\..\..\include\asio;..\..\..\blocks\Cinder-Hap2\src;..\..\..\blocks\Cinder-Hap2\include\msw;..\..\..\blocks\Cinder-ImGui\lib\imgui;..\..\..\blocks\Cinder-ImGui\include;..\..\..\blocks\Cinder-MIDI2\include;..\..\..\blocks\Cinder-MIDI2\lib;..\..\..\blocks\Cinder-MIDI2\src;..\..\..\blocks\Cinder-Reymenta\include;..\..\..\blocks\Cinder-Reymenta\src;..\..\..\blocks\Cinder-Spout\include;..\..\..\blocks\Cinder-Warping\include;..\..\..\blocks\Cinder-WebSocketPP\src;..\..\..\blocks\OSC\src;..\..\..\blocks\QuickTime\include\msw;..\..\..\blocks\QuickTime\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding />
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "..\..\..\blocks\Cinder-Spout\lib\Spout2.dll" "$(OutDir)"
+xcopy /y "..\..\..\blocks\Cinder-Spout\lib\SpoutPanel.exe" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\assets\0.glsl" />
+    <None Include="..\..\..\..\..\assets\bubbles.glsl" />
+    <None Include="..\..\..\..\..\assets\common\shadertoy.frag" />
+    <None Include="..\..\..\..\..\assets\common\shadertoy.vert" />
+    <None Include="..\..\..\..\..\assets\shadertoy.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\AppConsole.h" />
+    <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.inl" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imconfig.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\CinderMidi.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiExceptions.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiHub.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\include\MidiOut.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\AudioWrapper.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Batchass.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\JSONWrapper.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Logan.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4frame.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4frame_static.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4hc.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Shaders.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\SpoutWrapper.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Textures.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\WarpWrapper.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Watchdog.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\xxhash.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Warping\include\Warp.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketConnection.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketServer.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\OscArg.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\OscBundle.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\OscListener.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\OscMessage.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\OscSender.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\ip\IpEndpointName.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\ip\PacketListener.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\ip\TimerListener.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\ip\UdpSocket.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscException.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPacketListener.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
+    <ClInclude Include="..\include\ReymentaMixnmapApp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\AppConsole.cpp" />
+    <ClCompile Include="..\src\ReymentaMixnmapApp.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\lib\RtMidi.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiHub.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\CinderMidi.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-MIDI2\src\MidiOut.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\AudioWrapper.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Batchass.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\JSONWrapper.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logan.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Shaders.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\SpoutWrapper.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Textures.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\WarpWrapper.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4frame.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\lz4hc.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\xxhash.c" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\Warp.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpBilinear.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspective.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Warping\src\WarpPerspectiveBilinear.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketConnection.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketServer.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\OscBundle.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\OscListener.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\OscMessage.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\OscSender.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscTypes.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
