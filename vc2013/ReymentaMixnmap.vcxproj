@@ -122,6 +122,7 @@
     <None Include="..\..\..\..\..\assets\shadertoy.inc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\blocks\OSC\src\Osc.h" />
     <ClInclude Include="..\include\AppConsole.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Hap2\src\HapSupport.h" />
@@ -146,7 +147,6 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4frame_static.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\lz4hc.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\MessageRouter.h" />
-    <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\OSCWrapper.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\ParameterBag.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\Shaders.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Reymenta\include\SpoutWrapper.h" />
@@ -158,27 +158,10 @@
     <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketConnection.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketServer.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\OscArg.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\OscBundle.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\OscListener.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\OscMessage.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\OscSender.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\ip\IpEndpointName.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\ip\NetworkingUtils.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\ip\PacketListener.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\ip\TimerListener.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\ip\UdpSocket.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\MessageMappingOscPacketListener.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscException.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscHostEndianness.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscOutboundPacketStream.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPacketListener.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.h" />
-    <ClInclude Include="..\..\..\blocks\OSC\src\osc\OscTypes.h" />
     <ClInclude Include="..\include\ReymentaMixnmapApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\blocks\OSC\src\Osc.cpp" />
     <ClCompile Include="..\src\AppConsole.cpp" />
     <ClCompile Include="..\src\ReymentaMixnmapApp.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Hap2\src\MovieHap.cpp" />
@@ -196,7 +179,6 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\JSONWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Logan.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\MessageRouter.cpp" />
-    <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\OSCWrapper.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\ParameterBag.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\Shaders.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Reymenta\src\SpoutWrapper.cpp" />
@@ -213,17 +195,6 @@
     <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketClient.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketConnection.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-WebSocketPP\src\WebSocketServer.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\OscBundle.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\OscListener.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\OscMessage.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\OscSender.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\ip\IpEndpointName.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscOutboundPacketStream.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscPrintReceivedElements.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscReceivedElements.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\osc\OscTypes.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\NetworkingUtils.cpp" />
-    <ClCompile Include="..\..\..\blocks\OSC\src\ip\win32\UdpSocket.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
