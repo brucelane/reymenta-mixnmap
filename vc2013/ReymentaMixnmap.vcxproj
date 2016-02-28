@@ -64,7 +64,7 @@
       <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -95,7 +95,7 @@
       <AdditionalIncludeDirectories>"..\..\..\include";..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>cinder-$(PlatformToolset).lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\blocks\Cinder-Spout\lib\Spout2.lib;..\..\..\blocks\QuickTime\lib\msw\x86\CVClient.lib;..\..\..\blocks\QuickTime\lib\msw\x86\QTMLClient.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>"..\..\..\lib\msw\$(PlatformTarget)";..\..\..\blocks\Cinder-WebSocketPP\lib\msw</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
